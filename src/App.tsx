@@ -397,8 +397,8 @@ function App() {
                   </div>
                 )}
 
-                <button type="submit" className="sell-form-btn sell-form-btn--submit" style={{ marginTop: '16px' }}>
-                  {authMode === 'login' ? authCopy.loginBtn : authCopy.registerBtn}
+                <button type="submit" className="auth-submit-btn" style={{ marginTop: '16px' }}>
+                  <span>{authMode === 'login' ? authCopy.loginBtn : authCopy.registerBtn}</span>
                 </button>
 
                 <p 
