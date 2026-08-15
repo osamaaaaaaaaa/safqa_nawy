@@ -1020,10 +1020,10 @@ h1, h2, h3, h4, h5, h6 {
 
 .market-strip {
   display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
   gap: 14px;
   margin-top: 36px;
-  overflow: hidden;
-  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
 }
 
 .market-strip span {
@@ -1449,8 +1449,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @keyframes stripFloat {
-  from { transform: translateX(0); }
-  to { transform: translateX(20px); }
+  from { transform: translateY(0); }
+  to { transform: translateY(-4px); }
 }
 
 @keyframes documentPulse {
