@@ -57,6 +57,7 @@ function App() {
   const [view, setView] = useState<'landing' | 'sell'>('landing')
   const [step, setStep] = useState(1)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [showErrors, setShowErrors] = useState(false)
   const [formData, setFormData] = useState({
     developerName: '',
     projectName: '',
@@ -83,6 +84,9 @@ function App() {
     const handleHash = () => {
       if (window.location.hash === '#/sell') {
         setView('sell')
+        setStep(1)
+        setIsSubmitted(false)
+        setShowErrors(false)
       } else {
         setView('landing')
       }
@@ -141,6 +145,25 @@ function App() {
       const num = parseFloat(val)
       if (isNaN(num)) return ''
       return num.toLocaleString(isArabic ? 'ar-EG' : 'en-US') + ' ' + (isArabic ? 'ج.م' : 'EGP')
+    }
+
+    const handleNext = () => {
+      if (isStepValid()) {
+        setStep(prev => prev + 1)
+        setShowErrors(false)
+      } else {
+        setShowErrors(true)
+      }
+    }
+
+    const handleFormSubmit = (e: React.FormEvent) => {
+      e.preventDefault()
+      if (isStepValid()) {
+        setIsSubmitted(true)
+        setShowErrors(false)
+      } else {
+        setShowErrors(true)
+      }
     }
     
     if (isSubmitted) {
@@ -232,7 +255,7 @@ function App() {
 
             {/* Right: Immersive Interactive Canvas */}
             <div className="sell-form-canvas">
-              <form onSubmit={(e) => { e.preventDefault(); if (step === 3) setIsSubmitted(true); }}>
+              <form onSubmit={handleFormSubmit}>
                 {step === 1 && (
                   <div className="form-canvas-fields">
                     <div className="form-canvas-group">
@@ -266,7 +289,7 @@ function App() {
                           placeholder={isArabic ? "مثال: إعمار، سوديك..." : "e.g. Emaar, SODIC..."}
                           value={formData.developerName} 
                           onChange={(e) => handleInputChange('developerName', e.target.value)} 
-                          className="premium-canvas-input"
+                          className={`premium-canvas-input ${showErrors && !formData.developerName ? 'canvas-input-error' : ''}`}
                         />
                       </div>
 
@@ -278,14 +301,14 @@ function App() {
                           placeholder={isArabic ? "مثال: مراسي، فيليت..." : "e.g. Villette, Marassi..."}
                           value={formData.projectName} 
                           onChange={(e) => handleInputChange('projectName', e.target.value)} 
-                          className="premium-canvas-input"
+                          className={`premium-canvas-input ${showErrors && !formData.projectName ? 'canvas-input-error' : ''}`}
                         />
                       </div>
                     </div>
 
                     <div className="form-canvas-group">
                       <div 
-                        className={`interactive-seal-checkbox ${formData.zeroOverAck ? 'active' : ''}`}
+                        className={`interactive-seal-checkbox ${formData.zeroOverAck ? 'active' : ''} ${showErrors && !formData.zeroOverAck ? 'seal-error' : ''}`}
                         onClick={() => handleInputChange('zeroOverAck', !formData.zeroOverAck)}
                       >
                         <div className="seal-box">
@@ -311,7 +334,7 @@ function App() {
                             required
                             value={formData.totalPrice} 
                             onChange={(e) => handleInputChange('totalPrice', e.target.value)} 
-                            className="premium-canvas-input"
+                            className={`premium-canvas-input ${showErrors && !formData.totalPrice ? 'canvas-input-error' : ''}`}
                           />
                           <span className="currency-tag">{isArabic ? 'ج.م' : 'EGP'}</span>
                         </div>
@@ -326,7 +349,7 @@ function App() {
                             required
                             value={formData.amountPaid} 
                             onChange={(e) => handleInputChange('amountPaid', e.target.value)} 
-                            className="premium-canvas-input"
+                            className={`premium-canvas-input ${showErrors && !formData.amountPaid ? 'canvas-input-error' : ''}`}
                           />
                           <span className="currency-tag">{isArabic ? 'ج.م' : 'EGP'}</span>
                         </div>
@@ -343,7 +366,7 @@ function App() {
                             required
                             value={formData.remainingPrice} 
                             onChange={(e) => handleInputChange('remainingPrice', e.target.value)} 
-                            className="premium-canvas-input"
+                            className={`premium-canvas-input ${showErrors && !formData.remainingPrice ? 'canvas-input-error' : ''}`}
                           />
                           <span className="currency-tag">{isArabic ? 'ج.م' : 'EGP'}</span>
                         </div>
@@ -358,7 +381,7 @@ function App() {
                             required
                             value={formData.nextInstallment} 
                             onChange={(e) => handleInputChange('nextInstallment', e.target.value)} 
-                            className="premium-canvas-input"
+                            className={`premium-canvas-input ${showErrors && !formData.nextInstallment ? 'canvas-input-error' : ''}`}
                           />
                           <span className="currency-tag">{isArabic ? 'ج.م' : 'EGP'}</span>
                         </div>
@@ -416,7 +439,7 @@ function App() {
                         placeholder={isArabic ? "اكتب اسمك الثلاثي" : "Your full name"}
                         value={formData.name} 
                         onChange={(e) => handleInputChange('name', e.target.value)} 
-                        className="premium-canvas-input"
+                        className={`premium-canvas-input ${showErrors && !formData.name ? 'canvas-input-error' : ''}`}
                       />
                     </div>
 
@@ -429,7 +452,7 @@ function App() {
                           placeholder={isArabic ? "مثال: 010xxxxxxxx" : "e.g. +2010xxxxxxxx"}
                           value={formData.phone} 
                           onChange={(e) => handleInputChange('phone', e.target.value)} 
-                          className="premium-canvas-input"
+                          className={`premium-canvas-input ${showErrors && !formData.phone ? 'canvas-input-error' : ''}`}
                         />
                       </div>
 
@@ -441,14 +464,14 @@ function App() {
                           placeholder="name@domain.com"
                           value={formData.email} 
                           onChange={(e) => handleInputChange('email', e.target.value)} 
-                          className="premium-canvas-input"
+                          className={`premium-canvas-input ${showErrors && !formData.email ? 'canvas-input-error' : ''}`}
                         />
                       </div>
                     </div>
 
                     <div className="form-canvas-group">
                       <div 
-                        className={`interactive-seal-checkbox ${formData.ownerConfirm ? 'active' : ''}`}
+                        className={`interactive-seal-checkbox ${formData.ownerConfirm ? 'active' : ''} ${showErrors && !formData.ownerConfirm ? 'seal-error' : ''}`}
                         onClick={() => handleInputChange('ownerConfirm', !formData.ownerConfirm)}
                       >
                         <div className="seal-box">
@@ -478,8 +501,7 @@ function App() {
                     <button 
                       type="button" 
                       className="sell-form-btn sell-form-btn--next"
-                      disabled={!isStepValid()}
-                      onClick={() => setStep(prev => prev + 1)}
+                      onClick={handleNext}
                     >
                       {sCopy.form.nextBtn}
                     </button>
@@ -487,7 +509,6 @@ function App() {
                     <button 
                       type="submit" 
                       className="sell-form-btn sell-form-btn--submit"
-                      disabled={!isStepValid()}
                     >
                       {sCopy.form.submitBtn}
                     </button>
