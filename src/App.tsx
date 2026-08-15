@@ -288,6 +288,56 @@ function App() {
   const renderSellView = () => {
     const sCopy = copy.sellersPage
 
+    const getPhoneSpec = (countryCode: string) => {
+      switch (countryCode) {
+        case '+20':
+          return {
+            placeholder: isArabic ? 'مثال: 1012345678' : 'e.g. 1012345678',
+            hint: isArabic ? 'رقم الهاتف المصري يتكون من 10 أرقام (بدون 0 في الأول)' : 'Egyptian number must be 10 digits (without leading 0)',
+            validate: (val: string) => /^[1][0-9]{9}$/.test(val)
+          }
+        case '+966':
+          return {
+            placeholder: isArabic ? 'مثال: 512345678' : 'e.g. 512345678',
+            hint: isArabic ? 'رقم الهاتف السعودي يتكون من 9 أرقام تبدأ بـ 5' : 'Saudi number must be 9 digits starting with 5',
+            validate: (val: string) => /^[5][0-9]{8}$/.test(val)
+          }
+        case '+971':
+          return {
+            placeholder: isArabic ? 'مثال: 512345678' : 'e.g. 512345678',
+            hint: isArabic ? 'رقم الهاتف الإماراتي يتكون من 9 أرقام تبدأ بـ 5' : 'UAE number must be 9 digits starting with 5',
+            validate: (val: string) => /^[5][0-9]{8}$/.test(val)
+          }
+        case '+974':
+        case '+965':
+        case '+968':
+        case '+973':
+          return {
+            placeholder: isArabic ? 'يتكون من 8 أرقام' : '8 digits number',
+            hint: isArabic ? 'يجب أن يتكون رقم الهاتف من 8 أرقام' : 'Phone number must be 8 digits',
+            validate: (val: string) => /^[0-9]{8}$/.test(val)
+          }
+        case '+1':
+          return {
+            placeholder: 'e.g. 2015550123',
+            hint: isArabic ? 'يتكون من 10 أرقام' : 'Must be 10 digits',
+            validate: (val: string) => /^[0-9]{10}$/.test(val)
+          }
+        case '+44':
+          return {
+            placeholder: 'e.g. 7123456789',
+            hint: isArabic ? 'يتكون من 10 أرقام تبدأ بـ 7' : 'Must be 10 digits starting with 7',
+            validate: (val: string) => /^[7][0-9]{9}$/.test(val)
+          }
+        default:
+          return {
+            placeholder: isArabic ? 'أدخل رقم الموبايل' : 'Enter mobile number',
+            hint: isArabic ? 'يجب أن يتكون رقم الهاتف من 7 إلى 11 رقماً' : 'Phone number must be 7 to 11 digits',
+            validate: (val: string) => /^[0-9]{7,11}$/.test(val)
+          }
+      }
+    }
+
     const handleAuthSubmit = (e: React.FormEvent) => {
       e.preventDefault()
       setAuthError('')
@@ -304,9 +354,9 @@ function App() {
           return
         }
         if (authData.phone) {
-          const phoneRegex = /^[0-9]{7,11}$/
-          if (!phoneRegex.test(authData.phone)) {
-            setAuthError(isArabic ? 'رقم الهاتف غير صحيح (من 7 إلى 11 رقماً بدون كود الدولة)' : 'Invalid phone (7-11 digits without country code)')
+          const phoneSpec = getPhoneSpec(authCountryCode)
+          if (!phoneSpec.validate(authData.phone)) {
+            setAuthError(phoneSpec.hint)
             return
           }
         }
@@ -365,6 +415,7 @@ function App() {
 
     const renderAuthPortal = () => {
       const authCopy = copy.sellersPage.auth
+      const phoneSpec = getPhoneSpec(authCountryCode)
       return (
         <section className="auth-portal-section section-frame">
           <div className="auth-portal-card">
@@ -454,12 +505,15 @@ function App() {
                       </select>
                       <input 
                         type="tel" 
-                        placeholder={isArabic ? "10xxxxxxxx" : "10xxxxxxxx"}
+                        placeholder={phoneSpec.placeholder}
                         value={authData.phone} 
                         onChange={(e) => setAuthData(prev => ({ ...prev, phone: e.target.value }))}
                         className="premium-canvas-input"
                       />
                     </div>
+                    <span className="field-hint" style={{ marginTop: '6px', display: 'block', fontSize: '0.82rem', color: 'var(--muted)' }}>
+                      {phoneSpec.hint}
+                    </span>
                   </div>
                 )}
 
