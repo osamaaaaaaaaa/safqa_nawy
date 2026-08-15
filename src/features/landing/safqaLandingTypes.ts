@@ -229,4 +229,47 @@ export type SafqaLandingCopy = {
     phone: string
     email: string
   }
+  sellersPage: {
+    title: string
+    subtitle: string
+    points: Array<string>
+    ownersOnlyTitle: string
+    ownersOnlyDesc: string
+    form: {
+      stepOf: string
+      step1Title: string
+      step2Title: string
+      step3Title: string
+      developerName: string
+      projectName: string
+      totalPrice: string
+      amountPaid: string
+      currentPrice: string
+      currentPriceHint: string
+      zeroOverAck: string
+      remainingPrice: string
+      nextInstallment: string
+      frequency: string
+      freqMonthly: string
+      freqQuarterly: string
+      freqSemiannual: string
+      freqAnnual: string
+      unitType: string
+      typeApartment: string
+      typeVilla: string
+      typeTownhouse: string
+      typeTwinhouse: string
+      name: string
+      phone: string
+      email: string
+      ownerConfirm: string
+      nextBtn: string
+      backBtn: string
+      submitBtn: string
+      successTitle: string
+      successSubtitle: string
+      whatsappCta: string
+      backHome: string
+    }
+  }
 }
