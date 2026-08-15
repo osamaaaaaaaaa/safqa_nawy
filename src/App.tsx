@@ -110,32 +110,7 @@ function App() {
     setFormData(prev => ({ ...prev, [field]: value }))
   }
 
-  const isStepValid = () => {
-    if (step === 1) {
-      return (
-        formData.developerName.trim() !== '' &&
-        formData.projectName.trim() !== '' &&
-        formData.totalPrice.trim() !== '' &&
-        formData.amountPaid.trim() !== '' &&
-        formData.zeroOverAck
-      )
-    }
-    if (step === 2) {
-      return (
-        formData.remainingPrice.trim() !== '' &&
-        formData.nextInstallment.trim() !== ''
-      )
-    }
-    if (step === 3) {
-      return (
-        formData.name.trim() !== '' &&
-        formData.phone.trim() !== '' &&
-        formData.email.trim() !== '' &&
-        formData.ownerConfirm
-      )
-    }
-    return false
-  }
+
 
   const renderSellView = () => {
     const sCopy = copy.sellersPage
@@ -148,22 +123,14 @@ function App() {
     }
 
     const handleNext = () => {
-      if (isStepValid()) {
-        setStep(prev => prev + 1)
-        setShowErrors(false)
-      } else {
-        setShowErrors(true)
-      }
+      setStep(prev => prev + 1)
+      setShowErrors(false)
     }
 
     const handleFormSubmit = (e: React.FormEvent) => {
       e.preventDefault()
-      if (isStepValid()) {
-        setIsSubmitted(true)
-        setShowErrors(false)
-      } else {
-        setShowErrors(true)
-      }
+      setIsSubmitted(true)
+      setShowErrors(false)
     }
     
     if (isSubmitted) {
