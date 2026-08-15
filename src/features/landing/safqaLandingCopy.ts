@@ -7,9 +7,11 @@ export const safqaLandingCopy: Record<Locale, SafqaLandingCopy> = {
     switchLanguage: 'English',
     nav: {
       home: 'الرئيسية',
-      paths: 'المسارات',
-      opportunities: 'الفرص',
-      process: 'التنازل',
+      decision: 'القرار السريع',
+      paths: 'من المستفيد؟',
+      opportunities: 'الفرص المتاحة',
+      howItWorks: 'كيف نعمل؟',
+      process: 'رحلة التنازل',
       brokers: 'للبروكرز',
     },
     hero: {
@@ -289,10 +291,12 @@ export const safqaLandingCopy: Record<Locale, SafqaLandingCopy> = {
     switchLanguage: 'Arabic',
     nav: {
       home: 'Home',
-      paths: 'Paths',
-      opportunities: 'Deals',
-      process: 'Transfer',
-      brokers: 'Brokers',
+      decision: 'Quick Decision',
+      paths: 'Who Benefits',
+      opportunities: 'Opportunities',
+      howItWorks: 'How We Work',
+      process: 'Transfer Journey',
+      brokers: 'For Brokers',
     },
     hero: {
       eyebrow: 'Property transfer platform — no overprice',

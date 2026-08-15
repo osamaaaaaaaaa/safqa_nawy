@@ -7,8 +7,10 @@ export type SafqaLandingCopy = {
   switchLanguage: string
   nav: {
     home: string
+    decision: string
     paths: string
     opportunities: string
+    howItWorks: string
     process: string
     brokers: string
   }

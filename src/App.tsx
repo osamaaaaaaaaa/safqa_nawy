@@ -90,9 +90,11 @@ function App() {
         </a>
         <nav className="nav-links" aria-label="Primary">
           <a href="#home">{copy.nav.home}</a>
+          <a href="#decision">{copy.nav.decision}</a>
           <a href="#paths">{copy.nav.paths}</a>
           <a href="#opportunities">{copy.nav.opportunities}</a>
-          <a href="#how-it-works">{copy.nav.process}</a>
+          <a href="#how-it-works">{copy.nav.howItWorks}</a>
+          <a href="#process">{copy.nav.process}</a>
           <a href="#brokers">{copy.nav.brokers}</a>
         </nav>
         <button className="language-button" type="button" onClick={() => setLocale(isArabic ? 'en' : 'ar')}>
