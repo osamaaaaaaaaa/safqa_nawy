@@ -175,8 +175,14 @@ function App() {
     }
 
     return (
-      <section className="sell-page-section section-frame">
-        <div className="sell-page-grid">
+      <section className="sell-page-section">
+        <div className="sell-spec-sheet section-frame">
+          <div className="corner-mark top-left" aria-hidden="true">+</div>
+          <div className="corner-mark top-right" aria-hidden="true">+</div>
+          <div className="corner-mark bottom-left" aria-hidden="true">+</div>
+          <div className="corner-mark bottom-right" aria-hidden="true">+</div>
+          
+          <div className="sell-page-grid">
           {/* Left Column: Copys & Rules */}
           <div className="sell-page-info">
             <h1 className="luxury-serif">{sCopy.title}</h1>
@@ -458,7 +464,8 @@ function App() {
             </form>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
     )
   }
 
