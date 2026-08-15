@@ -129,6 +129,56 @@ function AnimatedNumber({ value }: { value: string }) {
   return <>{prefix}<CountUp end={numericValue} />{suffix}</>
 }
 
+const countryCodes = [
+  { code: '+20', flag: '🇪🇬' },
+  { code: '+966', flag: '🇸🇦' },
+  { code: '+971', flag: '🇦🇪' },
+  { code: '+974', flag: '🇶🇦' },
+  { code: '+965', flag: '🇰🇼' },
+  { code: '+968', flag: '🇴🇲' },
+  { code: '+973', flag: '🇧🇭' },
+  { code: '+962', flag: '🇯🇴' },
+  { code: '+961', flag: '🇱🇧' },
+  { code: '+963', flag: '🇸🇾' },
+  { code: '+964', flag: '🇮🇶' },
+  { code: '+967', flag: '🇾🇪' },
+  { code: '+970', flag: '🇵🇸' },
+  { code: '+212', flag: '🇲🇦' },
+  { code: '+213', flag: '🇩🇿' },
+  { code: '+216', flag: '🇹🇳' },
+  { code: '+218', flag: '🇱🇾' },
+  { code: '+249', flag: '🇸🇩' },
+  { code: '+1', flag: '🇺🇸' },
+  { code: '+44', flag: '🇬🇧' },
+  { code: '+49', flag: '🇩🇪' },
+  { code: '+33', flag: '🇫🇷' },
+  { code: '+39', flag: '🇮🇹' },
+  { code: '+34', flag: '🇪🇸' },
+  { code: '+7', flag: '🇷🇺' },
+  { code: '+86', flag: '🇨🇳' },
+  { code: '+91', flag: '🇮🇳' },
+  { code: '+81', flag: '🇯🇵' },
+  { code: '+90', flag: '🇹🇷' },
+  { code: '+31', flag: '🇳🇱' },
+  { code: '+32', flag: '🇧🇪' },
+  { code: '+41', flag: '🇨🇭' },
+  { code: '+46', flag: '🇸🇪' },
+  { code: '+47', flag: '🇳🇴' },
+  { code: '+45', flag: '🇩🇰' },
+  { code: '+351', flag: '🇵🇹' },
+  { code: '+30', flag: '🇬🇷' },
+  { code: '+353', flag: '🇮🇪' },
+  { code: '+358', flag: '🇫🇮' },
+  { code: '+43', flag: '🇦🇹' },
+  { code: '+61', flag: '🇦🇺' },
+  { code: '+64', flag: '🇳🇿' },
+  { code: '+55', flag: '🇧🇷' },
+  { code: '+52', flag: '🇲🇽' },
+  { code: '+27', flag: '🇿🇦' },
+  { code: '+60', flag: '🇲🇾' },
+  { code: '+65', flag: '🇸🇬' },
+] as const
+
 function App() {
   const [locale, setLocale] = useState<Locale>('ar')
   const [view, setView] = useState<'landing' | 'sell'>('landing')
@@ -396,13 +446,11 @@ function App() {
                         onChange={(e) => setAuthCountryCode(e.target.value)}
                         className="country-code-select"
                       >
-                        <option value="+20">🇪🇬 +20</option>
-                        <option value="+966">🇸🇦 +966</option>
-                        <option value="+971">🇦🇪 +971</option>
-                        <option value="+974">🇶🇦 +974</option>
-                        <option value="+965">🇰🇼 +965</option>
-                        <option value="+968">🇴🇲 +968</option>
-                        <option value="+973">🇧🇭 +973</option>
+                        {countryCodes.map((c) => (
+                          <option key={c.code} value={c.code}>
+                            {c.flag} {c.code}
+                          </option>
+                        ))}
                       </select>
                       <input 
                         type="tel" 
