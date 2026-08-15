@@ -213,21 +213,38 @@ h1, h2, h3, h4, h5, h6 {
 .brand-lockup {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  font-weight: 800;
-  font-size: 1.15rem;
-  letter-spacing: -0.5px;
+  gap: 0;
+  text-decoration: none;
 }
 
-.brand-symbol {
-  display: inline-grid;
-  place-items: center;
-  width: 32px;
-  height: 32px;
-  color: var(--paper);
-  background: linear-gradient(135deg, var(--primary), var(--primary-deep));
-  border-radius: 50%;
-  box-shadow: 0 4px 8px rgba(217, 119, 6, 0.2);
+.brand-logo-text {
+  font-family: 'Cairo', 'Outfit', sans-serif;
+  font-size: 1.45rem;
+  font-weight: 900;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  display: inline-flex;
+  align-items: baseline;
+  transition: transform 250ms ease;
+  position: relative;
+}
+
+.brand-logo-text:hover {
+  transform: scale(1.04);
+}
+
+.brand-logo-dot {
+  color: var(--primary);
+  font-size: 2rem;
+  line-height: 0;
+  margin-inline-start: 1.5px;
+  display: inline-block;
+  animation: logoDotGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes logoDotGlow {
+  0% { text-shadow: 0 0 0px rgba(217, 119, 6, 0); }
+  100% { text-shadow: 0 0 8px rgba(217, 119, 6, 0.7); }
 }
 
 .nav-links {

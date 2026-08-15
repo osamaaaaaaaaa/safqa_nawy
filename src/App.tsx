@@ -82,11 +82,12 @@ function App() {
         <span className="gridline" /><span className="gridline" /><span className="gridline" />
       </div>
 
-      {/* ─── NAV ─── */}
       <header className="site-nav">
         <a className="brand-lockup" href="#home" aria-label={copy.brand}>
-          <span className="brand-symbol"><Sparkles size={19} /></span>
-          <strong>{copy.brand}</strong>
+          <span className="brand-logo-text">
+            {copy.brand}
+            <span className="brand-logo-dot">.</span>
+          </span>
         </a>
         <nav className="nav-links" aria-label="Primary">
           <a href="#home">{copy.nav.home}</a>
