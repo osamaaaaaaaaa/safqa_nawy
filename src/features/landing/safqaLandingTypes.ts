@@ -318,5 +318,21 @@ export type SafqaLandingCopy = {
       whatsappCta: string
       backHome: string
     }
+    auth: {
+      loginTab: string
+      registerTab: string
+      loginTitle: string
+      registerTitle: string
+      password: string
+      confirmPassword: string
+      loginBtn: string
+      registerBtn: string
+      noAccount: string
+      haveAccount: string
+      benefitsTitle: string
+      benefit1: string
+      benefit2: string
+      benefit3: string
+    }
   }
 }

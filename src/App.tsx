@@ -169,6 +169,35 @@ function App() {
   })
   const [activeOpp, setActiveOpp] = useState(0)
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
+  const [isLoggedIn, setIsLoggedIn] = useState(() => localStorage.getItem('safqa_user_logged') === 'true')
+  const [userProfile, setUserProfile] = useState(() => {
+    try {
+      const saved = localStorage.getItem('safqa_user_profile')
+      return saved ? JSON.parse(saved) : null
+    } catch {
+      return null
+    }
+  })
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login')
+  const [authData, setAuthData] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  })
+  const [authError, setAuthError] = useState('')
+
+  useEffect(() => {
+    if (isLoggedIn && userProfile) {
+      setFormData(prev => ({
+        ...prev,
+        name: prev.name || userProfile.name || '',
+        phone: prev.phone || userProfile.phone || '',
+        email: prev.email || userProfile.email || '',
+      }))
+    }
+  }, [isLoggedIn, userProfile])
   const copy = safqaLandingCopy[locale]
   const isArabic = locale === 'ar'
   const arrowIcon = isArabic ? <ArrowLeft size={18} /> : <ArrowRight size={18} />
@@ -207,6 +236,190 @@ function App() {
 
   const renderSellView = () => {
     const sCopy = copy.sellersPage
+
+    const handleAuthSubmit = (e: React.FormEvent) => {
+      e.preventDefault()
+      setAuthError('')
+
+      if (authMode === 'register') {
+        if (!authData.name || !authData.phone || !authData.password) {
+          setAuthError(isArabic ? 'برجاء ملء جميع الحقول المطلوبة' : 'Please fill all required fields')
+          return
+        }
+        if (authData.password !== authData.confirmPassword) {
+          setAuthError(isArabic ? 'كلمات المرور غير متطابقة' : 'Passwords do not match')
+          return
+        }
+        
+        const profile = { name: authData.name, phone: authData.phone, email: authData.email }
+        localStorage.setItem('safqa_user_logged', 'true')
+        localStorage.setItem('safqa_user_profile', JSON.stringify(profile))
+        
+        const users = JSON.parse(localStorage.getItem('safqa_users') || '[]')
+        users.push({ ...profile, password: authData.password })
+        localStorage.setItem('safqa_users', JSON.stringify(users))
+
+        setUserProfile(profile)
+        setIsLoggedIn(true)
+      } else {
+        if (!authData.phone || !authData.password) {
+          setAuthError(isArabic ? 'برجاء إدخال رقم الموبايل وكلمة المرور' : 'Please enter mobile and password')
+          return
+        }
+
+        const users = JSON.parse(localStorage.getItem('safqa_users') || '[]')
+        const found = users.find((u: any) => u.phone === authData.phone && u.password === authData.password)
+
+        if (users.length > 0 && !found) {
+          setAuthError(isArabic ? 'رقم الموبايل أو كلمة المرور غير صحيحة' : 'Incorrect mobile number or password')
+          return
+        }
+
+        const profile = found || { name: isArabic ? 'مستخدم تجريبي' : 'Demo User', phone: authData.phone, email: '' }
+        localStorage.setItem('safqa_user_logged', 'true')
+        localStorage.setItem('safqa_user_profile', JSON.stringify(profile))
+
+        setUserProfile(profile)
+        setIsLoggedIn(true)
+      }
+    }
+
+    const renderAuthPortal = () => {
+      const authCopy = copy.sellersPage.auth
+      return (
+        <section className="auth-portal-section section-frame">
+          <div className="auth-portal-card">
+            <div className="auth-portal-benefits">
+              <h2 className="luxury-serif">{authCopy.benefitsTitle}</h2>
+              <div className="auth-benefits-list">
+                <div className="benefit-item">
+                  <div className="benefit-icon-box">✓</div>
+                  <p>{authCopy.benefit1}</p>
+                </div>
+                <div className="benefit-item">
+                  <div className="benefit-icon-box">✓</div>
+                  <p>{authCopy.benefit2}</p>
+                </div>
+                <div className="benefit-item">
+                  <div className="benefit-icon-box">✓</div>
+                  <p>{authCopy.benefit3}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="auth-portal-form-pane">
+              <div className="auth-tabs">
+                <button 
+                  type="button" 
+                  className={`auth-tab-btn ${authMode === 'login' ? 'active' : ''}`}
+                  onClick={() => { setAuthMode('login'); setAuthError(''); }}
+                >
+                  {authCopy.loginTab}
+                </button>
+                <button 
+                  type="button" 
+                  className={`auth-tab-btn ${authMode === 'register' ? 'active' : ''}`}
+                  onClick={() => { setAuthMode('register'); setAuthError(''); }}
+                >
+                  {authCopy.registerTab}
+                </button>
+              </div>
+
+              <h3 className="auth-title">
+                {authMode === 'login' ? authCopy.loginTitle : authCopy.registerTitle}
+              </h3>
+
+              {authError && <div className="auth-error-banner">{authError}</div>}
+
+              <form onSubmit={handleAuthSubmit} className="auth-form-fields">
+                {authMode === 'register' && (
+                  <div className="form-canvas-group">
+                    <label className="canvas-label">{copy.sellersPage.form.name} *</label>
+                    <input 
+                      type="text" 
+                      required
+                      placeholder={isArabic ? "اكتب اسمك الثلاثي" : "Your full name"}
+                      value={authData.name} 
+                      onChange={(e) => setAuthData(prev => ({ ...prev, name: e.target.value }))}
+                      className="premium-canvas-input"
+                    />
+                  </div>
+                )}
+
+                <div className="form-canvas-group">
+                  <label className="canvas-label">{copy.sellersPage.form.phone} *</label>
+                  <input 
+                    type="tel" 
+                    required
+                    placeholder={isArabic ? "مثال: 010xxxxxxxx" : "e.g. +2010xxxxxxxx"}
+                    value={authData.phone} 
+                    onChange={(e) => setAuthData(prev => ({ ...prev, phone: e.target.value }))}
+                    className="premium-canvas-input"
+                  />
+                </div>
+
+                {authMode === 'register' && (
+                  <div className="form-canvas-group">
+                    <label className="canvas-label">{copy.sellersPage.form.email}</label>
+                    <input 
+                      type="email" 
+                      placeholder="name@domain.com"
+                      value={authData.email} 
+                      onChange={(e) => setAuthData(prev => ({ ...prev, email: e.target.value }))}
+                      className="premium-canvas-input"
+                    />
+                  </div>
+                )}
+
+                <div className="form-canvas-group">
+                  <label className="canvas-label">{authCopy.password} *</label>
+                  <input 
+                    type="password" 
+                    required
+                    placeholder="••••••••"
+                    value={authData.password} 
+                    onChange={(e) => setAuthData(prev => ({ ...prev, password: e.target.value }))}
+                    className="premium-canvas-input"
+                  />
+                </div>
+
+                {authMode === 'register' && (
+                  <div className="form-canvas-group">
+                    <label className="canvas-label">{authCopy.confirmPassword} *</label>
+                    <input 
+                      type="password" 
+                      required
+                      placeholder="••••••••"
+                      value={authData.confirmPassword} 
+                      onChange={(e) => setAuthData(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                      className="premium-canvas-input"
+                    />
+                  </div>
+                )}
+
+                <button type="submit" className="sell-form-btn sell-form-btn--submit" style={{ marginTop: '16px' }}>
+                  {authMode === 'login' ? authCopy.loginBtn : authCopy.registerBtn}
+                </button>
+
+                <p 
+                  className="auth-switch-link"
+                  onClick={() => {
+                    setAuthMode(authMode === 'login' ? 'register' : 'login');
+                    setAuthError('');
+                  }}
+                >
+                  {authMode === 'login' ? authCopy.noAccount : authCopy.haveAccount}
+                </p>
+              </form>
+            </div>
+          </div>
+        </section>
+      )
+    }
+
+    if (!isLoggedIn) {
+      return renderAuthPortal()
+    }
 
     const formatNumberLive = (val: string) => {
       if (!val) return ''
@@ -285,8 +498,29 @@ function App() {
       <section className="sell-page-section">
         {/* Top Header Section */}
         <div className="sell-dashboard-header section-frame">
-          <h1 className="luxury-serif">{sCopy.title}</h1>
-          <p className="sell-dashboard-sub">{sCopy.subtitle}</p>
+          <div className="sell-header-content">
+            <h1 className="luxury-serif">{sCopy.title}</h1>
+            <p className="sell-dashboard-sub">{sCopy.subtitle}</p>
+          </div>
+          {isLoggedIn && userProfile && (
+            <div className="user-profile-badge">
+              <span className="profile-name">
+                {isArabic ? `مرحبًا، ${userProfile.name}` : `Welcome, ${userProfile.name}`}
+              </span>
+              <button 
+                type="button" 
+                className="logout-ghost-btn" 
+                onClick={() => {
+                  localStorage.removeItem('safqa_user_logged')
+                  localStorage.removeItem('safqa_user_profile')
+                  setIsLoggedIn(false)
+                  setUserProfile(null)
+                }}
+              >
+                {isArabic ? 'تسجيل الخروج' : 'Logout'}
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Cinematic Pipeline Nav Tracker */}
@@ -810,14 +1044,13 @@ function App() {
                       </div>
 
                       <div className="form-canvas-group">
-                        <label className="canvas-label">{sCopy.form.email} *</label>
+                        <label className="canvas-label">{sCopy.form.email}</label>
                         <input 
                           type="email" 
-                          required
                           placeholder="name@domain.com"
                           value={formData.email} 
                           onChange={(e) => handleInputChange('email', e.target.value)} 
-                          className={`premium-canvas-input ${showErrors && !formData.email ? 'canvas-input-error' : ''}`}
+                          className="premium-canvas-input"
                         />
                       </div>
                     </div>
