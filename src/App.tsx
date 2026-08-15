@@ -79,6 +79,19 @@ function App() {
   const isArabic = locale === 'ar'
   const arrowIcon = isArabic ? <ArrowLeft size={18} /> : <ArrowRight size={18} />
 
+  useEffect(() => {
+    const handleHash = () => {
+      if (window.location.hash === '#/sell') {
+        setView('sell')
+      } else {
+        setView('landing')
+      }
+    }
+    handleHash()
+    window.addEventListener('hashchange', handleHash)
+    return () => window.removeEventListener('hashchange', handleHash)
+  }, [])
+
   const handleMouseMove = (e: React.MouseEvent) => {
     const rect = e.currentTarget.getBoundingClientRect()
     setMousePos({ x: e.clientX - rect.left, y: e.clientY - rect.top })
@@ -122,6 +135,13 @@ function App() {
 
   const renderSellView = () => {
     const sCopy = copy.sellersPage
+
+    const formatNumberLive = (val: string) => {
+      if (!val) return ''
+      const num = parseFloat(val)
+      if (isNaN(num)) return ''
+      return num.toLocaleString(isArabic ? 'ar-EG' : 'en-US') + ' ' + (isArabic ? 'ج.م' : 'EGP')
+    }
     
     if (isSubmitted) {
       return (
@@ -144,7 +164,7 @@ function App() {
               <button 
                 type="button" 
                 className="back-home-btn"
-                onClick={() => setView('landing')}
+                onClick={() => { setView('landing'); window.location.hash = ''; }}
               >
                 {sCopy.form.backHome}
               </button>
@@ -233,6 +253,7 @@ function App() {
                         />
                         <span className="currency-tag">{isArabic ? 'ج.م' : 'EGP'}</span>
                       </div>
+                      {formData.totalPrice && <span className="number-live-helper">{formatNumberLive(formData.totalPrice)}</span>}
                     </div>
 
                     <div className="form-group">
@@ -246,6 +267,7 @@ function App() {
                         />
                         <span className="currency-tag">{isArabic ? 'ج.م' : 'EGP'}</span>
                       </div>
+                      {formData.amountPaid && <span className="number-live-helper">{formatNumberLive(formData.amountPaid)}</span>}
                     </div>
                   </div>
 
@@ -259,17 +281,22 @@ function App() {
                       />
                       <span className="currency-tag">{isArabic ? 'ج.م' : 'EGP'}</span>
                     </div>
+                    {formData.currentPrice && <span className="number-live-helper">{formatNumberLive(formData.currentPrice)}</span>}
                     <span className="field-hint">{sCopy.form.currentPriceHint}</span>
                   </div>
 
-                  <label className="checkbox-label-block">
-                    <input 
-                      type="checkbox" 
-                      checked={formData.zeroOverAck} 
-                      onChange={(e) => handleInputChange('zeroOverAck', e.target.checked)} 
-                    />
-                    <span className="checkbox-text">{sCopy.form.zeroOverAck}</span>
-                  </label>
+                  <div 
+                    className={`interactive-seal-checkbox ${formData.zeroOverAck ? 'active' : ''}`}
+                    onClick={() => handleInputChange('zeroOverAck', !formData.zeroOverAck)}
+                  >
+                    <div className="seal-box">
+                      {formData.zeroOverAck && <Check size={14} />}
+                    </div>
+                    <div className="seal-text-content">
+                      <strong>{isArabic ? 'تعهد سعر التنازل (0% أوفر)' : 'Zero-Overprice Guarantee'}</strong>
+                      <p>{sCopy.form.zeroOverAck}</p>
+                    </div>
+                  </div>
                 </div>
               )}
 
@@ -286,6 +313,7 @@ function App() {
                       />
                       <span className="currency-tag">{isArabic ? 'ج.م' : 'EGP'}</span>
                     </div>
+                    {formData.remainingPrice && <span className="number-live-helper">{formatNumberLive(formData.remainingPrice)}</span>}
                   </div>
 
                   <div className="form-group">
@@ -299,32 +327,50 @@ function App() {
                       />
                       <span className="currency-tag">{isArabic ? 'ج.م' : 'EGP'}</span>
                     </div>
+                    {formData.nextInstallment && <span className="number-live-helper">{formatNumberLive(formData.nextInstallment)}</span>}
                   </div>
 
                   <div className="form-group">
                     <label>{sCopy.form.frequency}</label>
-                    <select 
-                      value={formData.frequency} 
-                      onChange={(e) => handleInputChange('frequency', e.target.value)}
-                    >
-                      <option value="monthly">{sCopy.form.freqMonthly}</option>
-                      <option value="quarterly">{sCopy.form.freqQuarterly}</option>
-                      <option value="semiannual">{sCopy.form.freqSemiannual}</option>
-                      <option value="annual">{sCopy.form.freqAnnual}</option>
-                    </select>
+                    <div className="interactive-tabs-grid">
+                      {[
+                        { value: 'monthly', label: sCopy.form.freqMonthly },
+                        { value: 'quarterly', label: sCopy.form.freqQuarterly },
+                        { value: 'semiannual', label: sCopy.form.freqSemiannual },
+                        { value: 'annual', label: sCopy.form.freqAnnual },
+                      ].map((opt) => (
+                        <button
+                          key={opt.value}
+                          type="button"
+                          className={`tab-btn-widget ${formData.frequency === opt.value ? 'active' : ''}`}
+                          onClick={() => handleInputChange('frequency', opt.value)}
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
                   </div>
 
                   <div className="form-group">
                     <label>{sCopy.form.unitType}</label>
-                    <select 
-                      value={formData.unitType} 
-                      onChange={(e) => handleInputChange('unitType', e.target.value)}
-                    >
-                      <option value="apartment">{sCopy.form.typeApartment}</option>
-                      <option value="villa">{sCopy.form.typeVilla}</option>
-                      <option value="townhouse">{sCopy.form.typeTownhouse}</option>
-                      <option value="twinhouse">{sCopy.form.typeTwinhouse}</option>
-                    </select>
+                    <div className="interactive-unit-grid">
+                      {[
+                        { value: 'apartment', label: sCopy.form.typeApartment },
+                        { value: 'villa', label: sCopy.form.typeVilla },
+                        { value: 'townhouse', label: sCopy.form.typeTownhouse },
+                        { value: 'twinhouse', label: sCopy.form.typeTwinhouse },
+                      ].map((opt) => (
+                        <button
+                          key={opt.value}
+                          type="button"
+                          className={`unit-card-widget ${formData.unitType === opt.value ? 'active' : ''}`}
+                          onClick={() => handleInputChange('unitType', opt.value)}
+                        >
+                          <span className="unit-widget-icon"><Building2 size={16} /></span>
+                          <span className="unit-widget-label">{opt.label}</span>
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
               )}
@@ -364,14 +410,18 @@ function App() {
                     />
                   </div>
 
-                  <label className="checkbox-label-block">
-                    <input 
-                      type="checkbox" 
-                      checked={formData.ownerConfirm} 
-                      onChange={(e) => handleInputChange('ownerConfirm', e.target.checked)} 
-                    />
-                    <span className="checkbox-text">{sCopy.form.ownerConfirm}</span>
-                  </label>
+                  <div 
+                    className={`interactive-seal-checkbox ${formData.ownerConfirm ? 'active' : ''}`}
+                    onClick={() => handleInputChange('ownerConfirm', !formData.ownerConfirm)}
+                  >
+                    <div className="seal-box">
+                      {formData.ownerConfirm && <Check size={14} />}
+                    </div>
+                    <div className="seal-text-content">
+                      <strong>{isArabic ? 'إقرار ملكية الوحدة' : 'Ownership Guarantee Seal'}</strong>
+                      <p>{sCopy.form.ownerConfirm}</p>
+                    </div>
+                  </div>
                 </div>
               )}
 
@@ -426,33 +476,24 @@ function App() {
       </div>
 
       <header className="site-nav">
-        <a className="brand-lockup" href="#home" onClick={() => setView('landing')} aria-label="SAFQA">
+        <a className="brand-lockup" href="#home" onClick={() => { setView('landing'); window.location.hash = ''; }} aria-label="SAFQA">
           <span className="brand-logo-text">
             SAFQA
             <span className="brand-logo-dot">.</span>
           </span>
         </a>
         <nav className="nav-links" aria-label="Primary">
-          <a href="#home" onClick={() => setView('landing')}>{copy.nav.home}</a>
-          <a href="#decision" onClick={() => setView('landing')}>{copy.nav.decision}</a>
-          <a href="#paths" onClick={() => setView('landing')}>{copy.nav.paths}</a>
-          <a href="#opportunities" onClick={() => setView('landing')}>{copy.nav.opportunities}</a>
-          <a href="#how-it-works" onClick={() => setView('landing')}>{copy.nav.howItWorks}</a>
-          <a href="#process" onClick={() => setView('landing')}>{copy.nav.process}</a>
-          <a href="#brokers" onClick={() => setView('landing')}>{copy.nav.brokers}</a>
+          <a href="#home">{copy.nav.home}</a>
+          <a href="#decision">{copy.nav.decision}</a>
+          <a href="#paths">{copy.nav.paths}</a>
+          <a href="#opportunities">{copy.nav.opportunities}</a>
+          <a href="#how-it-works">{copy.nav.howItWorks}</a>
+          <a href="#process">{copy.nav.process}</a>
+          <a href="#brokers">{copy.nav.brokers}</a>
         </nav>
-        <div className="nav-actions">
-          <button className="language-button" type="button" onClick={() => setLocale(isArabic ? 'en' : 'ar')}>
-            <Globe2 size={16} /><span>{copy.switchLanguage}</span>
-          </button>
-          <button
-            type="button"
-            className="nav-cta-button"
-            onClick={() => { setView('sell'); setStep(1); setIsSubmitted(false); }}
-          >
-            {isArabic ? 'بيع وحدتك' : 'Sell Unit'}
-          </button>
-        </div>
+        <button className="language-button" type="button" onClick={() => setLocale(isArabic ? 'en' : 'ar')}>
+          <Globe2 size={16} /><span>{copy.switchLanguage}</span>
+        </button>
       </header>
 
       <main>
@@ -469,7 +510,7 @@ function App() {
               <h1 className="luxury-serif">{renderHeroTitle()}</h1>
               <p>{copy.hero.body}</p>
               <div className="hero-actions">
-                <a className="primary-action" href="#sell" onClick={(e) => { e.preventDefault(); setView('sell'); setStep(1); setIsSubmitted(false); }}>{copy.hero.primaryCta}{arrowIcon}</a>
+                <a className="primary-action" href="#/sell" onClick={() => { setStep(1); setIsSubmitted(false); }}>{copy.hero.primaryCta}{arrowIcon}</a>
                 <a className="ghost-action" href="#opportunities">{copy.hero.secondaryCta}</a>
               </div>
             </div>
@@ -651,7 +692,7 @@ function App() {
                 <p>{copy.sellerBuyer.seller.freeNote}</p>
               </div>
               
-              <a className="safqa-solid-btn" href="#sell" onClick={(e) => { e.preventDefault(); setView('sell'); setStep(1); setIsSubmitted(false); }}>{copy.sellerBuyer.seller.cta}</a>
+              <a className="safqa-solid-btn" href="#/sell" onClick={() => { setStep(1); setIsSubmitted(false); }}>{copy.sellerBuyer.seller.cta}</a>
             </div>
 
             {/* Buyer Area (Safqa Dark Slate Navy Blueprint) */}
@@ -852,7 +893,7 @@ function App() {
             <Calculator size={32} className="calc-cta-icon" />
             <h2>{copy.calculatorCta.title}</h2>
             <p>{copy.calculatorCta.subtitle}</p>
-            <a className="teal-action calc-cta-btn" href="#sell" onClick={(e) => { e.preventDefault(); setView('sell'); setStep(1); setIsSubmitted(false); }}>
+            <a className="teal-action calc-cta-btn" href="#/sell" onClick={() => { setStep(1); setIsSubmitted(false); }}>
               {copy.calculatorCta.cta}{arrowIcon}
             </a>
           </div>
@@ -863,7 +904,7 @@ function App() {
           <div className="dual-cta-card">
             <h3>{copy.dualCta.seller.title}</h3>
             <p>{copy.dualCta.seller.body}</p>
-            <a className="primary-action" href="#sell" onClick={(e) => { e.preventDefault(); setView('sell'); setStep(1); setIsSubmitted(false); }}>{copy.dualCta.seller.cta}{arrowIcon}</a>
+            <a className="primary-action" href="#/sell" onClick={() => { setStep(1); setIsSubmitted(false); }}>{copy.dualCta.seller.cta}{arrowIcon}</a>
           </div>
           <div className="dual-cta-card">
             <h3>{copy.dualCta.buyer.title}</h3>
@@ -1020,7 +1061,7 @@ function App() {
             <p>{copy.cta.body}</p>
           </div>
           <div className="final-actions">
-            <a className="primary-action" href="#sell" onClick={(e) => { e.preventDefault(); setView('sell'); setStep(1); setIsSubmitted(false); }}>{copy.cta.primary}{arrowIcon}</a>
+            <a className="primary-action" href="#/sell" onClick={() => { setStep(1); setIsSubmitted(false); }}>{copy.cta.primary}{arrowIcon}</a>
             <a className="ghost-action" href={`mailto:${copy.footer.email}`}>{copy.cta.secondary}</a>
           </div>
         </section>
