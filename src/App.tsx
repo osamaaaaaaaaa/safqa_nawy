@@ -728,24 +728,20 @@ function App() {
                       </div>
 
                       <div className="form-canvas-group">
-                        <label className="canvas-label">{sCopy.form.frequency}</label>
-                        <div className="interactive-tabs-grid">
-                          {[
+                        <label className="canvas-label">{sCopy.form.frequency} *</label>
+                        <CustomSelect
+                          required
+                          options={[
                             { value: 'monthly', label: sCopy.form.freqMonthly },
                             { value: 'quarterly', label: sCopy.form.freqQuarterly },
                             { value: 'semiannual', label: sCopy.form.freqSemiannual },
                             { value: 'annual', label: sCopy.form.freqAnnual },
-                          ].map((opt) => (
-                            <button
-                              key={opt.value}
-                              type="button"
-                              className={`tab-btn-widget ${formData.frequency === opt.value ? 'active' : ''}`}
-                              onClick={() => handleInputChange('frequency', opt.value)}
-                            >
-                              {opt.label}
-                            </button>
-                          ))}
-                        </div>
+                          ]}
+                          value={formData.frequency}
+                          onChange={(val) => handleInputChange('frequency', val)}
+                          placeholder={isArabic ? "اختر نظام القسط" : "Select Installment System"}
+                          hasError={showErrors && !formData.frequency}
+                        />
                       </div>
                     </div>
 
