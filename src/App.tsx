@@ -176,296 +176,328 @@ function App() {
 
     return (
       <section className="sell-page-section">
+        {/* Top Header Section */}
+        <div className="sell-dashboard-header section-frame">
+          <h1 className="luxury-serif">{sCopy.title}</h1>
+          <p className="sell-dashboard-sub">{sCopy.subtitle}</p>
+        </div>
+
+        {/* Cinematic Pipeline Nav Tracker */}
+        <div className="sell-pipeline-tracker section-frame">
+          <div className={`pipeline-step ${step >= 1 ? 'active' : ''} ${step === 1 ? 'current' : ''}`}>
+            <span className="step-num">01</span>
+            <span className="step-label">{isArabic ? 'مواصفات العقار' : 'Property Identity'}</span>
+          </div>
+          <div className="pipeline-connector-line"><div className="connector-fill" style={{ width: step === 2 ? '50%' : step === 3 ? '100%' : '0%' }} /></div>
+          <div className={`pipeline-step ${step >= 2 ? 'active' : ''} ${step === 2 ? 'current' : ''}`}>
+            <span className="step-num">02</span>
+            <span className="step-label">{isArabic ? 'المعطيات المالية' : 'Financial Ledger'}</span>
+          </div>
+          <div className="pipeline-connector-line"><div className="connector-fill" style={{ width: step === 3 ? '100%' : '0%' }} /></div>
+          <div className={`pipeline-step ${step >= 3 ? 'active' : ''} ${step === 3 ? 'current' : ''}`}>
+            <span className="step-num">03</span>
+            <span className="step-label">{isArabic ? 'توثيق المالك' : 'Owner Authentication'}</span>
+          </div>
+        </div>
+
+        {/* Dashboard Shell Wrapper */}
         <div className="sell-spec-sheet section-frame">
           <div className="corner-mark top-left" aria-hidden="true">+</div>
           <div className="corner-mark top-right" aria-hidden="true">+</div>
           <div className="corner-mark bottom-left" aria-hidden="true">+</div>
           <div className="corner-mark bottom-right" aria-hidden="true">+</div>
-          
-          <div className="sell-page-grid">
-          {/* Left Column: Copys & Rules */}
-          <div className="sell-page-info">
-            <h1 className="luxury-serif">{sCopy.title}</h1>
-            <p className="sell-page-sub">{sCopy.subtitle}</p>
-            
-            <ul className="sell-points-list">
-              {sCopy.points.map((p, idx) => (
-                <li key={idx} className="sell-point-item">
-                  <span className="point-check-icon"><Check size={16} /></span>
-                  <span>{p}</span>
-                </li>
-              ))}
-            </ul>
 
-            <div className="owners-only-warning">
-              <div className="warning-hdr">
-                <User size={20} className="warning-icon" />
-                <h3>{sCopy.ownersOnlyTitle}</h3>
+          <div className="sell-dashboard-grid">
+            {/* Left: Guide parameters catalog */}
+            <div className="sell-guide-catalog">
+              <div className="catalog-header">
+                <h3>{isArabic ? 'تعليمات وضمانات الخروج العقاري' : 'Exit Parameter Guidelines'}</h3>
               </div>
-              <p>{sCopy.ownersOnlyDesc}</p>
-            </div>
-          </div>
-
-          {/* Right Column: Interactive Form Card */}
-          <div className="sell-form-card">
-            <div className="form-card-header">
-              <span className="step-indicator">
-                {sCopy.form.stepOf.replace('{current}', String(step)).replace('{total}', '3')}
-              </span>
-              <div className="step-progress-bar">
-                <div className="step-progress-fill" style={{ width: `${(step / 3) * 100}%` }} />
+              <div className="catalog-list">
+                {sCopy.points.map((p, idx) => (
+                  <div key={idx} className="catalog-item">
+                    <span className="catalog-index">0{idx + 1}</span>
+                    <p>{p}</p>
+                  </div>
+                ))}
               </div>
-              <h2 className="step-title">
-                {step === 1 && sCopy.form.step1Title}
-                {step === 2 && sCopy.form.step2Title}
-                {step === 3 && sCopy.form.step3Title}
-              </h2>
+              <div className="catalog-footer-notice">
+                <div className="warning-hdr">
+                  <User size={18} className="warning-icon" />
+                  <h4>{sCopy.ownersOnlyTitle}</h4>
+                </div>
+                <p>{sCopy.ownersOnlyDesc}</p>
+              </div>
             </div>
 
-            <form onSubmit={(e) => { e.preventDefault(); if (step === 3) setIsSubmitted(true); }}>
-              {step === 1 && (
-                <div className="form-step-fields">
-                  <div className="form-group">
-                    <label>{sCopy.form.developerName}</label>
-                    <input 
-                      type="text" 
-                      required
-                      placeholder={isArabic ? "مثال: إعمار، سوديك..." : "e.g. Emaar, SODIC..."}
-                      value={formData.developerName} 
-                      onChange={(e) => handleInputChange('developerName', e.target.value)} 
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label>{sCopy.form.projectName}</label>
-                    <input 
-                      type="text" 
-                      required
-                      placeholder={isArabic ? "مثال: مراسي، فيليت..." : "e.g. Marassi, Villette..."}
-                      value={formData.projectName} 
-                      onChange={(e) => handleInputChange('projectName', e.target.value)} 
-                    />
-                  </div>
-
-                  <div className="form-row-2">
-                    <div className="form-group">
-                      <label>{sCopy.form.totalPrice}</label>
-                      <div className="input-currency-wrapper">
-                        <input 
-                          type="number" 
-                          required
-                          value={formData.totalPrice} 
-                          onChange={(e) => handleInputChange('totalPrice', e.target.value)} 
-                        />
-                        <span className="currency-tag">{isArabic ? 'ج.م' : 'EGP'}</span>
+            {/* Right: Immersive Interactive Canvas */}
+            <div className="sell-form-canvas">
+              <form onSubmit={(e) => { e.preventDefault(); if (step === 3) setIsSubmitted(true); }}>
+                {step === 1 && (
+                  <div className="form-canvas-fields">
+                    <div className="form-canvas-group">
+                      <label className="canvas-label">{isArabic ? 'نوع العقار الاستثماري' : 'Investment Unit Type'}</label>
+                      <div className="interactive-unit-grid">
+                        {[
+                          { value: 'apartment', label: sCopy.form.typeApartment },
+                          { value: 'villa', label: sCopy.form.typeVilla },
+                          { value: 'townhouse', label: sCopy.form.typeTownhouse },
+                          { value: 'twinhouse', label: sCopy.form.typeTwinhouse },
+                        ].map((opt) => (
+                          <button
+                            key={opt.value}
+                            type="button"
+                            className={`unit-card-widget ${formData.unitType === opt.value ? 'active' : ''}`}
+                            onClick={() => handleInputChange('unitType', opt.value)}
+                          >
+                            <span className="unit-widget-icon"><Building2 size={16} /></span>
+                            <span className="unit-widget-label">{opt.label}</span>
+                          </button>
+                        ))}
                       </div>
-                      {formData.totalPrice && <span className="number-live-helper">{formatNumberLive(formData.totalPrice)}</span>}
                     </div>
 
-                    <div className="form-group">
-                      <label>{sCopy.form.amountPaid}</label>
-                      <div className="input-currency-wrapper">
+                    <div className="form-canvas-row">
+                      <div className="form-canvas-group">
+                        <label className="canvas-label">{sCopy.form.developerName}</label>
                         <input 
-                          type="number" 
+                          type="text" 
                           required
-                          value={formData.amountPaid} 
-                          onChange={(e) => handleInputChange('amountPaid', e.target.value)} 
+                          placeholder={isArabic ? "مثال: إعمار، سوديك..." : "e.g. Emaar, SODIC..."}
+                          value={formData.developerName} 
+                          onChange={(e) => handleInputChange('developerName', e.target.value)} 
+                          className="premium-canvas-input"
                         />
-                        <span className="currency-tag">{isArabic ? 'ج.م' : 'EGP'}</span>
                       </div>
-                      {formData.amountPaid && <span className="number-live-helper">{formatNumberLive(formData.amountPaid)}</span>}
+
+                      <div className="form-canvas-group">
+                        <label className="canvas-label">{sCopy.form.projectName}</label>
+                        <input 
+                          type="text" 
+                          required
+                          placeholder={isArabic ? "مثال: مراسي، فيليت..." : "e.g. Villette, Marassi..."}
+                          value={formData.projectName} 
+                          onChange={(e) => handleInputChange('projectName', e.target.value)} 
+                          className="premium-canvas-input"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="form-canvas-group">
+                      <div 
+                        className={`interactive-seal-checkbox ${formData.zeroOverAck ? 'active' : ''}`}
+                        onClick={() => handleInputChange('zeroOverAck', !formData.zeroOverAck)}
+                      >
+                        <div className="seal-box">
+                          {formData.zeroOverAck && <Check size={14} />}
+                        </div>
+                        <div className="seal-text-content">
+                          <strong>{isArabic ? 'تعهد سعر التنازل (0% أوفر)' : 'Zero-Overprice Guarantee'}</strong>
+                          <p>{sCopy.form.zeroOverAck}</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
-
-                  <div className="form-group">
-                    <label>{sCopy.form.currentPrice}</label>
-                    <div className="input-currency-wrapper">
-                      <input 
-                        type="number" 
-                        value={formData.currentPrice} 
-                        onChange={(e) => handleInputChange('currentPrice', e.target.value)} 
-                      />
-                      <span className="currency-tag">{isArabic ? 'ج.م' : 'EGP'}</span>
-                    </div>
-                    {formData.currentPrice && <span className="number-live-helper">{formatNumberLive(formData.currentPrice)}</span>}
-                    <span className="field-hint">{sCopy.form.currentPriceHint}</span>
-                  </div>
-
-                  <div 
-                    className={`interactive-seal-checkbox ${formData.zeroOverAck ? 'active' : ''}`}
-                    onClick={() => handleInputChange('zeroOverAck', !formData.zeroOverAck)}
-                  >
-                    <div className="seal-box">
-                      {formData.zeroOverAck && <Check size={14} />}
-                    </div>
-                    <div className="seal-text-content">
-                      <strong>{isArabic ? 'تعهد سعر التنازل (0% أوفر)' : 'Zero-Overprice Guarantee'}</strong>
-                      <p>{sCopy.form.zeroOverAck}</p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {step === 2 && (
-                <div className="form-step-fields">
-                  <div className="form-group">
-                    <label>{sCopy.form.remainingPrice}</label>
-                    <div className="input-currency-wrapper">
-                      <input 
-                        type="number" 
-                        required
-                        value={formData.remainingPrice} 
-                        onChange={(e) => handleInputChange('remainingPrice', e.target.value)} 
-                      />
-                      <span className="currency-tag">{isArabic ? 'ج.م' : 'EGP'}</span>
-                    </div>
-                    {formData.remainingPrice && <span className="number-live-helper">{formatNumberLive(formData.remainingPrice)}</span>}
-                  </div>
-
-                  <div className="form-group">
-                    <label>{sCopy.form.nextInstallment}</label>
-                    <div className="input-currency-wrapper">
-                      <input 
-                        type="number" 
-                        required
-                        value={formData.nextInstallment} 
-                        onChange={(e) => handleInputChange('nextInstallment', e.target.value)} 
-                      />
-                      <span className="currency-tag">{isArabic ? 'ج.م' : 'EGP'}</span>
-                    </div>
-                    {formData.nextInstallment && <span className="number-live-helper">{formatNumberLive(formData.nextInstallment)}</span>}
-                  </div>
-
-                  <div className="form-group">
-                    <label>{sCopy.form.frequency}</label>
-                    <div className="interactive-tabs-grid">
-                      {[
-                        { value: 'monthly', label: sCopy.form.freqMonthly },
-                        { value: 'quarterly', label: sCopy.form.freqQuarterly },
-                        { value: 'semiannual', label: sCopy.form.freqSemiannual },
-                        { value: 'annual', label: sCopy.form.freqAnnual },
-                      ].map((opt) => (
-                        <button
-                          key={opt.value}
-                          type="button"
-                          className={`tab-btn-widget ${formData.frequency === opt.value ? 'active' : ''}`}
-                          onClick={() => handleInputChange('frequency', opt.value)}
-                        >
-                          {opt.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="form-group">
-                    <label>{sCopy.form.unitType}</label>
-                    <div className="interactive-unit-grid">
-                      {[
-                        { value: 'apartment', label: sCopy.form.typeApartment },
-                        { value: 'villa', label: sCopy.form.typeVilla },
-                        { value: 'townhouse', label: sCopy.form.typeTownhouse },
-                        { value: 'twinhouse', label: sCopy.form.typeTwinhouse },
-                      ].map((opt) => (
-                        <button
-                          key={opt.value}
-                          type="button"
-                          className={`unit-card-widget ${formData.unitType === opt.value ? 'active' : ''}`}
-                          onClick={() => handleInputChange('unitType', opt.value)}
-                        >
-                          <span className="unit-widget-icon"><Building2 size={16} /></span>
-                          <span className="unit-widget-label">{opt.label}</span>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {step === 3 && (
-                <div className="form-step-fields">
-                  <div className="form-group">
-                    <label>{sCopy.form.name}</label>
-                    <input 
-                      type="text" 
-                      required
-                      placeholder={isArabic ? "اكتب اسمك الثلاثي" : "Your full name"}
-                      value={formData.name} 
-                      onChange={(e) => handleInputChange('name', e.target.value)} 
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label>{sCopy.form.phone}</label>
-                    <input 
-                      type="tel" 
-                      required
-                      placeholder={isArabic ? "مثال: 010xxxxxxxx" : "e.g. +2010xxxxxxxx"}
-                      value={formData.phone} 
-                      onChange={(e) => handleInputChange('phone', e.target.value)} 
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label>{sCopy.form.email}</label>
-                    <input 
-                      type="email" 
-                      required
-                      placeholder="name@domain.com"
-                      value={formData.email} 
-                      onChange={(e) => handleInputChange('email', e.target.value)} 
-                    />
-                  </div>
-
-                  <div 
-                    className={`interactive-seal-checkbox ${formData.ownerConfirm ? 'active' : ''}`}
-                    onClick={() => handleInputChange('ownerConfirm', !formData.ownerConfirm)}
-                  >
-                    <div className="seal-box">
-                      {formData.ownerConfirm && <Check size={14} />}
-                    </div>
-                    <div className="seal-text-content">
-                      <strong>{isArabic ? 'إقرار ملكية الوحدة' : 'Ownership Guarantee Seal'}</strong>
-                      <p>{sCopy.form.ownerConfirm}</p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              <div className="form-actions-buttons">
-                {step > 1 && (
-                  <button 
-                    type="button" 
-                    className="sell-form-btn sell-form-btn--back"
-                    onClick={() => setStep(prev => prev - 1)}
-                  >
-                    {sCopy.form.backBtn}
-                  </button>
                 )}
-                
-                {step < 3 ? (
-                  <button 
-                    type="button" 
-                    className="sell-form-btn sell-form-btn--next"
-                    disabled={!isStepValid()}
-                    onClick={() => setStep(prev => prev + 1)}
-                  >
-                    {sCopy.form.nextBtn}
-                  </button>
-                ) : (
-                  <button 
-                    type="submit" 
-                    className="sell-form-btn sell-form-btn--submit"
-                    disabled={!isStepValid()}
-                  >
-                    {sCopy.form.submitBtn}
-                  </button>
+
+                {step === 2 && (
+                  <div className="form-canvas-fields">
+                    <div className="form-canvas-row">
+                      <div className="form-canvas-group">
+                        <label className="canvas-label">{sCopy.form.totalPrice}</label>
+                        <div className="input-currency-wrapper">
+                          <input 
+                            type="number" 
+                            required
+                            value={formData.totalPrice} 
+                            onChange={(e) => handleInputChange('totalPrice', e.target.value)} 
+                            className="premium-canvas-input"
+                          />
+                          <span className="currency-tag">{isArabic ? 'ج.م' : 'EGP'}</span>
+                        </div>
+                        {formData.totalPrice && <span className="number-live-helper">{formatNumberLive(formData.totalPrice)}</span>}
+                      </div>
+
+                      <div className="form-canvas-group">
+                        <label className="canvas-label">{sCopy.form.amountPaid}</label>
+                        <div className="input-currency-wrapper">
+                          <input 
+                            type="number" 
+                            required
+                            value={formData.amountPaid} 
+                            onChange={(e) => handleInputChange('amountPaid', e.target.value)} 
+                            className="premium-canvas-input"
+                          />
+                          <span className="currency-tag">{isArabic ? 'ج.م' : 'EGP'}</span>
+                        </div>
+                        {formData.amountPaid && <span className="number-live-helper">{formatNumberLive(formData.amountPaid)}</span>}
+                      </div>
+                    </div>
+
+                    <div className="form-canvas-row">
+                      <div className="form-canvas-group">
+                        <label className="canvas-label">{sCopy.form.remainingPrice}</label>
+                        <div className="input-currency-wrapper">
+                          <input 
+                            type="number" 
+                            required
+                            value={formData.remainingPrice} 
+                            onChange={(e) => handleInputChange('remainingPrice', e.target.value)} 
+                            className="premium-canvas-input"
+                          />
+                          <span className="currency-tag">{isArabic ? 'ج.م' : 'EGP'}</span>
+                        </div>
+                        {formData.remainingPrice && <span className="number-live-helper">{formatNumberLive(formData.remainingPrice)}</span>}
+                      </div>
+
+                      <div className="form-canvas-group">
+                        <label className="canvas-label">{sCopy.form.nextInstallment}</label>
+                        <div className="input-currency-wrapper">
+                          <input 
+                            type="number" 
+                            required
+                            value={formData.nextInstallment} 
+                            onChange={(e) => handleInputChange('nextInstallment', e.target.value)} 
+                            className="premium-canvas-input"
+                          />
+                          <span className="currency-tag">{isArabic ? 'ج.م' : 'EGP'}</span>
+                        </div>
+                        {formData.nextInstallment && <span className="number-live-helper">{formatNumberLive(formData.nextInstallment)}</span>}
+                      </div>
+                    </div>
+
+                    <div className="form-canvas-row">
+                      <div className="form-canvas-group">
+                        <label className="canvas-label">{sCopy.form.currentPrice}</label>
+                        <div className="input-currency-wrapper">
+                          <input 
+                            type="number" 
+                            value={formData.currentPrice} 
+                            onChange={(e) => handleInputChange('currentPrice', e.target.value)} 
+                            className="premium-canvas-input"
+                          />
+                          <span className="currency-tag">{isArabic ? 'ج.م' : 'EGP'}</span>
+                        </div>
+                        {formData.currentPrice && <span className="number-live-helper">{formatNumberLive(formData.currentPrice)}</span>}
+                        <span className="field-hint">{sCopy.form.currentPriceHint}</span>
+                      </div>
+
+                      <div className="form-canvas-group">
+                        <label className="canvas-label">{sCopy.form.frequency}</label>
+                        <div className="interactive-tabs-grid">
+                          {[
+                            { value: 'monthly', label: sCopy.form.freqMonthly },
+                            { value: 'quarterly', label: sCopy.form.freqQuarterly },
+                            { value: 'semiannual', label: sCopy.form.freqSemiannual },
+                            { value: 'annual', label: sCopy.form.freqAnnual },
+                          ].map((opt) => (
+                            <button
+                              key={opt.value}
+                              type="button"
+                              className={`tab-btn-widget ${formData.frequency === opt.value ? 'active' : ''}`}
+                              onClick={() => handleInputChange('frequency', opt.value)}
+                            >
+                              {opt.label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 )}
-              </div>
-            </form>
+
+                {step === 3 && (
+                  <div className="form-canvas-fields">
+                    <div className="form-canvas-group">
+                      <label className="canvas-label">{sCopy.form.name}</label>
+                      <input 
+                        type="text" 
+                        required
+                        placeholder={isArabic ? "اكتب اسمك الثلاثي" : "Your full name"}
+                        value={formData.name} 
+                        onChange={(e) => handleInputChange('name', e.target.value)} 
+                        className="premium-canvas-input"
+                      />
+                    </div>
+
+                    <div className="form-canvas-row">
+                      <div className="form-canvas-group">
+                        <label className="canvas-label">{sCopy.form.phone}</label>
+                        <input 
+                          type="tel" 
+                          required
+                          placeholder={isArabic ? "مثال: 010xxxxxxxx" : "e.g. +2010xxxxxxxx"}
+                          value={formData.phone} 
+                          onChange={(e) => handleInputChange('phone', e.target.value)} 
+                          className="premium-canvas-input"
+                        />
+                      </div>
+
+                      <div className="form-canvas-group">
+                        <label className="canvas-label">{sCopy.form.email}</label>
+                        <input 
+                          type="email" 
+                          required
+                          placeholder="name@domain.com"
+                          value={formData.email} 
+                          onChange={(e) => handleInputChange('email', e.target.value)} 
+                          className="premium-canvas-input"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="form-canvas-group">
+                      <div 
+                        className={`interactive-seal-checkbox ${formData.ownerConfirm ? 'active' : ''}`}
+                        onClick={() => handleInputChange('ownerConfirm', !formData.ownerConfirm)}
+                      >
+                        <div className="seal-box">
+                          {formData.ownerConfirm && <Check size={14} />}
+                        </div>
+                        <div className="seal-text-content">
+                          <strong>{isArabic ? 'إقرار ملكية الوحدة' : 'Ownership Guarantee Seal'}</strong>
+                          <p>{sCopy.form.ownerConfirm}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <div className="form-actions-buttons">
+                  {step > 1 && (
+                    <button 
+                      type="button" 
+                      className="sell-form-btn sell-form-btn--back"
+                      onClick={() => setStep(prev => prev - 1)}
+                    >
+                      {sCopy.form.backBtn}
+                    </button>
+                  )}
+                  
+                  {step < 3 ? (
+                    <button 
+                      type="button" 
+                      className="sell-form-btn sell-form-btn--next"
+                      disabled={!isStepValid()}
+                      onClick={() => setStep(prev => prev + 1)}
+                    >
+                      {sCopy.form.nextBtn}
+                    </button>
+                  ) : (
+                    <button 
+                      type="submit" 
+                      className="sell-form-btn sell-form-btn--submit"
+                      disabled={!isStepValid()}
+                    >
+                      {sCopy.form.submitBtn}
+                    </button>
+                  )}
+                </div>
+              </form>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
     )
   }
 
