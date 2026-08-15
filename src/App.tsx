@@ -115,11 +115,6 @@ function App() {
                 <a className="primary-action" href="#search">{copy.hero.primaryCta}{arrowIcon}</a>
                 <a className="ghost-action" href="#opportunities">{copy.hero.secondaryCta}</a>
               </div>
-              <div className="proof-pill">
-                <BadgeCheck size={18} />
-                <span>{copy.hero.proofLabel}</span>
-                <strong>{copy.hero.proofValue}</strong>
-              </div>
             </div>
           </div>
 
