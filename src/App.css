@@ -3543,7 +3543,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .arena-figure-value {
-  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  font-size: clamp(1.4rem, 2.5vw, 1.8rem);
   font-weight: 800;
   line-height: 1;
   font-family: 'Outfit', sans-serif;
@@ -3558,11 +3558,12 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ─── Arena Bar ─── */
 .arena-bar-track {
-  height: 8px;
+  height: 6px;
   background: rgba(255, 255, 255, 0.06);
   border-radius: 100px;
   overflow: hidden;
   position: relative;
+  max-width: 65%;
 }
 
 .arena-bar {
