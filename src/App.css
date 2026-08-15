@@ -4007,8 +4007,9 @@ h1, h2, h3, h4, h5, h6 {
   grid-template-columns: repeat(3, 1fr) !important;
 }
 
-/* Elegant Underline Inputs (Light Theme) */
-.premium-canvas-input {
+/* Elegant Underline Inputs & Selects (Light Theme) */
+.premium-canvas-input,
+.premium-canvas-select {
   height: 48px;
   background: transparent !important;
   border: none !important;
@@ -4022,21 +4023,45 @@ h1, h2, h3, h4, h5, h6 {
   width: 100%;
 }
 
+.premium-canvas-select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23D97706' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 12px center !important;
+  background-size: 16px !important;
+  padding-right: 32px !important;
+}
+
+[dir='rtl'] .premium-canvas-select {
+  background-position: left 12px center !important;
+  padding-left: 32px !important;
+  padding-right: 4px !important;
+}
+
+.premium-canvas-select option {
+  background-color: #FFFFFF;
+  color: var(--ink);
+}
+
 .premium-canvas-input::placeholder {
   color: rgba(15, 23, 42, 0.25);
 }
 
-.premium-canvas-input:hover {
+.premium-canvas-input:hover,
+.premium-canvas-select:hover {
   border-bottom-color: rgba(217, 119, 6, 0.4) !important;
 }
 
-.premium-canvas-input:focus {
+.premium-canvas-input:focus,
+.premium-canvas-select:focus {
   outline: none !important;
   border-bottom-color: var(--primary) !important;
 }
 
 /* Input Error highlights */
-.premium-canvas-input.canvas-input-error {
+.premium-canvas-input.canvas-input-error,
+.premium-canvas-select.canvas-input-error {
   border-bottom-color: #EF4444 !important;
   background: rgba(239, 68, 68, 0.02) !important;
 }

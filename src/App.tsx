@@ -297,61 +297,78 @@ function App() {
 
                       <div className="form-canvas-group">
                         <label className="canvas-label">{sCopy.form.finishingType}</label>
-                        <div className="interactive-tabs-grid interactive-tabs-grid--three">
-                          {[
-                            { value: 'core_shell', label: sCopy.form.finishingCoreShell },
-                            { value: 'semi_finished', label: sCopy.form.finishingSemi },
-                            { value: 'fully_finished', label: sCopy.form.finishingFully },
-                          ].map((opt) => (
-                            <button
-                              key={opt.value}
-                              type="button"
-                              className={`tab-btn-widget ${formData.finishingType === opt.value ? 'active' : ''}`}
-                              onClick={() => handleInputChange('finishingType', opt.value)}
-                            >
-                              {opt.label}
-                            </button>
-                          ))}
-                        </div>
+                        <select
+                          value={formData.finishingType}
+                          onChange={(e) => handleInputChange('finishingType', e.target.value)}
+                          className="premium-canvas-select"
+                        >
+                          <option value="core_shell">{sCopy.form.finishingCoreShell}</option>
+                          <option value="semi_finished">{sCopy.form.finishingSemi}</option>
+                          <option value="fully_finished">{sCopy.form.finishingFully}</option>
+                        </select>
                       </div>
                     </div>
 
                     <div className="form-canvas-row form-canvas-row--three">
                       <div className="form-canvas-group">
                         <label className="canvas-label">{sCopy.form.bedrooms}</label>
-                        <input 
-                          type="number" 
+                        <select
                           required
-                          min="1"
-                          placeholder={isArabic ? "مثال: 3" : "e.g. 3"}
-                          value={formData.bedrooms} 
-                          onChange={(e) => handleInputChange('bedrooms', e.target.value)} 
-                          className={`premium-canvas-input ${showErrors && !formData.bedrooms ? 'canvas-input-error' : ''}`}
-                        />
+                          value={formData.bedrooms}
+                          onChange={(e) => handleInputChange('bedrooms', e.target.value)}
+                          className={`premium-canvas-select ${showErrors && !formData.bedrooms ? 'canvas-input-error' : ''}`}
+                        >
+                          <option value="" disabled hidden>{isArabic ? "اختر عدد الغرف" : "Select bedrooms"}</option>
+                          <option value="1">1</option>
+                          <option value="2">2</option>
+                          <option value="3">3</option>
+                          <option value="4">4</option>
+                          <option value="5">5</option>
+                          <option value="6+">6+</option>
+                        </select>
                       </div>
 
                       <div className="form-canvas-group">
                         <label className="canvas-label">{sCopy.form.bathrooms}</label>
-                        <input 
-                          type="number" 
+                        <select
                           required
-                          min="1"
-                          placeholder={isArabic ? "مثال: 2" : "e.g. 2"}
-                          value={formData.bathrooms} 
-                          onChange={(e) => handleInputChange('bathrooms', e.target.value)} 
-                          className={`premium-canvas-input ${showErrors && !formData.bathrooms ? 'canvas-input-error' : ''}`}
-                        />
+                          value={formData.bathrooms}
+                          onChange={(e) => handleInputChange('bathrooms', e.target.value)}
+                          className={`premium-canvas-select ${showErrors && !formData.bathrooms ? 'canvas-input-error' : ''}`}
+                        >
+                          <option value="" disabled hidden>{isArabic ? "اختر الحمامات" : "Select bathrooms"}</option>
+                          <option value="1">1</option>
+                          <option value="2">2</option>
+                          <option value="3">3</option>
+                          <option value="4">4</option>
+                          <option value="5+">5+</option>
+                        </select>
                       </div>
 
                       <div className="form-canvas-group">
                         <label className="canvas-label">{sCopy.form.floor}</label>
-                        <input 
-                          type="text" 
-                          placeholder={isArabic ? "مثال: الأرضي، الثالث..." : "e.g. Ground, 3rd..."}
-                          value={formData.floor} 
-                          onChange={(e) => handleInputChange('floor', e.target.value)} 
-                          className="premium-canvas-input"
-                        />
+                        <select
+                          value={formData.floor}
+                          onChange={(e) => handleInputChange('floor', e.target.value)}
+                          className="premium-canvas-select"
+                        >
+                          <option value="" disabled hidden>{isArabic ? "اختر الطابق" : "Select Floor"}</option>
+                          <option value="ground">{isArabic ? "الأرضي" : "Ground"}</option>
+                          <option value="1">{isArabic ? "الأول" : "1st Floor"}</option>
+                          <option value="2">{isArabic ? "الثاني" : "2nd Floor"}</option>
+                          <option value="3">{isArabic ? "الثالث" : "3rd Floor"}</option>
+                          <option value="4">{isArabic ? "الرابع" : "4th Floor"}</option>
+                          <option value="5">{isArabic ? "الخامس" : "5th Floor"}</option>
+                          <option value="6">{isArabic ? "السادس" : "6th Floor"}</option>
+                          <option value="7">{isArabic ? "السابع" : "7th Floor"}</option>
+                          <option value="8">{isArabic ? "الثامن" : "8th Floor"}</option>
+                          <option value="9">{isArabic ? "التاسع" : "9th Floor"}</option>
+                          <option value="10">{isArabic ? "العاشر" : "10th Floor"}</option>
+                          <option value="10+">{isArabic ? "العاشر فأعلى" : "10th+ Floor"}</option>
+                          <option value="duplex">{isArabic ? "دوبلكس" : "Duplex"}</option>
+                          <option value="penthouse">{isArabic ? "بنتهاوس" : "Penthouse"}</option>
+                          <option value="n_a">{isArabic ? "فيلا مستقلة / لا ينطبق" : "Standalone / N/A"}</option>
+                        </select>
                       </div>
                     </div>
 
