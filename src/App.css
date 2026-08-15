@@ -3998,6 +3998,13 @@ h1, h2, h3, h4, h5, h6 {
   .form-canvas-row {
     grid-template-columns: 1fr 1fr;
   }
+  .form-canvas-row--three {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+.interactive-tabs-grid--three {
+  grid-template-columns: repeat(3, 1fr) !important;
 }
 
 /* Elegant Underline Inputs (Light Theme) */

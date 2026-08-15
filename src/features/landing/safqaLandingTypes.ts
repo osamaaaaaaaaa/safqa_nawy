@@ -259,6 +259,14 @@ export type SafqaLandingCopy = {
       typeVilla: string
       typeTownhouse: string
       typeTwinhouse: string
+      area: string
+      floor: string
+      bedrooms: string
+      bathrooms: string
+      finishingType: string
+      finishingCoreShell: string
+      finishingSemi: string
+      finishingFully: string
       name: string
       phone: string
       email: string

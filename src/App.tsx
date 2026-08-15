@@ -69,6 +69,11 @@ function App() {
     nextInstallment: '',
     frequency: 'quarterly',
     unitType: 'apartment',
+    area: '',
+    floor: '',
+    bedrooms: '',
+    bathrooms: '',
+    finishingType: 'core_shell',
     name: '',
     phone: '',
     email: '',
@@ -269,6 +274,83 @@ function App() {
                           value={formData.projectName} 
                           onChange={(e) => handleInputChange('projectName', e.target.value)} 
                           className={`premium-canvas-input ${showErrors && !formData.projectName ? 'canvas-input-error' : ''}`}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="form-canvas-row">
+                      <div className="form-canvas-group">
+                        <label className="canvas-label">{sCopy.form.area}</label>
+                        <div className="input-currency-wrapper">
+                          <input 
+                            type="number" 
+                            required
+                            min="10"
+                            placeholder={isArabic ? "مثال: 150" : "e.g. 150"}
+                            value={formData.area} 
+                            onChange={(e) => handleInputChange('area', e.target.value)} 
+                            className={`premium-canvas-input ${showErrors && !formData.area ? 'canvas-input-error' : ''}`}
+                          />
+                          <span className="currency-tag">{isArabic ? 'م²' : 'sqm'}</span>
+                        </div>
+                      </div>
+
+                      <div className="form-canvas-group">
+                        <label className="canvas-label">{sCopy.form.finishingType}</label>
+                        <div className="interactive-tabs-grid interactive-tabs-grid--three">
+                          {[
+                            { value: 'core_shell', label: sCopy.form.finishingCoreShell },
+                            { value: 'semi_finished', label: sCopy.form.finishingSemi },
+                            { value: 'fully_finished', label: sCopy.form.finishingFully },
+                          ].map((opt) => (
+                            <button
+                              key={opt.value}
+                              type="button"
+                              className={`tab-btn-widget ${formData.finishingType === opt.value ? 'active' : ''}`}
+                              onClick={() => handleInputChange('finishingType', opt.value)}
+                            >
+                              {opt.label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="form-canvas-row form-canvas-row--three">
+                      <div className="form-canvas-group">
+                        <label className="canvas-label">{sCopy.form.bedrooms}</label>
+                        <input 
+                          type="number" 
+                          required
+                          min="1"
+                          placeholder={isArabic ? "مثال: 3" : "e.g. 3"}
+                          value={formData.bedrooms} 
+                          onChange={(e) => handleInputChange('bedrooms', e.target.value)} 
+                          className={`premium-canvas-input ${showErrors && !formData.bedrooms ? 'canvas-input-error' : ''}`}
+                        />
+                      </div>
+
+                      <div className="form-canvas-group">
+                        <label className="canvas-label">{sCopy.form.bathrooms}</label>
+                        <input 
+                          type="number" 
+                          required
+                          min="1"
+                          placeholder={isArabic ? "مثال: 2" : "e.g. 2"}
+                          value={formData.bathrooms} 
+                          onChange={(e) => handleInputChange('bathrooms', e.target.value)} 
+                          className={`premium-canvas-input ${showErrors && !formData.bathrooms ? 'canvas-input-error' : ''}`}
+                        />
+                      </div>
+
+                      <div className="form-canvas-group">
+                        <label className="canvas-label">{sCopy.form.floor}</label>
+                        <input 
+                          type="text" 
+                          placeholder={isArabic ? "مثال: الأرضي، الثالث..." : "e.g. Ground, 3rd..."}
+                          value={formData.floor} 
+                          onChange={(e) => handleInputChange('floor', e.target.value)} 
+                          className="premium-canvas-input"
                         />
                       </div>
                     </div>
