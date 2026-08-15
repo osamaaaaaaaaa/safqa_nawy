@@ -218,7 +218,6 @@ function App() {
     email: '',
     ownerConfirm: false,
   })
-  const [activeOpp, setActiveOpp] = useState(0)
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
   const [isLoggedIn, setIsLoggedIn] = useState(() => localStorage.getItem('safqa_user_logged') === 'true')
   const [userProfile, setUserProfile] = useState(() => {
@@ -1668,7 +1667,7 @@ function App() {
                   <p>{copy.numbersExample.transferCard.note}</p>
                 </div>
                 <div className="lane-bar-container">
-                  <div className="lane-bar-bar lane-bar-bar--success" style={{ width: '100%' }}>
+                  <div className="lane-bar-bar lane-bar-bar--success" style={{ width: '25%' }}>
                     <span className="lane-bar-value">{copy.numbersExample.transferCard.getValue}</span>
                   </div>
                   <span className="lane-bar-cost">{copy.numbersExample.transferCard.feeLabel}: {copy.numbersExample.transferCard.feeValue}</span>
@@ -1788,62 +1787,75 @@ function App() {
         {/* ─── OPPORTUNITIES SHOWCASE ─── */}
         <section className="section-frame" id="opportunities">
           <SectionHeading eyebrow={copy.opportunities.eyebrow} title={copy.opportunities.title} />
-          <div className="opp-split-showcase">
-            <div className="opp-showcase-frame">
-              <div className="showcase-img-container">
-                <img
-                  key={activeOpp}
-                  src={safqaAssets[copy.opportunities.items[activeOpp].imageKey]}
-                  alt={copy.opportunities.items[activeOpp].title}
-                  className="showcase-img fade-zoom-in"
-                />
-                <span className="showcase-badge">{copy.opportunities.items[activeOpp].badge}</span>
-              </div>
-              <div className="showcase-details">
-                <div className="showcase-details-top">
-                  <h2 className="luxury-serif">{copy.opportunities.items[activeOpp].title}</h2>
-                  <span className="showcase-location">{copy.opportunities.items[activeOpp].location}</span>
-                </div>
-                <div className="showcase-pricing">
-                  <div className="showcase-pricing-left">
-                    <span className="showcase-price-label">Net Value</span>
-                    <strong className="showcase-price">{copy.opportunities.items[activeOpp].price}</strong>
+          
+          <div className="opportunities-modern-grid">
+            {copy.opportunities.items.map((item) => {
+              const priceVal = parseFloat(item.price.replace(/,/g, ''))
+              const oldPriceVal = parseFloat(item.oldPrice.replace(/,/g, ''))
+              const savedVal = oldPriceVal - priceVal
+              const formattedSaved = isArabic 
+                ? `وفر ${savedVal.toLocaleString('ar-EG')} ج.م` 
+                : `Save ${savedVal.toLocaleString('en-US')} EGP`
+
+              const whatsappMessage = isArabic
+                ? encodeURIComponent(`مرحباً صفقة، أنا مهتم بالفرصة: "${item.title}" في ${item.location} بسعر ${item.price} ج.م. أريد طلب فحص المستندات والتعاقد.`)
+                : encodeURIComponent(`Hello Safqa, I am interested in the opportunity: "${item.title}" in ${item.location} for ${item.price} EGP. I would like to request a document and contract inspection.`)
+
+              return (
+                <div className="opp-card-modern" key={item.title}>
+                  <div className="opp-card-img-wrapper">
+                    <img 
+                      src={safqaAssets[item.imageKey]} 
+                      alt={item.title} 
+                      className="opp-card-img"
+                    />
+                    <span className="opp-card-badge">{item.badge}</span>
+                    <span className="opp-card-location">
+                      <MapPin size={12} style={{ marginInlineEnd: '4px' }} />
+                      {item.location}
+                    </span>
                   </div>
-                  <div className="showcase-pricing-right">
-                    <span className="showcase-oldprice-label">Old Price</span>
-                    <span className="showcase-oldprice">{copy.opportunities.items[activeOpp].oldPrice}</span>
-                  </div>
-                </div>
-                <div className="showcase-meta">
-                  <ShieldCheck size={14} className="showcase-meta-icon" />
-                  <span>{copy.opportunities.items[activeOpp].meta}</span>
-                </div>
-              </div>
-            </div>
-            <div className="opp-showcase-list">
-              {copy.opportunities.items.map((item, index) => {
-                const isActive = activeOpp === index
-                return (
-                  <button
-                    type="button" key={item.title}
-                    className={`opp-list-item ${isActive ? 'is-active' : ''}`}
-                    onClick={() => setActiveOpp(index)}
-                  >
-                    <div className="opp-item-left">
-                      <span className="opp-item-index luxury-serif">0{index + 1}</span>
-                      <div className="opp-item-title-block">
-                        <strong>{item.title}</strong>
-                        <small>{item.location}</small>
+
+                  <div className="opp-card-content">
+                    <h3 className="opp-card-title luxury-serif">{item.title}</h3>
+                    
+                    <div className="opp-card-specs">
+                      {item.meta.split('/').map((spec, sIdx) => (
+                        <span className="opp-spec-badge" key={sIdx}>
+                          {spec.trim()}
+                        </span>
+                      ))}
+                    </div>
+
+                    <div className="opp-card-pricing-box">
+                      <div className="opp-pricing-item">
+                        <span className="opp-price-label">{isArabic ? 'السعر القديم للمطور' : 'Developer Price'}</span>
+                        <span className="opp-old-price">{item.oldPrice} {isArabic ? 'ج.م' : 'EGP'}</span>
+                      </div>
+                      <div className="opp-pricing-item">
+                        <span className="opp-price-label highlight-gold">{isArabic ? 'سعر صفقة (بدون أوفر)' : 'Safqa Price'}</span>
+                        <strong className="opp-new-price">{item.price} {isArabic ? 'ج.م' : 'EGP'}</strong>
                       </div>
                     </div>
-                    <div className="opp-item-right">
-                      <strong className="opp-item-price">{item.price}</strong>
-                      <span className="opp-item-badge">{item.badge}</span>
+
+                    <div className="opp-save-tag">
+                      <span className="save-icon">💎</span>
+                      <span>{formattedSaved}</span>
                     </div>
-                  </button>
-                )
-              })}
-            </div>
+
+                    <a 
+                      href={`https://wa.me/201018595959?text=${whatsappMessage}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="opp-card-cta-btn"
+                    >
+                      {isArabic ? 'طلب فحص المستندات' : 'Request File Inspection'}
+                      {arrowIcon}
+                    </a>
+                  </div>
+                </div>
+              )
+            })}
           </div>
           <div className="market-strip" aria-hidden="true">
             {copy.stats.map((stat) => (
