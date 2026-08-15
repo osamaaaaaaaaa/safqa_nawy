@@ -4835,5 +4835,59 @@ h1, h2, h3, h4, h5, h6 {
   z-index: 2;
 }
 
+/* Phone input with country code dropdown prefix */
+.phone-input-with-country {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  width: 100%;
+}
+
+.phone-input-with-country .country-code-select {
+  height: 48px;
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 2px solid rgba(15, 23, 42, 0.12) !important;
+  border-radius: 0 !important;
+  padding: 10px 4px !important;
+  color: var(--ink) !important;
+  font-size: 1.02rem !important;
+  font-weight: 700 !important;
+  cursor: pointer;
+  outline: none;
+  font-family: inherit;
+  width: 105px;
+  transition: border-color 250ms ease;
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23D97706' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>") !important;
+  background-repeat: no-repeat !important;
+  background-position: left 6px center !important;
+  padding-left: 24px !important;
+}
+
+[dir='rtl'] .phone-input-with-country .country-code-select {
+  background-position: right 6px center !important;
+  padding-right: 24px !important;
+  padding-left: 4px !important;
+}
+
+.phone-input-with-country .country-code-select:hover {
+  border-bottom-color: rgba(217, 119, 6, 0.4) !important;
+}
+
+.phone-input-with-country .country-code-select:focus {
+  border-bottom-color: var(--primary) !important;
+}
+
+.phone-input-with-country .country-code-select option {
+  background: #FFFFFF;
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.phone-input-with-country .premium-canvas-input {
+  flex: 1;
+}
+
 
 

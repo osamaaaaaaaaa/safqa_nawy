@@ -187,6 +187,7 @@ function App() {
     confirmPassword: '',
   })
   const [authError, setAuthError] = useState('')
+  const [authCountryCode, setAuthCountryCode] = useState('+20')
 
   useEffect(() => {
     if (isLoggedIn && userProfile) {
@@ -241,41 +242,69 @@ function App() {
       e.preventDefault()
       setAuthError('')
 
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
       if (authMode === 'register') {
-        if (!authData.name || !authData.phone || !authData.password) {
+        if (!authData.name || !authData.email || !authData.password || !authData.confirmPassword) {
           setAuthError(isArabic ? 'برجاء ملء جميع الحقول المطلوبة' : 'Please fill all required fields')
+          return
+        }
+        if (!emailRegex.test(authData.email)) {
+          setAuthError(isArabic ? 'صيغة البريد الإلكتروني غير صحيحة' : 'Invalid email format')
+          return
+        }
+        if (authData.phone) {
+          const phoneRegex = /^[0-9]{7,11}$/
+          if (!phoneRegex.test(authData.phone)) {
+            setAuthError(isArabic ? 'رقم الهاتف غير صحيح (من 7 إلى 11 رقماً بدون كود الدولة)' : 'Invalid phone (7-11 digits without country code)')
+            return
+          }
+        }
+        if (authData.password.length < 6) {
+          setAuthError(isArabic ? 'كلمة المرور يجب أن تكون 6 أحرف على الأقل' : 'Password must be at least 6 characters')
           return
         }
         if (authData.password !== authData.confirmPassword) {
           setAuthError(isArabic ? 'كلمات المرور غير متطابقة' : 'Passwords do not match')
           return
         }
+
+        const users = JSON.parse(localStorage.getItem('safqa_users') || '[]')
+        const exists = users.find((u: any) => u.email.toLowerCase() === authData.email.toLowerCase())
+        if (exists) {
+          setAuthError(isArabic ? 'هذا البريد الإلكتروني مسجل بالفعل' : 'This email is already registered')
+          return
+        }
         
-        const profile = { name: authData.name, phone: authData.phone, email: authData.email }
+        const fullPhone = authData.phone ? `${authCountryCode} ${authData.phone}` : ''
+        const profile = { name: authData.name, phone: fullPhone, email: authData.email }
         localStorage.setItem('safqa_user_logged', 'true')
         localStorage.setItem('safqa_user_profile', JSON.stringify(profile))
         
-        const users = JSON.parse(localStorage.getItem('safqa_users') || '[]')
         users.push({ ...profile, password: authData.password })
         localStorage.setItem('safqa_users', JSON.stringify(users))
 
         setUserProfile(profile)
         setIsLoggedIn(true)
       } else {
-        if (!authData.phone || !authData.password) {
-          setAuthError(isArabic ? 'برجاء إدخال رقم الموبايل وكلمة المرور' : 'Please enter mobile and password')
+        if (!authData.email || !authData.password) {
+          setAuthError(isArabic ? 'برجاء إدخال البريد الإلكتروني وكلمة المرور' : 'Please enter email and password')
+          return
+        }
+        if (!emailRegex.test(authData.email)) {
+          setAuthError(isArabic ? 'صيغة البريد الإلكتروني غير صحيحة' : 'Invalid email format')
           return
         }
 
         const users = JSON.parse(localStorage.getItem('safqa_users') || '[]')
-        const found = users.find((u: any) => u.phone === authData.phone && u.password === authData.password)
+        const found = users.find((u: any) => u.email.toLowerCase() === authData.email.toLowerCase() && u.password === authData.password)
 
         if (users.length > 0 && !found) {
-          setAuthError(isArabic ? 'رقم الموبايل أو كلمة المرور غير صحيحة' : 'Incorrect mobile number or password')
+          setAuthError(isArabic ? 'البريد الإلكتروني أو كلمة المرور غير صحيحة' : 'Incorrect email or password')
           return
         }
 
-        const profile = found || { name: isArabic ? 'مستخدم تجريبي' : 'Demo User', phone: authData.phone, email: '' }
+        const profile = found || { name: isArabic ? 'مستخدم تجريبي' : 'Demo User', phone: '', email: authData.email }
         localStorage.setItem('safqa_user_logged', 'true')
         localStorage.setItem('safqa_user_profile', JSON.stringify(profile))
 
@@ -347,27 +376,42 @@ function App() {
                 )}
 
                 <div className="form-canvas-group">
-                  <label className="canvas-label">{copy.sellersPage.form.phone} *</label>
+                  <label className="canvas-label">{isArabic ? 'البريد الإلكتروني *' : 'Email Address *'}</label>
                   <input 
-                    type="tel" 
+                    type="email" 
                     required
-                    placeholder={isArabic ? "مثال: 010xxxxxxxx" : "e.g. +2010xxxxxxxx"}
-                    value={authData.phone} 
-                    onChange={(e) => setAuthData(prev => ({ ...prev, phone: e.target.value }))}
+                    placeholder="name@domain.com"
+                    value={authData.email} 
+                    onChange={(e) => setAuthData(prev => ({ ...prev, email: e.target.value }))}
                     className="premium-canvas-input"
                   />
                 </div>
 
                 {authMode === 'register' && (
                   <div className="form-canvas-group">
-                    <label className="canvas-label">{copy.sellersPage.form.email}</label>
-                    <input 
-                      type="email" 
-                      placeholder="name@domain.com"
-                      value={authData.email} 
-                      onChange={(e) => setAuthData(prev => ({ ...prev, email: e.target.value }))}
-                      className="premium-canvas-input"
-                    />
+                    <label className="canvas-label">{copy.sellersPage.form.phone}</label>
+                    <div className="phone-input-with-country">
+                      <select 
+                        value={authCountryCode} 
+                        onChange={(e) => setAuthCountryCode(e.target.value)}
+                        className="country-code-select"
+                      >
+                        <option value="+20">🇪🇬 +20</option>
+                        <option value="+966">🇸🇦 +966</option>
+                        <option value="+971">🇦🇪 +971</option>
+                        <option value="+974">🇶🇦 +974</option>
+                        <option value="+965">🇰🇼 +965</option>
+                        <option value="+968">🇴🇲 +968</option>
+                        <option value="+973">🇧🇭 +973</option>
+                      </select>
+                      <input 
+                        type="tel" 
+                        placeholder={isArabic ? "10xxxxxxxx" : "10xxxxxxxx"}
+                        value={authData.phone} 
+                        onChange={(e) => setAuthData(prev => ({ ...prev, phone: e.target.value }))}
+                        className="premium-canvas-input"
+                      />
+                    </div>
                   </div>
                 )}
 
