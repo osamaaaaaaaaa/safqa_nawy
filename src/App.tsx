@@ -106,9 +106,8 @@ function App() {
           <div className="hero-overlay" />
           <div className="hero-sheen" aria-hidden="true" />
 
-          <div className="hero-stage">
-            {/* Hero Copy */}
-            <div className="hero-content">
+          <div className="hero-stage hero-stage--single">
+            <div className="hero-content hero-content--centered">
               <span className="eyebrow">{copy.hero.eyebrow}</span>
               <h1 className="luxury-serif">{renderHeroTitle()}</h1>
               <p>{copy.hero.body}</p>
@@ -120,58 +119,6 @@ function App() {
                 <BadgeCheck size={18} />
                 <span>{copy.hero.proofLabel}</span>
                 <strong>{copy.hero.proofValue}</strong>
-              </div>
-            </div>
-
-            {/* Hero Comparison Card — Refactored to interactive blueprint decision drawer */}
-            <div className="hero-blueprint-decision-panel">
-              <div className="blueprint-panel-header">
-                <span className="panel-dot" />
-                <span className="panel-title">{isArabic ? 'حاسبة القرار السريع' : 'Quick Decision Draft'}</span>
-                <span className="panel-scale">1:100</span>
-              </div>
-              
-              <div className="blueprint-panel-comparison">
-                {/* Cancel Scenario */}
-                <div className="scenario-lane scenario-lane--cancel">
-                  <div className="scenario-heading-block">
-                    <span className="scenario-indicator">✕</span>
-                    <h4>{copy.hero.heroCard.cancelTitle}</h4>
-                  </div>
-                  <div className="scenario-stats-row">
-                    <div className="stat-unit">
-                      <span className="stat-unit-lbl">{copy.hero.heroCard.cancelDeductLabel}</span>
-                      <strong className="stat-unit-val text-red">{copy.hero.heroCard.cancelDeductValue}</strong>
-                    </div>
-                  </div>
-                  <div className="scenario-bar-visual">
-                    <div className="bar-fill bar-fill--loss" style={{ width: '75%' }} />
-                    <span className="bar-label">{copy.hero.heroCard.cancelNote}</span>
-                  </div>
-                </div>
-
-                {/* Divider Line */}
-                <div className="scenario-axis">
-                  <span className="axis-label">{copy.hero.heroCard.vsLabel}</span>
-                </div>
-
-                {/* Transfer Scenario */}
-                <div className="scenario-lane scenario-lane--transfer">
-                  <div className="scenario-heading-block">
-                    <span className="scenario-indicator">✓</span>
-                    <h4>{copy.hero.heroCard.transferTitle}</h4>
-                  </div>
-                  <div className="scenario-stats-row">
-                    <div className="stat-unit">
-                      <span className="stat-unit-lbl">{copy.hero.heroCard.transferGetLabel}</span>
-                      <strong className="stat-unit-val text-gold">{copy.hero.heroCard.transferGetValue}</strong>
-                    </div>
-                  </div>
-                  <div className="scenario-bar-visual">
-                    <div className="bar-fill bar-fill--gain" style={{ width: '100%' }} />
-                    <span className="bar-label">{copy.hero.heroCard.transferNote}</span>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -255,6 +202,69 @@ function App() {
               <div className="stat-lbl">{stat.label}</div>
             </div>
           ))}
+        </section>
+
+        {/* ─── DECISION ARENA — Standalone full-width interactive comparison ─── */}
+        <section className="decision-arena" id="decision">
+          <div className="arena-inner section-frame">
+            <div className="arena-eyebrow-row">
+              <span className="eyebrow">{isArabic ? 'اتخذ قرارك بمعلومات' : 'Make an Informed Decision'}</span>
+              <h2 className="luxury-serif arena-headline">
+                {isArabic ? 'الفرق الحقيقي بين خيارَيك' : 'The Real Difference Between Your Two Choices'}
+              </h2>
+            </div>
+
+            <div className="arena-stage">
+              {/* OPTION A — Cancel */}
+              <div className="arena-card arena-card--loss">
+                <div className="arena-card-badge">
+                  <span className="arena-badge-icon">✕</span>
+                  <span className="arena-badge-label">{isArabic ? 'الخيار أ' : 'Option A'}</span>
+                </div>
+                <h3 className="arena-card-title">{copy.hero.heroCard.cancelTitle}</h3>
+                <div className="arena-figure">
+                  <span className="arena-figure-value text-red">{copy.hero.heroCard.cancelDeductValue}</span>
+                  <span className="arena-figure-note">{copy.hero.heroCard.cancelDeductLabel}</span>
+                </div>
+                <div className="arena-bar-track">
+                  <div className="arena-bar arena-bar--loss" style={{ '--arena-bar-width': '25%' } as React.CSSProperties} />
+                </div>
+                <p className="arena-outcome">{copy.hero.heroCard.cancelNote}</p>
+              </div>
+
+              {/* Central Axis */}
+              <div className="arena-axis">
+                <div className="axis-line" />
+                <div className="axis-vs">
+                  <span>{copy.hero.heroCard.vsLabel}</span>
+                </div>
+                <div className="axis-line" />
+              </div>
+
+              {/* OPTION B — Transfer */}
+              <div className="arena-card arena-card--gain">
+                <div className="arena-card-badge">
+                  <span className="arena-badge-icon arena-badge-icon--gold">✓</span>
+                  <span className="arena-badge-label">{isArabic ? 'الخيار ب' : 'Option B'}</span>
+                </div>
+                <h3 className="arena-card-title">{copy.hero.heroCard.transferTitle}</h3>
+                <div className="arena-figure">
+                  <span className="arena-figure-value text-gold">{copy.hero.heroCard.transferGetValue}</span>
+                  <span className="arena-figure-note">{copy.hero.heroCard.transferGetLabel}</span>
+                </div>
+                <div className="arena-bar-track">
+                  <div className="arena-bar arena-bar--gain" style={{ '--arena-bar-width': '100%' } as React.CSSProperties} />
+                </div>
+                <p className="arena-outcome">{copy.hero.heroCard.transferNote}</p>
+              </div>
+            </div>
+
+            <div className="arena-cta-row">
+              <a className="primary-action" href="#search">
+                {isArabic ? 'ابدأ التنازل بصفقة' : 'Start Your Transfer with Safqa'}{arrowIcon}
+              </a>
+            </div>
+          </div>
         </section>
 
         {/* ─── SELLER vs BUYER — Custom Safqa Architecture Split Panel ─── */}
