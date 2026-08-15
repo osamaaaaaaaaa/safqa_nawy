@@ -259,7 +259,16 @@ export type SafqaLandingCopy = {
       typeVilla: string
       typeTownhouse: string
       typeTwinhouse: string
+      typeDuplex: string
+      typePenthouse: string
+      typeChalet: string
+      typeLand: string
+      typeRetail: string
+      typeClinic: string
+      typeOffice: string
+      location: string
       area: string
+      gardenArea: string
       floor: string
       bedrooms: string
       bathrooms: string
@@ -267,6 +276,20 @@ export type SafqaLandingCopy = {
       finishingCoreShell: string
       finishingSemi: string
       finishingFully: string
+      finishingFurnished: string
+      deliveryStatus: string
+      deliveryReady: string
+      deliveryUnderConst: string
+      description: string
+      amenitiesLabel: string
+      amenityPool: string
+      amenityGarden: string
+      amenityRoof: string
+      amenitySecurity: string
+      amenityClub: string
+      amenityGarage: string
+      amenityElevator: string
+      amenityServices: string
       name: string
       phone: string
       email: string

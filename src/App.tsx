@@ -69,11 +69,16 @@ function App() {
     nextInstallment: '',
     frequency: 'quarterly',
     unitType: 'apartment',
+    location: '',
     area: '',
+    gardenArea: '',
     floor: '',
     bedrooms: '',
     bathrooms: '',
     finishingType: 'core_shell',
+    deliveryStatus: 'ready',
+    amenities: [] as string[],
+    description: '',
     name: '',
     phone: '',
     email: '',
@@ -230,31 +235,45 @@ function App() {
               <form onSubmit={handleFormSubmit}>
                 {step === 1 && (
                   <div className="form-canvas-fields">
-                    <div className="form-canvas-group">
-                      <label className="canvas-label">{isArabic ? 'نوع العقار الاستثماري' : 'Investment Unit Type'}</label>
-                      <div className="interactive-unit-grid">
-                        {[
-                          { value: 'apartment', label: sCopy.form.typeApartment },
-                          { value: 'villa', label: sCopy.form.typeVilla },
-                          { value: 'townhouse', label: sCopy.form.typeTownhouse },
-                          { value: 'twinhouse', label: sCopy.form.typeTwinhouse },
-                        ].map((opt) => (
-                          <button
-                            key={opt.value}
-                            type="button"
-                            className={`unit-card-widget ${formData.unitType === opt.value ? 'active' : ''}`}
-                            onClick={() => handleInputChange('unitType', opt.value)}
-                          >
-                            <span className="unit-widget-icon"><Building2 size={16} /></span>
-                            <span className="unit-widget-label">{opt.label}</span>
-                          </button>
-                        ))}
+                    <div className="form-canvas-row">
+                      <div className="form-canvas-group">
+                        <label className="canvas-label">{isArabic ? 'نوع العقار الاستثماري *' : 'Investment Unit Type *'}</label>
+                        <select
+                          required
+                          value={formData.unitType}
+                          onChange={(e) => handleInputChange('unitType', e.target.value)}
+                          className={`premium-canvas-select ${showErrors && !formData.unitType ? 'canvas-input-error' : ''}`}
+                        >
+                          <option value="apartment">{sCopy.form.typeApartment}</option>
+                          <option value="duplex">{sCopy.form.typeDuplex}</option>
+                          <option value="penthouse">{sCopy.form.typePenthouse}</option>
+                          <option value="townhouse">{sCopy.form.typeTownhouse}</option>
+                          <option value="twinhouse">{sCopy.form.typeTwinhouse}</option>
+                          <option value="villa">{sCopy.form.typeVilla}</option>
+                          <option value="chalet">{sCopy.form.typeChalet}</option>
+                          <option value="land">{sCopy.form.typeLand}</option>
+                          <option value="retail">{sCopy.form.typeRetail}</option>
+                          <option value="clinic">{sCopy.form.typeClinic}</option>
+                          <option value="office">{sCopy.form.typeOffice}</option>
+                        </select>
+                      </div>
+
+                      <div className="form-canvas-group">
+                        <label className="canvas-label">{sCopy.form.location} *</label>
+                        <input 
+                          type="text" 
+                          required
+                          placeholder={isArabic ? "مثال: التجمع الخامس، زايد..." : "e.g. New Cairo, Zayed..."}
+                          value={formData.location} 
+                          onChange={(e) => handleInputChange('location', e.target.value)} 
+                          className={`premium-canvas-input ${showErrors && !formData.location ? 'canvas-input-error' : ''}`}
+                        />
                       </div>
                     </div>
 
                     <div className="form-canvas-row">
                       <div className="form-canvas-group">
-                        <label className="canvas-label">{sCopy.form.developerName}</label>
+                        <label className="canvas-label">{sCopy.form.developerName} *</label>
                         <input 
                           type="text" 
                           required
@@ -266,7 +285,7 @@ function App() {
                       </div>
 
                       <div className="form-canvas-group">
-                        <label className="canvas-label">{sCopy.form.projectName}</label>
+                        <label className="canvas-label">{sCopy.form.projectName} *</label>
                         <input 
                           type="text" 
                           required
@@ -280,7 +299,7 @@ function App() {
 
                     <div className="form-canvas-row">
                       <div className="form-canvas-group">
-                        <label className="canvas-label">{sCopy.form.area}</label>
+                        <label className="canvas-label">{sCopy.form.area} *</label>
                         <div className="input-currency-wrapper">
                           <input 
                             type="number" 
@@ -296,7 +315,36 @@ function App() {
                       </div>
 
                       <div className="form-canvas-group">
-                        <label className="canvas-label">{sCopy.form.finishingType}</label>
+                        <label className="canvas-label">{sCopy.form.gardenArea}</label>
+                        <div className="input-currency-wrapper">
+                          <input 
+                            type="number" 
+                            min="0"
+                            placeholder={isArabic ? "مثال: 50 (سيبه فاضي لو مفيش)" : "e.g. 50 (leave empty if none)"}
+                            value={formData.gardenArea} 
+                            onChange={(e) => handleInputChange('gardenArea', e.target.value)} 
+                            className="premium-canvas-input"
+                          />
+                          <span className="currency-tag">{isArabic ? 'م²' : 'sqm'}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="form-canvas-row">
+                      <div className="form-canvas-group">
+                        <label className="canvas-label">{sCopy.form.deliveryStatus} *</label>
+                        <select
+                          value={formData.deliveryStatus}
+                          onChange={(e) => handleInputChange('deliveryStatus', e.target.value)}
+                          className="premium-canvas-select"
+                        >
+                          <option value="ready">{sCopy.form.deliveryReady}</option>
+                          <option value="under_construction">{sCopy.form.deliveryUnderConst}</option>
+                        </select>
+                      </div>
+
+                      <div className="form-canvas-group">
+                        <label className="canvas-label">{sCopy.form.finishingType} *</label>
                         <select
                           value={formData.finishingType}
                           onChange={(e) => handleInputChange('finishingType', e.target.value)}
@@ -305,13 +353,14 @@ function App() {
                           <option value="core_shell">{sCopy.form.finishingCoreShell}</option>
                           <option value="semi_finished">{sCopy.form.finishingSemi}</option>
                           <option value="fully_finished">{sCopy.form.finishingFully}</option>
+                          <option value="furnished">{sCopy.form.finishingFurnished}</option>
                         </select>
                       </div>
                     </div>
 
                     <div className="form-canvas-row form-canvas-row--three">
                       <div className="form-canvas-group">
-                        <label className="canvas-label">{sCopy.form.bedrooms}</label>
+                        <label className="canvas-label">{sCopy.form.bedrooms} *</label>
                         <select
                           required
                           value={formData.bedrooms}
@@ -329,7 +378,7 @@ function App() {
                       </div>
 
                       <div className="form-canvas-group">
-                        <label className="canvas-label">{sCopy.form.bathrooms}</label>
+                        <label className="canvas-label">{sCopy.form.bathrooms} *</label>
                         <select
                           required
                           value={formData.bathrooms}
@@ -346,7 +395,7 @@ function App() {
                       </div>
 
                       <div className="form-canvas-group">
-                        <label className="canvas-label">{sCopy.form.floor}</label>
+                        <label className="canvas-label">{sCopy.form.floor} *</label>
                         <select
                           value={formData.floor}
                           onChange={(e) => handleInputChange('floor', e.target.value)}
@@ -370,6 +419,51 @@ function App() {
                           <option value="n_a">{isArabic ? "فيلا مستقلة / لا ينطبق" : "Standalone / N/A"}</option>
                         </select>
                       </div>
+                    </div>
+
+                    <div className="form-canvas-group">
+                      <label className="canvas-label">{sCopy.form.amenitiesLabel}</label>
+                      <div className="amenities-badge-grid">
+                        {[
+                          { key: 'pool', label: sCopy.form.amenityPool },
+                          { key: 'garden', label: sCopy.form.amenityGarden },
+                          { key: 'roof', label: sCopy.form.amenityRoof },
+                          { key: 'security', label: sCopy.form.amenitySecurity },
+                          { key: 'club', label: sCopy.form.amenityClub },
+                          { key: 'garage', label: sCopy.form.amenityGarage },
+                          { key: 'elevator', label: sCopy.form.amenityElevator },
+                          { key: 'services', label: sCopy.form.amenityServices },
+                        ].map((item) => {
+                          const isActive = formData.amenities.includes(item.key)
+                          return (
+                            <button
+                              key={item.key}
+                              type="button"
+                              className={`amenity-badge ${isActive ? 'active' : ''}`}
+                              onClick={() => {
+                                const next = isActive
+                                  ? formData.amenities.filter(k => k !== item.key)
+                                  : [...formData.amenities, item.key]
+                                handleInputChange('amenities', next)
+                              }}
+                            >
+                              {item.label}
+                            </button>
+                          )
+                        })}
+                      </div>
+                    </div>
+
+                    <div className="form-canvas-group">
+                      <label className="canvas-label">{sCopy.form.description} *</label>
+                      <textarea
+                        required
+                        placeholder={isArabic ? "مثال: شقة للبيع في كمبوند مميز بفيو على بحيرة ونظام دفع ميسر..." : "e.g. Apartment for sale in premium compound with lake view..."}
+                        value={formData.description}
+                        onChange={(e) => handleInputChange('description', e.target.value)}
+                        className={`premium-canvas-textarea ${showErrors && !formData.description ? 'canvas-input-error' : ''}`}
+                        rows={3}
+                      />
                     </div>
 
                     <div className="form-canvas-group">

@@ -4044,6 +4044,67 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--ink);
 }
 
+.premium-canvas-textarea {
+  background: transparent !important;
+  border: 2px solid rgba(15, 23, 42, 0.12) !important;
+  border-radius: var(--radius-xs) !important;
+  padding: 12px 14px !important;
+  color: var(--ink) !important;
+  font-size: 1.05rem !important;
+  transition: all 250ms ease !important;
+  font-family: inherit;
+  width: 100%;
+  resize: vertical;
+}
+
+.premium-canvas-textarea:hover {
+  border-color: rgba(217, 119, 6, 0.4) !important;
+}
+
+.premium-canvas-textarea:focus {
+  outline: none !important;
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 10px rgba(217, 119, 6, 0.05);
+}
+
+.premium-canvas-textarea.canvas-input-error {
+  border-color: #EF4444 !important;
+  background: rgba(239, 68, 68, 0.02) !important;
+}
+
+.amenities-badge-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.amenity-badge {
+  background: #FFFFFF;
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  color: var(--muted);
+  padding: 10px 20px;
+  border-radius: var(--radius-xs);
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 200ms ease;
+  font-family: inherit;
+}
+
+.amenity-badge:hover {
+  background: var(--wash);
+  color: var(--ink);
+  border-color: rgba(15, 23, 42, 0.2);
+}
+
+.amenity-badge.active {
+  background: rgba(217, 119, 6, 0.08);
+  border-color: var(--primary);
+  color: var(--primary);
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.06);
+}
+
 .premium-canvas-input::placeholder {
   color: rgba(15, 23, 42, 0.25);
 }
