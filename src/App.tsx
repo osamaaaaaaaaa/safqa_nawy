@@ -648,25 +648,6 @@ function App() {
             <h1 className="luxury-serif">{sCopy.title}</h1>
             <p className="sell-dashboard-sub">{sCopy.subtitle}</p>
           </div>
-          {isLoggedIn && userProfile && (
-            <div className="user-profile-badge">
-              <span className="profile-name">
-                {isArabic ? `مرحبًا، ${userProfile.name}` : `Welcome, ${userProfile.name}`}
-              </span>
-              <button 
-                type="button" 
-                className="logout-ghost-btn" 
-                onClick={() => {
-                  localStorage.removeItem('safqa_user_logged')
-                  localStorage.removeItem('safqa_user_profile')
-                  setIsLoggedIn(false)
-                  setUserProfile(null)
-                }}
-              >
-                {isArabic ? 'تسجيل الخروج' : 'Logout'}
-              </button>
-            </div>
-          )}
         </div>
 
         {/* Cinematic Pipeline Nav Tracker */}
@@ -1332,9 +1313,30 @@ function App() {
           <a href="#process">{copy.nav.process}</a>
           <a href="#brokers">{copy.nav.brokers}</a>
         </nav>
-        <button className="language-button" type="button" onClick={() => setLocale(isArabic ? 'en' : 'ar')}>
-          <Globe2 size={16} /><span>{copy.switchLanguage}</span>
-        </button>
+        <div className="nav-actions">
+          {isLoggedIn && userProfile && (
+            <div className="nav-profile-badge">
+              <span className="nav-profile-name">
+                {userProfile.name}
+              </span>
+              <button 
+                type="button" 
+                className="nav-logout-btn" 
+                onClick={() => {
+                  localStorage.removeItem('safqa_user_logged')
+                  localStorage.removeItem('safqa_user_profile')
+                  setIsLoggedIn(false)
+                  setUserProfile(null)
+                }}
+              >
+                {isArabic ? 'خروج' : 'Logout'}
+              </button>
+            </div>
+          )}
+          <button className="language-button" type="button" onClick={() => setLocale(isArabic ? 'en' : 'ar')}>
+            <Globe2 size={16} /><span>{copy.switchLanguage}</span>
+          </button>
+        </div>
       </header>
 
       <main>

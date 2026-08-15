@@ -4889,5 +4889,49 @@ h1, h2, h3, h4, h5, h6 {
   flex: 1;
 }
 
+/* Glassmorphic Navbar Actions Group & Profile Badge */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nav-profile-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(15, 23, 42, 0.04);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  padding: 6px 12px;
+  border-radius: 30px;
+  font-size: 0.85rem;
+}
+
+.nav-profile-name {
+  font-weight: 700;
+  color: var(--ink);
+  max-width: 90px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nav-logout-btn {
+  background: transparent;
+  border: none;
+  color: #EF4444;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0 2px;
+  font-size: 0.8rem;
+  font-family: inherit;
+  transition: opacity 150ms ease;
+}
+
+.nav-logout-btn:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
 
 
