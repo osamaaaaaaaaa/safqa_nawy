@@ -18,6 +18,7 @@ import {
   User,
   Check,
   ChevronDown,
+  LogOut,
 } from 'lucide-react'
 import './App.css'
 
@@ -238,6 +239,18 @@ function App() {
   })
   const [authError, setAuthError] = useState('')
   const [authCountryCode, setAuthCountryCode] = useState('+20')
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
+  const userMenuRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+        setUserMenuOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   useEffect(() => {
     if (isLoggedIn && userProfile) {
@@ -1315,22 +1328,38 @@ function App() {
         </nav>
         <div className="nav-actions">
           {isLoggedIn && userProfile && (
-            <div className="nav-profile-badge">
-              <span className="nav-profile-name">
-                {userProfile.name}
-              </span>
+            <div className="nav-user-menu-container" ref={userMenuRef}>
               <button 
                 type="button" 
-                className="nav-logout-btn" 
-                onClick={() => {
-                  localStorage.removeItem('safqa_user_logged')
-                  localStorage.removeItem('safqa_user_profile')
-                  setIsLoggedIn(false)
-                  setUserProfile(null)
-                }}
+                className="nav-avatar-btn" 
+                onClick={() => setUserMenuOpen(!userMenuOpen)}
+                aria-label="User Menu"
               >
-                {isArabic ? 'خروج' : 'Logout'}
+                <User size={16} />
               </button>
+              {userMenuOpen && (
+                <div className="nav-user-dropdown">
+                  <div className="dropdown-user-info">
+                    <span className="dropdown-username">{userProfile.name}</span>
+                    <span className="dropdown-email">{userProfile.email || (isArabic ? 'حساب موثق' : 'Verified Account')}</span>
+                  </div>
+                  <div className="dropdown-divider" />
+                  <button 
+                    type="button" 
+                    className="dropdown-logout-btn" 
+                    onClick={() => {
+                      localStorage.removeItem('safqa_user_logged')
+                      localStorage.removeItem('safqa_user_profile')
+                      setIsLoggedIn(false)
+                      setUserProfile(null)
+                      setUserMenuOpen(false)
+                    }}
+                  >
+                    <LogOut size={14} />
+                    <span>{isArabic ? 'تسجيل الخروج' : 'Logout'}</span>
+                  </button>
+                </div>
+              )}
             </div>
           )}
           <button className="language-button" type="button" onClick={() => setLocale(isArabic ? 'en' : 'ar')}>
