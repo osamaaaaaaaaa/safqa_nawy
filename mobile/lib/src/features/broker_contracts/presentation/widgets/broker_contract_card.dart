@@ -6,10 +6,7 @@ import '../../../../core/theme/app_spacing.dart';
 import '../../domain/entities/broker_contract.dart';
 
 class BrokerContractCard extends StatelessWidget {
-  const BrokerContractCard({
-    required this.contract,
-    super.key,
-  });
+  const BrokerContractCard({required this.contract, super.key});
 
   final BrokerContract contract;
 
@@ -119,9 +116,9 @@ class _ContractNumber extends StatelessWidget {
           Text(
             value,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: valueColor ?? AppColors.ink,
-                  fontSize: 14,
-                ),
+              color: valueColor ?? AppColors.ink,
+              fontSize: 14,
+            ),
           ),
         ],
       ),

@@ -23,9 +23,7 @@ class PrimaryActionButton extends StatelessWidget {
         foregroundColor: isOutlined ? AppColors.ink : AppColors.paper,
         side: isOutlined ? const BorderSide(color: AppColors.border) : null,
         minimumSize: const Size(0, 52),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(18),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       ),
       child: Text(label),
     );

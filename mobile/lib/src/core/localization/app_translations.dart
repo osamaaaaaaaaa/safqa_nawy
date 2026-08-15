@@ -3,117 +3,173 @@ import 'package:get/get.dart';
 class AppTranslations extends Translations {
   @override
   Map<String, Map<String, String>> get keys => const {
-        'ar': {
-          'app.name': '\u0635\u0641\u0642\u0629',
-          'app.tagline':
-              '\u0628\u0648\u0627\u0628\u0629 \u0627\u0644\u0628\u0631\u0648\u0643\u0631 \u0627\u0644\u062e\u0627\u0635\u0629',
-          'home.hero.title':
-              '\u0627\u0642\u0641\u0644 \u0639\u0642\u062f\u0643 \u0645\u0646 \u0645\u0643\u0627\u0646 \u0648\u0627\u062d\u062f',
-          'home.hero.body':
-              '\u0644\u0648 \u0645\u0639\u0627\u0643 \u0639\u0642\u062f \u0639\u0642\u0627\u0631\u064a \u0648\u0645\u062d\u062a\u0627\u062c \u0634\u0631\u0643\u0629 \u062a\u0642\u0641\u0644\u0647\u060c \u0635\u0641\u0642\u0629 \u062a\u0633\u062a\u0644\u0645 \u0627\u0644\u0645\u0644\u0641\u060c \u062a\u0631\u0627\u062c\u0639 \u0627\u0644\u0645\u0633\u062a\u0646\u062f\u0627\u062a\u060c \u0648\u062a\u062a\u0627\u0628\u0639 \u0627\u0644\u0625\u063a\u0644\u0627\u0642 \u0644\u062d\u062f \u0645\u0627 \u0639\u0645\u0648\u0644\u062a\u0643 \u062a\u0628\u0642\u0649 \u062c\u0627\u0647\u0632\u0629.',
-          'home.hero.primaryAction':
-              '\u0627\u0631\u0641\u0639 \u0639\u0642\u062f \u062c\u062f\u064a\u062f',
-          'home.hero.secondaryAction':
-              '\u062a\u0627\u0628\u0639 \u0639\u0642\u0648\u062f\u0643',
-          'home.stats.verified':
-              '\u0639\u0642\u0648\u062f \u0646\u0634\u0637\u0629',
-          'home.stats.transfer':
-              '\u0645\u062a\u0648\u0633\u0637 \u0627\u0644\u0625\u063a\u0644\u0627\u0642',
-          'home.stats.brokers':
-              '\u0639\u0645\u0648\u0644\u0627\u062a \u062c\u0627\u0647\u0632\u0629',
-          'home.paths.title':
-              '\u0627\u0644\u0645\u0633\u0627\u0631 \u0627\u0644\u062e\u0627\u0635',
-          'home.paths.seller.title':
-              '\u0627\u0631\u0641\u0639 \u0627\u0644\u0645\u0644\u0641',
-          'home.paths.seller.body':
-              '\u0627\u0636\u0641 \u0628\u064a\u0627\u0646\u0627\u062a \u0627\u0644\u0639\u0645\u064a\u0644\u060c \u0627\u0644\u0648\u062d\u062f\u0629\u060c \u0633\u0639\u0631 \u0627\u0644\u0639\u0642\u062f\u060c \u0648\u0645\u0633\u062a\u0646\u062f\u0627\u062a \u0627\u0644\u062d\u062c\u0632.',
-          'home.paths.buyer.title':
-              '\u0627\u0644\u0645\u0631\u0627\u062c\u0639\u0629 \u0648\u0627\u0644\u0645\u0637\u0627\u0628\u0642\u0629',
-          'home.paths.buyer.body':
-              '\u0641\u0631\u064a\u0642\u0646\u0627 \u064a\u0631\u0627\u062c\u0639 \u0627\u0644\u0639\u0642\u062f \u0648\u064a\u062a\u0623\u0643\u062f \u0645\u0646 \u0627\u0644\u0623\u0631\u0642\u0627\u0645 \u0642\u0628\u0644 \u0628\u062f\u0621 \u062e\u0637\u0648\u0627\u062a \u0627\u0644\u062a\u0646\u0627\u0632\u0644.',
-          'home.paths.broker.title':
-              '\u0627\u0633\u062a\u0644\u0645 \u0639\u0645\u0648\u0644\u062a\u0643',
-          'home.paths.broker.body':
-              '\u0628\u0639\u062f \u0627\u0644\u0625\u063a\u0644\u0627\u0642 \u062a\u0638\u0647\u0631 \u0639\u0645\u0648\u0644\u062a\u0643 \u0628\u0648\u0636\u0648\u062d \u0645\u0639 \u062d\u0627\u0644\u0629 \u0627\u0644\u0635\u0631\u0641.',
-          'home.deals.title':
-              '\u0639\u0642\u0648\u062f \u0642\u064a\u062f \u0627\u0644\u0625\u063a\u0644\u0627\u0642',
-          'home.deals.subtitle':
-              '\u0645\u0644\u062e\u0635 \u0633\u0631\u064a\u0639 \u0644\u0643\u0644 \u0645\u0644\u0641 \u0645\u0641\u062a\u0648\u062d.',
-          'contract.client': '\u0627\u0644\u0639\u0645\u064a\u0644',
-          'contract.value':
-              '\u0642\u064a\u0645\u0629 \u0627\u0644\u0639\u0642\u062f',
-          'contract.commission':
-              '\u0627\u0644\u0639\u0645\u0648\u0644\u0629',
-          'contract.status':
-              '\u0627\u0644\u062d\u0627\u0644\u0629',
-          'home.transfer.title':
-              '\u062e\u0637\u0648\u0627\u062a \u0642\u0641\u0644 \u0627\u0644\u0639\u0642\u062f',
-          'home.transfer.subtitle':
-              '\u0645\u0646 \u0623\u0648\u0644 \u0631\u0641\u0639 \u0644\u062d\u062f \u0635\u0631\u0641 \u0627\u0644\u0639\u0645\u0648\u0644\u0629.',
-          'transfer.docs.title':
-              '\u062a\u0633\u0644\u064a\u0645 \u0627\u0644\u0645\u0633\u062a\u0646\u062f\u0627\u062a',
-          'transfer.docs.body':
-              '\u0627\u0644\u0639\u0642\u062f\u060c \u0627\u0644\u0625\u064a\u0635\u0627\u0644\u0627\u062a\u060c \u0648\u0628\u064a\u0627\u0646\u0627\u062a \u0627\u0644\u0637\u0631\u0641\u064a\u0646 \u0641\u064a \u0645\u0644\u0641 \u0648\u0627\u062d\u062f.',
-          'transfer.match.title':
-              '\u0645\u0631\u0627\u062c\u0639\u0629 \u0635\u0641\u0642\u0629',
-          'transfer.match.body':
-              '\u062a\u0623\u0643\u064a\u062f \u0627\u0644\u0623\u0631\u0642\u0627\u0645\u060c \u0627\u0644\u0645\u0642\u062f\u0645\u060c \u0627\u0644\u0645\u062a\u0628\u0642\u064a\u060c \u0648\u0634\u0631\u0648\u0637 \u0627\u0644\u062a\u0646\u0627\u0632\u0644.',
-          'transfer.close.title':
-              '\u0627\u0644\u0625\u063a\u0644\u0627\u0642 \u0648\u0627\u0644\u0635\u0631\u0641',
-          'transfer.close.body':
-              '\u0645\u062a\u0627\u0628\u0639\u0629 \u0627\u0644\u062a\u0646\u0627\u0632\u0644 \u0648\u062a\u0633\u062c\u064a\u0644 \u0627\u0644\u0639\u0645\u0648\u0644\u0629 \u0644\u0644\u0628\u0631\u0648\u0643\u0631.',
-          'nav.home':
-              '\u0627\u0644\u0644\u0648\u062d\u0629',
-          'nav.deals':
-              '\u0627\u0644\u0639\u0642\u0648\u062f',
-          'nav.add':
-              '\u062c\u062f\u064a\u062f',
-          'nav.profile':
-              '\u0627\u0644\u0645\u062d\u0641\u0638\u0629',
-        },
-        'en': {
-          'app.name': 'Safqa',
-          'app.tagline': 'Private broker portal',
-          'home.hero.title': 'Close your contract from one place',
-          'home.hero.body':
-              'When you have a real estate contract that needs a company to close it, Safqa receives the file, verifies the documents, and follows the closing until your commission is ready.',
-          'home.hero.primaryAction': 'Upload new contract',
-          'home.hero.secondaryAction': 'Track contracts',
-          'home.stats.verified': 'Active contracts',
-          'home.stats.transfer': 'Average closing',
-          'home.stats.brokers': 'Ready commission',
-          'home.paths.title': 'Private workflow',
-          'home.paths.seller.title': 'Upload the file',
-          'home.paths.seller.body':
-              'Add client details, unit data, contract value, and booking documents.',
-          'home.paths.buyer.title': 'Review and match',
-          'home.paths.buyer.body':
-              'Our team reviews the contract and verifies the numbers before transfer steps begin.',
-          'home.paths.broker.title': 'Receive commission',
-          'home.paths.broker.body':
-              'After closing, your commission appears clearly with payout status.',
-          'home.deals.title': 'Contracts in closing',
-          'home.deals.subtitle': 'A quick summary for every open file.',
-          'contract.client': 'Client',
-          'contract.value': 'Contract value',
-          'contract.commission': 'Commission',
-          'contract.status': 'Status',
-          'home.transfer.title': 'Contract closing steps',
-          'home.transfer.subtitle':
-              'From upload to commission payout.',
-          'transfer.docs.title': 'Submit documents',
-          'transfer.docs.body':
-              'Contract, receipts, and party details in one clean file.',
-          'transfer.match.title': 'Safqa review',
-          'transfer.match.body':
-              'Confirm contract numbers, down payment, remaining amount, and transfer terms.',
-          'transfer.close.title': 'Closing and payout',
-          'transfer.close.body':
-              'Follow the transfer and register the broker commission.',
-          'nav.home': 'Dashboard',
-          'nav.deals': 'Contracts',
-          'nav.add': 'New',
-          'nav.profile': 'Wallet',
-        },
-      };
+    'ar': {
+      'app.name': 'صفقة',
+      'nav.home': 'الرئيسية',
+      'nav.explore': 'استكشف',
+      'nav.leads': 'العملاء',
+      'nav.deals': 'العقود',
+      'nav.wallet': 'المحفظة',
+      'nav.profile': 'حسابي',
+      'common.add': 'إضافة',
+      'common.filters': 'الفلاتر',
+      'common.view_all': 'عرض الكل',
+      'home.greeting': 'أهلا بيك',
+      'home.broker_name': 'وسيط صفقة المعتمد',
+      'home.hero.badge': 'مكتب إغلاق صفقاتك الخاص',
+      'home.hero.title': 'كل عقد، عمولة، ومستند في مسار واحد واضح.',
+      'home.hero.subtitle':
+          'تابع العملاء، احم حقوقك، اقفل صفقات التنازل، واستلم عمولتك من غير ما تحتاج شركة تقفل بدل منك.',
+      'home.hero.leads': 'عميل نشط',
+      'home.hero.deals': 'عقد جار',
+      'home.metric.pending': 'عمولات معلقة',
+      'home.metric.closed': 'صفقات مكتملة',
+      'home.featured': 'فرص مختارة',
+      'home.pipeline': 'خط التشغيل',
+      'home.open_crm': 'فتح CRM',
+      'home.pipeline.lead': 'أقرب عميل يحتاج متابعة',
+      'home.pipeline.deal': 'أقرب عقد يحتاج إجراء',
+      'explore.title': 'استكشف الفرص',
+      'explore.subtitle': 'مشاريع ووحدات موثقة بفلاتر مناسبة للبروكر.',
+      'explore.search_hint': 'ابحث بالمطور، المنطقة، المشروع أو الكوميشن',
+      'explore.filter.hot': 'عروض ساخنة',
+      'explore.filter.commission': 'أعلى عمولة',
+      'explore.filter.ready': 'جاهز للتنازل',
+      'explore.filter.old_price': 'سعر تعاقد قديم',
+      'explore.projects': 'المشاريع المتاحة',
+      'explore.price': 'السعر',
+      'explore.down_payment': 'المقدم',
+      'explore.commission': 'العمولة',
+      'leads.title': 'إدارة العملاء',
+      'leads.subtitle': 'سجل العميل واحم حقك في المتابعة والعمولة.',
+      'leads.protection.title': 'حماية العميل مفعلة',
+      'leads.protection.copy':
+          'أي lead بيتسجل لازم يتراجع من الباك إند قبل تثبيت الملكية والمدة.',
+      'leads.active': 'عملاء نشطين',
+      'leads.status.protected': 'محمي',
+      'leads.status.follow_up': 'متابعة',
+      'leads.status.site_visit': 'زيارة',
+      'leads.status.expired': 'منتهي',
+      'leads.budget': 'الميزانية',
+      'leads.ends': 'ينتهي خلال',
+      'deals.title': 'العقود والإغلاق',
+      'deals.subtitle': 'ارفع عقدك ومستنداتك وتابع الإغلاق خطوة بخطوة.',
+      'deals.new.title': 'إضافة عقد جديد',
+      'deals.new.copy':
+          'أساس فورم الإغلاق جاهز للتوصيل بالـ Supabase Storage والـ Edge Functions.',
+      'deals.active': 'عقود نشطة',
+      'deals.stage.documents': 'مستندات',
+      'deals.stage.review': 'مراجعة المطور',
+      'deals.stage.signing': 'توقيع التنازل',
+      'deals.stage.ready': 'العمولة جاهزة',
+      'deals.buyer': 'المشتري',
+      'deals.value': 'قيمة الصفقة',
+      'deals.commission': 'العمولة',
+      'wallet.title': 'الرصيد المتاح',
+      'wallet.withdraw': 'طلب سحب',
+      'wallet.pending': 'معلق',
+      'wallet.paid_month': 'مصروف هذا الشهر',
+      'wallet.transactions': 'حركة المحفظة',
+      'profile.tools': 'أدوات البروكر',
+      'profile.marketing': 'مركز التسويق',
+      'profile.marketing_copy': 'صور، عروض، وروابط قابلة للمشاركة لكل مشروع.',
+      'profile.ai': 'مساعد صفقة',
+      'profile.ai_copy': 'اقتراحات متابعة، ردود، وتحليل فرص العمولة.',
+      'profile.support': 'الدعم والنزاعات',
+      'profile.support_copy': 'افتح تذكرة مع فريق الإغلاق عند أي تعارض.',
+      'profile.account': 'الحساب والتحقق',
+      'profile.kyc': 'التحقق والمستندات',
+      'profile.kyc_copy': 'بيانات البروكر، البطاقة، الحساب البنكي، والعقد.',
+      'profile.verified': 'موثق',
+      'profile.referral': 'كود الإحالة',
+    },
+    'en': {
+      'app.name': 'Safqa',
+      'nav.home': 'Home',
+      'nav.explore': 'Explore',
+      'nav.leads': 'Leads',
+      'nav.deals': 'Deals',
+      'nav.wallet': 'Wallet',
+      'nav.profile': 'Profile',
+      'common.add': 'Add',
+      'common.filters': 'Filters',
+      'common.view_all': 'View all',
+      'home.greeting': 'Welcome back',
+      'home.broker_name': 'Certified Safqa Broker',
+      'home.hero.badge': 'Your private closing desk',
+      'home.hero.title':
+          'Every contract, commission, and document in one clear flow.',
+      'home.hero.subtitle':
+          'Track leads, protect your rights, close transfer deals, and receive commission without needing a company to close on your behalf.',
+      'home.hero.leads': 'active leads',
+      'home.hero.deals': 'live deals',
+      'home.metric.pending': 'Pending commission',
+      'home.metric.closed': 'Closed deals',
+      'home.featured': 'Featured opportunities',
+      'home.pipeline': 'Operating pipeline',
+      'home.open_crm': 'Open CRM',
+      'home.pipeline.lead': 'Next lead to follow',
+      'home.pipeline.deal': 'Next deal action',
+      'explore.title': 'Explore inventory',
+      'explore.subtitle':
+          'Verified projects and units with broker-first filters.',
+      'explore.search_hint': 'Search developer, area, project, or commission',
+      'explore.filter.hot': 'Hot offers',
+      'explore.filter.commission': 'Highest commission',
+      'explore.filter.ready': 'Ready transfer',
+      'explore.filter.old_price': 'Old contract price',
+      'explore.projects': 'Available projects',
+      'explore.price': 'Price',
+      'explore.down_payment': 'Down payment',
+      'explore.commission': 'Commission',
+      'leads.title': 'Lead CRM',
+      'leads.subtitle':
+          'Register buyers and protect your follow-up and commission rights.',
+      'leads.protection.title': 'Lead protection is active',
+      'leads.protection.copy':
+          'Every lead must be validated by the backend before ownership and expiry are locked.',
+      'leads.active': 'Active leads',
+      'leads.status.protected': 'Protected',
+      'leads.status.follow_up': 'Follow-up',
+      'leads.status.site_visit': 'Site visit',
+      'leads.status.expired': 'Expired',
+      'leads.budget': 'Budget',
+      'leads.ends': 'Ends in',
+      'deals.title': 'Deals and closing',
+      'deals.subtitle':
+          'Upload contracts and documents, then track closing step by step.',
+      'deals.new.title': 'Create new deal',
+      'deals.new.copy':
+          'Closing form foundation is ready for Supabase Storage and Edge Functions.',
+      'deals.active': 'Active deals',
+      'deals.stage.documents': 'Documents',
+      'deals.stage.review': 'Developer review',
+      'deals.stage.signing': 'Transfer signing',
+      'deals.stage.ready': 'Commission ready',
+      'deals.buyer': 'Buyer',
+      'deals.value': 'Deal value',
+      'deals.commission': 'Commission',
+      'wallet.title': 'Available balance',
+      'wallet.withdraw': 'Request withdrawal',
+      'wallet.pending': 'Pending',
+      'wallet.paid_month': 'Paid this month',
+      'wallet.transactions': 'Wallet activity',
+      'profile.tools': 'Broker tools',
+      'profile.marketing': 'Marketing center',
+      'profile.marketing_copy':
+          'Assets, offers, and shareable links for every project.',
+      'profile.ai': 'Safqa assistant',
+      'profile.ai_copy':
+          'Follow-up suggestions, replies, and commission opportunity analysis.',
+      'profile.support': 'Support and disputes',
+      'profile.support_copy':
+          'Open a ticket with the closing team when conflicts happen.',
+      'profile.account': 'Account and verification',
+      'profile.kyc': 'KYC and documents',
+      'profile.kyc_copy':
+          'Broker data, national ID, bank account, and agreement.',
+      'profile.verified': 'Verified',
+      'profile.referral': 'Referral code',
+    },
+  };
 }
