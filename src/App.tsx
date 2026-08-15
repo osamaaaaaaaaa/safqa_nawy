@@ -82,9 +82,9 @@ function App() {
       </div>
 
       <header className="site-nav">
-        <a className="brand-lockup" href="#home" aria-label={copy.brand}>
+        <a className="brand-lockup" href="#home" aria-label="SAFQA">
           <span className="brand-logo-text">
-            {copy.brand}
+            SAFQA
             <span className="brand-logo-dot">.</span>
           </span>
         </a>
