@@ -290,6 +290,22 @@ export type SafqaLandingCopy = {
       amenityGarage: string
       amenityElevator: string
       amenityServices: string
+      contractYear: string
+      nextInstallmentDate: string
+      maintenancePaid: string
+      maintenanceAmount: string
+      uploadContract: string
+      uploadReceipts: string
+      uploadHint: string
+      locNewCairo: string
+      locZayed: string
+      locOctober: string
+      locShorouk: string
+      locMostakbal: string
+      locCapital: string
+      locNorthCoast: string
+      locSokhna: string
+      locOther: string
       name: string
       phone: string
       email: string

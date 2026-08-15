@@ -4474,5 +4474,98 @@ h1, h2, h3, h4, h5, h6 {
   border-color: rgba(15, 23, 42, 0.3);
 }
 
+/* Document Upload UI (Sleek light-blueprint upload frames) */
+.upload-grid-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+@media (min-width: 640px) {
+  .upload-grid-container {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.upload-card-box {
+  background: #FFFFFF;
+  border: 2px dashed rgba(15, 23, 42, 0.1);
+  border-radius: var(--radius-xs);
+  padding: 24px 16px;
+  text-align: center;
+  transition: all 250ms cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.upload-card-box:hover {
+  border-color: var(--primary);
+  background: rgba(217, 119, 6, 0.02);
+}
+
+.upload-card-box.has-file {
+  border-color: #10B981;
+  border-style: solid;
+  background: rgba(16, 185, 129, 0.02);
+}
+
+.upload-card-box.upload-error {
+  border-color: #EF4444 !important;
+  background: rgba(239, 68, 68, 0.02) !important;
+}
+
+.upload-card-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  cursor: pointer;
+}
+
+.upload-icon {
+  color: var(--primary);
+  transition: transform 250ms ease;
+}
+
+.upload-card-box:hover .upload-icon {
+  transform: translateY(-2px) scale(1.1);
+}
+
+.upload-card-box.has-file .upload-icon {
+  color: #10B981;
+}
+
+.upload-card-label strong {
+  font-size: 0.95rem;
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.file-name-indicator {
+  font-size: 0.8rem;
+  color: var(--muted);
+  word-break: break-all;
+  margin-top: 4px;
+}
+
+.upload-card-box.has-file .file-name-indicator {
+  color: #047857;
+  font-weight: 700;
+}
+
+/* Maintenance Box Details styling */
+.maintenance-box-container {
+  background: rgba(15, 23, 42, 0.02);
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  border-radius: var(--radius-xs);
+  padding: 16px;
+  margin-top: 16px;
+}
+
 
 

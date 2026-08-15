@@ -156,6 +156,12 @@ function App() {
     deliveryStatus: 'ready',
     amenities: [] as string[],
     description: '',
+    contractYear: '',
+    nextInstallmentDate: '',
+    maintenancePaid: false,
+    maintenanceAmount: '',
+    contractFile: null as File | null,
+    receiptsFile: null as File | null,
     name: '',
     phone: '',
     email: '',
@@ -216,6 +222,30 @@ function App() {
 
     const handleFormSubmit = (e: React.FormEvent) => {
       e.preventDefault()
+      
+      const hasMissingFields = 
+        !formData.unitType ||
+        !formData.location ||
+        !formData.developerName ||
+        !formData.projectName ||
+        !formData.area ||
+        !formData.bedrooms ||
+        !formData.bathrooms ||
+        !formData.floor ||
+        !formData.totalPrice ||
+        !formData.amountPaid ||
+        !formData.remainingPrice ||
+        !formData.nextInstallment ||
+        !formData.contractYear ||
+        !formData.nextInstallmentDate ||
+        !formData.contractFile ||
+        !formData.ownerConfirm;
+
+      if (hasMissingFields) {
+        setShowErrors(true)
+        return
+      }
+
       setIsSubmitted(true)
       setShowErrors(false)
     }
@@ -339,13 +369,23 @@ function App() {
 
                       <div className="form-canvas-group">
                         <label className="canvas-label">{sCopy.form.location} *</label>
-                        <input 
-                          type="text" 
+                        <CustomSelect
                           required
-                          placeholder={isArabic ? "مثال: التجمع الخامس، زايد..." : "e.g. New Cairo, Zayed..."}
-                          value={formData.location} 
-                          onChange={(e) => handleInputChange('location', e.target.value)} 
-                          className={`premium-canvas-input ${showErrors && !formData.location ? 'canvas-input-error' : ''}`}
+                          options={[
+                            { value: 'new_cairo', label: sCopy.form.locNewCairo },
+                            { value: 'zayed', label: sCopy.form.locZayed },
+                            { value: 'october', label: sCopy.form.locOctober },
+                            { value: 'shorouk', label: sCopy.form.locShorouk },
+                            { value: 'mostakbal', label: sCopy.form.locMostakbal },
+                            { value: 'capital', label: sCopy.form.locCapital },
+                            { value: 'north_coast', label: sCopy.form.locNorthCoast },
+                            { value: 'sokhna', label: sCopy.form.locSokhna },
+                            { value: 'other', label: sCopy.form.locOther },
+                          ]}
+                          value={formData.location}
+                          onChange={(val) => handleInputChange('location', val)}
+                          placeholder={isArabic ? "اختر المنطقة" : "Select Region"}
+                          hasError={showErrors && !formData.location}
                         />
                       </div>
                     </div>
@@ -571,7 +611,7 @@ function App() {
                   <div className="form-canvas-fields">
                     <div className="form-canvas-row">
                       <div className="form-canvas-group">
-                        <label className="canvas-label">{sCopy.form.totalPrice}</label>
+                        <label className="canvas-label">{sCopy.form.totalPrice} *</label>
                         <div className="input-currency-wrapper">
                           <input 
                             type="number" 
@@ -586,7 +626,7 @@ function App() {
                       </div>
 
                       <div className="form-canvas-group">
-                        <label className="canvas-label">{sCopy.form.amountPaid}</label>
+                        <label className="canvas-label">{sCopy.form.amountPaid} *</label>
                         <div className="input-currency-wrapper">
                           <input 
                             type="number" 
@@ -603,7 +643,7 @@ function App() {
 
                     <div className="form-canvas-row">
                       <div className="form-canvas-group">
-                        <label className="canvas-label">{sCopy.form.remainingPrice}</label>
+                        <label className="canvas-label">{sCopy.form.remainingPrice} *</label>
                         <div className="input-currency-wrapper">
                           <input 
                             type="number" 
@@ -618,7 +658,7 @@ function App() {
                       </div>
 
                       <div className="form-canvas-group">
-                        <label className="canvas-label">{sCopy.form.nextInstallment}</label>
+                        <label className="canvas-label">{sCopy.form.nextInstallment} *</label>
                         <div className="input-currency-wrapper">
                           <input 
                             type="number" 
@@ -630,6 +670,44 @@ function App() {
                           <span className="currency-tag">{isArabic ? 'ج.م' : 'EGP'}</span>
                         </div>
                         {formData.nextInstallment && <span className="number-live-helper">{formatNumberLive(formData.nextInstallment)}</span>}
+                      </div>
+                    </div>
+
+                    <div className="form-canvas-row">
+                      <div className="form-canvas-group">
+                        <label className="canvas-label">{sCopy.form.contractYear} *</label>
+                        <CustomSelect
+                          required
+                          options={[
+                            { value: '2015', label: '2015' },
+                            { value: '2016', label: '2016' },
+                            { value: '2017', label: '2017' },
+                            { value: '2018', label: '2018' },
+                            { value: '2019', label: '2019' },
+                            { value: '2020', label: '2020' },
+                            { value: '2021', label: '2021' },
+                            { value: '2022', label: '2022' },
+                            { value: '2023', label: '2023' },
+                            { value: '2024', label: '2024' },
+                            { value: '2025', label: '2025' },
+                            { value: '2026', label: '2026' },
+                          ]}
+                          value={formData.contractYear}
+                          onChange={(val) => handleInputChange('contractYear', val)}
+                          placeholder={isArabic ? "اختر سنة التعاقد" : "Select Contract Year"}
+                          hasError={showErrors && !formData.contractYear}
+                        />
+                      </div>
+
+                      <div className="form-canvas-group">
+                        <label className="canvas-label">{sCopy.form.nextInstallmentDate} *</label>
+                        <input
+                          type="date"
+                          required
+                          value={formData.nextInstallmentDate}
+                          onChange={(e) => handleInputChange('nextInstallmentDate', e.target.value)}
+                          className={`premium-canvas-input ${showErrors && !formData.nextInstallmentDate ? 'canvas-input-error' : ''}`}
+                        />
                       </div>
                     </div>
 
@@ -670,13 +748,48 @@ function App() {
                         </div>
                       </div>
                     </div>
+
+                    <div className="maintenance-box-container">
+                      <div 
+                        className={`interactive-seal-checkbox ${formData.maintenancePaid ? 'active' : ''}`}
+                        onClick={() => {
+                          const nextVal = !formData.maintenancePaid
+                          handleInputChange('maintenancePaid', nextVal)
+                          if (!nextVal) handleInputChange('maintenanceAmount', '')
+                        }}
+                      >
+                        <div className="seal-box">
+                          {formData.maintenancePaid && <Check size={14} />}
+                        </div>
+                        <div className="seal-text-content">
+                          <strong>{sCopy.form.maintenancePaid}</strong>
+                        </div>
+                      </div>
+
+                      {formData.maintenancePaid && (
+                        <div className="maintenance-amount-field" style={{ marginTop: '14px', animation: 'selectMenuFade 200ms ease' }}>
+                          <label className="canvas-label">{sCopy.form.maintenanceAmount} *</label>
+                          <div className="input-currency-wrapper">
+                            <input 
+                              type="number" 
+                              required
+                              value={formData.maintenanceAmount} 
+                              onChange={(e) => handleInputChange('maintenanceAmount', e.target.value)} 
+                              className={`premium-canvas-input ${showErrors && !formData.maintenanceAmount ? 'canvas-input-error' : ''}`}
+                            />
+                            <span className="currency-tag">{isArabic ? 'ج.م' : 'EGP'}</span>
+                          </div>
+                          {formData.maintenanceAmount && <span className="number-live-helper">{formatNumberLive(formData.maintenanceAmount)}</span>}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 )}
 
                 {step === 3 && (
                   <div className="form-canvas-fields">
                     <div className="form-canvas-group">
-                      <label className="canvas-label">{sCopy.form.name}</label>
+                      <label className="canvas-label">{sCopy.form.name} *</label>
                       <input 
                         type="text" 
                         required
@@ -689,7 +802,7 @@ function App() {
 
                     <div className="form-canvas-row">
                       <div className="form-canvas-group">
-                        <label className="canvas-label">{sCopy.form.phone}</label>
+                        <label className="canvas-label">{sCopy.form.phone} *</label>
                         <input 
                           type="tel" 
                           required
@@ -701,7 +814,7 @@ function App() {
                       </div>
 
                       <div className="form-canvas-group">
-                        <label className="canvas-label">{sCopy.form.email}</label>
+                        <label className="canvas-label">{sCopy.form.email} *</label>
                         <input 
                           type="email" 
                           required
@@ -710,6 +823,55 @@ function App() {
                           onChange={(e) => handleInputChange('email', e.target.value)} 
                           className={`premium-canvas-input ${showErrors && !formData.email ? 'canvas-input-error' : ''}`}
                         />
+                      </div>
+                    </div>
+
+                    <div className="form-canvas-group">
+                      <label className="canvas-label">{isArabic ? 'توثيق مستندات الوحدة' : 'Verification Documents'}</label>
+                      <span className="field-hint" style={{ marginBottom: '12px', display: 'block' }}>{sCopy.form.uploadHint}</span>
+                      
+                      <div className="upload-grid-container">
+                        {/* Contract Upload */}
+                        <div className={`upload-card-box ${formData.contractFile ? 'has-file' : ''} ${showErrors && !formData.contractFile ? 'upload-error' : ''}`}>
+                          <input 
+                            type="file" 
+                            id="contract-file" 
+                            accept=".pdf,image/*"
+                            style={{ display: 'none' }}
+                            onChange={(e) => {
+                              const file = e.target.files?.[0] || null
+                              handleInputChange('contractFile', file)
+                            }}
+                          />
+                          <label htmlFor="contract-file" className="upload-card-label">
+                            <FileUp className="upload-icon" size={20} />
+                            <strong>{sCopy.form.uploadContract} *</strong>
+                            <p className="file-name-indicator">
+                              {formData.contractFile ? formData.contractFile.name : (isArabic ? 'اضغط لرفع الملف (PDF أو صورة)' : 'Click to upload (PDF/Image)')}
+                            </p>
+                          </label>
+                        </div>
+
+                        {/* Receipts Upload */}
+                        <div className={`upload-card-box ${formData.receiptsFile ? 'has-file' : ''}`}>
+                          <input 
+                            type="file" 
+                            id="receipts-file" 
+                            accept=".pdf,image/*"
+                            style={{ display: 'none' }}
+                            onChange={(e) => {
+                              const file = e.target.files?.[0] || null
+                              handleInputChange('receiptsFile', file)
+                            }}
+                          />
+                          <label htmlFor="receipts-file" className="upload-card-label">
+                            <FileUp className="upload-icon" size={20} />
+                            <strong>{sCopy.form.uploadReceipts}</strong>
+                            <p className="file-name-indicator">
+                              {formData.receiptsFile ? formData.receiptsFile.name : (isArabic ? 'اضغط لرفع الملف (PDF أو صورة)' : 'Click to upload (PDF/Image)')}
+                            </p>
+                          </label>
+                        </div>
                       </div>
                     </div>
 
