@@ -18,7 +18,7 @@ import {
   Heart,
 } from 'lucide-react'
 import './App.css'
-import { safqaAssetKeys, safqaAssets } from './config/safqaAssets'
+import { safqaAssets } from './config/safqaAssets'
 import { safqaLandingCopy } from './features/landing/safqaLandingCopy'
 import type { Locale } from './features/landing/safqaLandingTypes'
 
@@ -587,33 +587,26 @@ function App() {
           </div>
         </section>
 
-        {/* ─── PROCESS SECTION ─── */}
+        {/* ─── PROCESS SECTION — Clean Centered Steps Grid (No Image) ─── */}
         <section className="process-section" id="process">
-          <div className="process-image">
-            <img src={safqaAssets[safqaAssetKeys.about]} alt={copy.process.title} />
-            <div className="process-mosaic" aria-hidden="true">
-              <img src={safqaAssets[safqaAssetKeys.listingOne]} alt="" />
-              <img src={safqaAssets[safqaAssetKeys.listingTwo]} alt="" />
-              <img src={safqaAssets[safqaAssetKeys.listingThree]} alt="" />
+          <div className="process-inner section-frame">
+            <div className="section-heading section-heading--centered">
+              <span className="eyebrow">{copy.process.eyebrow}</span>
+              <h2 className="luxury-serif">{copy.process.title}</h2>
+              <p>{copy.process.body}</p>
             </div>
-            <div className="process-document" aria-hidden="true">
-              {copy.process.items.map((item) => (
-                <span key={item.title}>{item.title}</span>
-              ))}
-            </div>
-          </div>
-          <div className="process-copy">
-            <SectionHeading eyebrow={copy.process.eyebrow} title={copy.process.title} body={copy.process.body} />
-            <div className="process-list">
+            
+            <div className="process-cards-grid">
               {copy.process.items.map((item, index) => {
                 const Icon = processIcons[index]
                 return (
-                  <article key={item.title} className="process-item-row">
-                    <span className="process-item-icon-box"><Icon size={21} /></span>
-                    <div>
-                      <h2 className="luxury-serif">{item.title}</h2>
-                      <p>{item.body}</p>
+                  <article key={item.title} className="process-card">
+                    <div className="process-card-header">
+                      <span className="process-card-num">0{index + 1}</span>
+                      <span className="process-card-icon-box"><Icon size={22} /></span>
                     </div>
+                    <h3 className="luxury-serif">{item.title}</h3>
+                    <p>{item.body}</p>
                   </article>
                 )
               })}
