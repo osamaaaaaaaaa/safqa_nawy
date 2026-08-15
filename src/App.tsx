@@ -12,7 +12,6 @@ import {
   MapPin,
   Search,
   ShieldCheck,
-  Sparkles,
   Calculator,
   Lock,
   Heart,
