@@ -589,10 +589,6 @@ function App() {
                   ? `وفر ${savedVal.toLocaleString('ar-EG')} ج.م` 
                   : `Save ${savedVal.toLocaleString('en-US')} EGP`
 
-                const whatsappMessage = isArabic
-                  ? encodeURIComponent(`مرحباً صفقة، أنا مهتم بالفرصة المعروضة في الكتالوج: "${item.title}" في ${item.location} بسعر ${item.price} ج.م. أريد طلب فحص المستندات والتعاقد.`)
-                  : encodeURIComponent(`Hello Safqa, I am interested in the catalog opportunity: "${item.title}" in ${item.location} for ${item.price} EGP. I would like to request a document and contract inspection.`)
-
                 return (
                   <div className="opp-card-modern" key={item.title}>
                     <div className="opp-card-img-wrapper">
@@ -2179,10 +2175,6 @@ function App() {
               const formattedSaved = isArabic 
                 ? `وفر ${savedVal.toLocaleString('ar-EG')} ج.م` 
                 : `Save ${savedVal.toLocaleString('en-US')} EGP`
-
-              const whatsappMessage = isArabic
-                ? encodeURIComponent(`مرحباً صفقة، أنا مهتم بالفرصة: "${item.title}" في ${item.location} بسعر ${item.price} ج.م. أريد طلب فحص المستندات والتعاقد.`)
-                : encodeURIComponent(`Hello Safqa, I am interested in the opportunity: "${item.title}" in ${item.location} for ${item.price} EGP. I would like to request a document and contract inspection.`)
 
               return (
                 <div className="opp-card-modern" key={item.title}>
