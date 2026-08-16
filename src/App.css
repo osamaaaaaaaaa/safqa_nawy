@@ -5753,10 +5753,35 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 0.9rem;
   }
 
+  .property-gallery-slider {
+    margin-left: -12px !important;
+    margin-right: -12px !important;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  .gallery-slide-item {
+    flex: 0 0 86% !important;
+    height: 220px !important;
+    border-radius: var(--radius-sm) !important;
+  }
+
   .specs-card-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-    padding: 20px 16px;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 12px !important;
+    padding: 16px 12px !important;
+  }
+
+  .spec-cell {
+    gap: 4px !important;
+  }
+
+  .spec-cell-label {
+    font-size: 0.68rem !important;
+  }
+
+  .spec-cell-val {
+    font-size: 0.85rem !important;
   }
 
   .property-section-box {
