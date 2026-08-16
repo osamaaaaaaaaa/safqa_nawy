@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../../../../core/controllers/locale_controller.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../shared/widgets/animated_tap.dart';
 import '../../../../shared/widgets/broker_page.dart';
 import '../../../../shared/widgets/broker_section_header.dart';
 import '../../../../shared/widgets/metric_card.dart';
@@ -11,6 +12,8 @@ import '../../../../shared/widgets/status_pill.dart';
 import '../../../deals/data/repositories/deals_repository.dart';
 import '../../../explore/data/repositories/projects_repository.dart';
 import '../../../leads/data/repositories/leads_repository.dart';
+import '../../../transfer/presentation/pages/create_resale_page.dart';
+import '../../../profile/presentation/pages/safqa_comparison_page.dart';
 
 class BrokerHomePage extends StatelessWidget {
   const BrokerHomePage({super.key});
@@ -21,11 +24,14 @@ class BrokerHomePage extends StatelessWidget {
     final projects = const ProjectsRepository().featuredProjects();
     final leads = const LeadsRepository().activeLeads();
     final deals = const DealsRepository().activeDeals();
+    final isAr = Get.locale?.languageCode == 'ar';
 
     return BrokerPage(
       children: [
         _TopBar(localeController: localeController),
         _HeroPanel(activeDeals: deals.length, activeLeads: leads.length),
+        
+        // Main metrics row
         Row(
           children: [
             Expanded(
@@ -47,6 +53,32 @@ class BrokerHomePage extends StatelessWidget {
             ),
           ],
         ),
+
+        // Quick Actions Row
+        Row(
+          children: [
+            Expanded(
+              child: _QuickActionCard(
+                label: isAr ? 'إدراج وحدة للبيع' : 'List Unit for Sale',
+                subtitle: isAr ? 'أضف فرصة تنازل جديدة' : 'Add resale transfer',
+                icon: Icons.add_circle_rounded,
+                color: AppColors.gold,
+                onTap: () => Get.to(() => const CreateResalePage()),
+              ),
+            ),
+            const SizedBox(width: AppSpacing.sm),
+            Expanded(
+              child: _QuickActionCard(
+                label: isAr ? 'مزايا ومقارنة صفقة' : 'Why Safqa?',
+                subtitle: isAr ? 'دليل صفقة vs التقليدي' : 'Safqa vs Traditional',
+                icon: Icons.bar_chart_rounded,
+                color: AppColors.emerald,
+                onTap: () => Get.to(() => const SafqaComparisonPage()),
+              ),
+            ),
+          ],
+        ),
+
         BrokerSectionHeader(
           title: 'home.featured'.tr,
           action: 'common.view_all'.tr,
@@ -339,6 +371,74 @@ class _PipelineRow extends StatelessWidget {
         ),
         Text(value, style: Theme.of(context).textTheme.titleMedium),
       ],
+    );
+  }
+}
+
+class _QuickActionCard extends StatelessWidget {
+  const _QuickActionCard({
+    required this.label,
+    required this.subtitle,
+    required this.icon,
+    required this.color,
+    required this.onTap,
+  });
+
+  final String label;
+  final String subtitle;
+  final IconData icon;
+  final Color color;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedTap(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        decoration: BoxDecoration(
+          color: AppColors.paper,
+          borderRadius: BorderRadius.circular(22),
+          border: Border.all(color: AppColors.border),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.01),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(icon, color: color, size: 20),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Text(
+              label,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                  ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              subtitle,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontSize: 10,
+                  ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
