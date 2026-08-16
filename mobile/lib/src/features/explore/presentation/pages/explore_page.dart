@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../core/controllers/settings_controller.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../shared/widgets/animated_tap.dart';
 import '../../../../shared/widgets/broker_page.dart';
@@ -27,6 +28,7 @@ class _ExplorePageState extends State<ExplorePage> {
     final isAr = Get.locale?.languageCode == 'ar';
     final projects = const ProjectsRepository().featuredProjects();
     final resaleUnits = const ResaleRepository().featuredResaleUnits();
+    final settingsController = Get.find<SettingsController>();
 
     final filteredResale = resaleUnits.where((unit) {
       if (searchQuery.isEmpty) return true;
@@ -55,7 +57,7 @@ class _ExplorePageState extends State<ExplorePage> {
           ),
         ),
 
-        // Tabs Selector Row (Luxury Capsule)
+        // Tabs Selector Row (Capsule Navigation)
         Container(
           padding: const EdgeInsets.all(6),
           decoration: BoxDecoration(
@@ -76,38 +78,54 @@ class _ExplorePageState extends State<ExplorePage> {
                 child: _TabCapsule(
                   label: isAr ? 'إطلاقات المطورين' : 'Developer Launches',
                   isActive: activeTab == 1,
-                  onTap: () => setState(() => setState(() => activeTab = 1)),
+                  onTap: () => setState(() => activeTab = 1),
                 ),
               ),
             ],
           ),
         ),
 
-        // Grid Content (UX change: Dual-column grid for resale or clean product layout)
-        if (activeTab == 0) ...[
-          if (filteredResale.isEmpty)
-            _EmptyState(isAr: isAr)
-          else
-            GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-                childAspectRatio: 0.76,
-              ),
-              itemCount: filteredResale.length,
-              itemBuilder: (context, index) {
-                return _ResaleGridCard(unit: filteredResale[index], isAr: isAr);
-              },
-            ),
-        ] else ...[
-          if (filteredProjects.isEmpty)
-            _EmptyState(isAr: isAr)
-          else
-            ...filteredProjects.map((p) => _ProjectRowCard(project: p, isAr: isAr)),
-        ],
+        // Dual-Column Financial Grid (Obx bound for hiding commissions dynamically)
+        Obx(
+          () {
+            final hidePayout = settingsController.clientMode.value;
+
+            if (activeTab == 0) {
+              if (filteredResale.isEmpty) {
+                return _EmptyState(isAr: isAr);
+              }
+              return GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                  childAspectRatio: 0.74,
+                ),
+                itemCount: filteredResale.length,
+                itemBuilder: (context, index) {
+                  return _ResaleGridCard(
+                    unit: filteredResale[index],
+                    isAr: isAr,
+                    hidePayout: hidePayout,
+                  );
+                },
+              );
+            } else {
+              if (filteredProjects.isEmpty) {
+                return _EmptyState(isAr: isAr);
+              }
+              return Column(
+                children: filteredProjects.map((p) => _ProjectRowCard(
+                  project: p,
+                  isAr: isAr,
+                  hidePayout: hidePayout,
+                )).toList(),
+              );
+            }
+          },
+        ),
       ],
     );
   }
@@ -172,10 +190,15 @@ class _TabCapsule extends StatelessWidget {
 }
 
 class _ResaleGridCard extends StatelessWidget {
-  const _ResaleGridCard({required this.unit, required this.isAr});
+  const _ResaleGridCard({
+    required this.unit,
+    required this.isAr,
+    required this.hidePayout,
+  });
 
   final ResaleUnit unit;
   final bool isAr;
+  final bool hidePayout;
 
   @override
   Widget build(BuildContext context) {
@@ -190,15 +213,14 @@ class _ResaleGridCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header Image/Color Box placeholder with details overlaid
             Expanded(
               flex: 4,
               child: Container(
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
                     colors: [AppColors.ink, Color(0xFF1E293B)],
                   ),
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
                 ),
                 padding: const EdgeInsets.all(12),
                 child: Column(
@@ -231,8 +253,6 @@ class _ResaleGridCard extends StatelessWidget {
                 ),
               ),
             ),
-
-            // Content Area
             Expanded(
               flex: 5,
               child: Padding(
@@ -247,17 +267,11 @@ class _ResaleGridCard extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-
-                    // Inline specifications
                     Row(
                       children: [
                         const Icon(Icons.hotel_rounded, color: AppColors.gold, size: 12),
                         const SizedBox(width: 3),
                         Text('${unit.bedrooms}', style: const TextStyle(fontSize: 10, color: AppColors.muted)),
-                        const SizedBox(width: 8),
-                        const Icon(Icons.bathtub_rounded, color: AppColors.gold, size: 12),
-                        const SizedBox(width: 3),
-                        Text('${unit.bathrooms}', style: const TextStyle(fontSize: 10, color: AppColors.muted)),
                         const SizedBox(width: 8),
                         const Icon(Icons.square_foot_rounded, color: AppColors.gold, size: 12),
                         const SizedBox(width: 3),
@@ -265,9 +279,13 @@ class _ResaleGridCard extends StatelessWidget {
                       ],
                     ),
 
-                    const Divider(height: 8),
+                    if (!hidePayout)
+                      Text(
+                        unit.commission,
+                        style: const TextStyle(color: AppColors.emerald, fontWeight: FontWeight.bold, fontSize: 10),
+                      ),
 
-                    // Financial metrics
+                    const Divider(height: 4),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -305,15 +323,21 @@ class _ResaleGridCard extends StatelessWidget {
 }
 
 class _ProjectRowCard extends StatelessWidget {
-  const _ProjectRowCard({required this.project, required this.isAr});
+  const _ProjectRowCard({
+    required this.project,
+    required this.isAr,
+    required this.hidePayout,
+  });
 
   final Project project;
   final bool isAr;
+  final bool hidePayout;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
         color: AppColors.paper,
         borderRadius: BorderRadius.circular(24),
@@ -348,19 +372,20 @@ class _ProjectRowCard extends StatelessWidget {
               ],
             ),
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                project.commission,
-                style: const TextStyle(color: AppColors.emerald, fontWeight: FontWeight.bold, fontSize: 14),
-              ),
-              Text(
-                isAr ? 'عمولة التوزيع' : 'Commission',
-                style: const TextStyle(color: AppColors.muted, fontSize: 9),
-              ),
-            ],
-          )
+          if (!hidePayout)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  project.commission,
+                  style: const TextStyle(color: AppColors.emerald, fontWeight: FontWeight.bold, fontSize: 14),
+                ),
+                Text(
+                  isAr ? 'عمولة التوزيع' : 'Commission',
+                  style: const TextStyle(color: AppColors.muted, fontSize: 9),
+                ),
+              ],
+            )
         ],
       ),
     );

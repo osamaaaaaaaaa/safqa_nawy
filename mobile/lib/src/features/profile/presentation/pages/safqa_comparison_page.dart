@@ -40,7 +40,7 @@ class SafqaComparisonPage extends StatelessWidget {
             const SizedBox(height: AppSpacing.sm),
             _PitchCard(
               index: '01',
-              title: isAr ? 'أمان قانوني كامل 🛡️' : '100% Legal Safety 🛡️',
+              title: isAr ? 'أمان قانوني كامل' : '100% Legal Safety',
               desc: isAr
                   ? 'العقود والوصولات المرفوعة يتم مراجعتها وتدقيقها بالكامل من قبل الإدارة القانونية لصفقة قبل قبول العرض.'
                   : 'All contracts and payment receipts are audited by Safqa legal desk before the resale offer is listed.',
@@ -48,7 +48,7 @@ class SafqaComparisonPage extends StatelessWidget {
             const SizedBox(height: AppSpacing.sm),
             _PitchCard(
               index: '02',
-              title: isAr ? 'سرعة فائقة (متوسط 9 أيام) ⚡' : 'Speed (9 Days Average) ⚡',
+              title: isAr ? 'سرعة فائقة (متوسط 9 أيام)' : 'Speed (9 Days Average)',
               desc: isAr
                   ? 'نوفر قاعدة مشترين فوريين جاهزين بالكاش مع مطابقة سريعة للمطور العقاري دون ضياع أشهر في البحث التقليدي.'
                   : 'We match buyers with ready cash instantly and fast-track developer approvals without wasting months.',
@@ -56,7 +56,7 @@ class SafqaComparisonPage extends StatelessWidget {
             const SizedBox(height: AppSpacing.sm),
             _PitchCard(
               index: '03',
-              title: isAr ? 'عمولة منخفضة وواضحة 💸' : 'Lowest Transparent Commission 💸',
+              title: isAr ? 'عمولة منخفضة وواضحة' : 'Lowest Transparent Commission',
               desc: isAr
                   ? 'عمولة إغلاق صفقات التنازل منخفضة جداً وواضحة للطرفين وبدون أي مصاريف خفية.'
                   : 'Low closing commission rates, clear splits, and no hidden expenses for both buyer and seller.',
@@ -85,7 +85,7 @@ class _ComparisonHero extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const StatusPill(label: 'معيار المقارنة العقارية 📊', color: AppColors.gold),
+          const StatusPill(label: 'معيار المقارنة العقارية', color: AppColors.gold),
           const SizedBox(height: AppSpacing.md),
           Text(
             isAr

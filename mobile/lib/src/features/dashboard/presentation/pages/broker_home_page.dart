@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'dart:math' as math;
 
 import '../../../../core/controllers/locale_controller.dart';
+import '../../../../core/controllers/settings_controller.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../shared/widgets/animated_tap.dart';
@@ -29,120 +31,108 @@ class BrokerHomePage extends StatefulWidget {
 }
 
 class _BrokerHomePageState extends State<BrokerHomePage> {
-  double maxCashFilter = 5.0; // In Millions EGP
+  // Calculator States
+  double contractPrice = 4.5; // In Millions EGP
+  double premiumPaid = 0.5; // In Millions EGP
 
   @override
   Widget build(BuildContext context) {
     final localeController = Get.find<LocaleController>();
+    final settingsController = Get.find<SettingsController>();
     final leads = const LeadsRepository().activeLeads();
     final deals = const DealsRepository().activeDeals();
     final wallet = const WalletRepository();
     final resaleUnits = const ResaleRepository().featuredResaleUnits();
     final isAr = Get.locale?.languageCode == 'ar';
 
-    // Filter units based on the interactive cash budget slider
-    final filteredUnits = resaleUnits.where((unit) {
-      // Parse numeric cash required from string (e.g. "EGP 2.4M" -> 2.4)
-      final cleanVal = unit.cashRequired
-          .replaceAll('EGP', '')
-          .replaceAll('ج.م', '')
-          .replaceAll('M', '')
-          .replaceAll('مليون', '')
-          .trim();
-      final numericCash = double.tryParse(cleanVal) ?? 0.0;
-      return numericCash <= maxCashFilter;
-    }).toList();
+    // Calculate dynamic values for the calculator console
+    final calculatedCash = contractPrice * 0.4 + premiumPaid; // Assuming 40% paid to date + premium
+    final marketPrice = contractPrice * 1.2; // Assuming current market is 20% higher than original contract
+    final estimatedSavings = marketPrice - (contractPrice + premiumPaid);
 
     return BrokerPage(
       children: [
-        // 1. Landing Page Navbar
+        // 1. Technical Navbar (No emojis)
         FadeInEntrance(
           index: 0,
           child: _LandingNavbar(localeController: localeController),
         ),
         const SizedBox(height: AppSpacing.sm),
 
-        // 2. Blueprint Slogan Hero Panel with custom painted architectural guides
+        // 2. Command Hub Header: Custom Painted Gauge + Slogan (Outside the box UX)
         FadeInEntrance(
           index: 1,
-          child: _HeroBlueprintLandingSection(isAr: isAr),
+          child: _CommandHubHero(isAr: isAr),
         ),
         const SizedBox(height: AppSpacing.md),
 
-        // 3. Platform Stats Strip with animated numbers counting up
+        // 3. Platform Stats Strip (Dynamic animated tickers)
         FadeInEntrance(
           index: 2,
           child: _PlatformStatsStrip(isAr: isAr),
         ),
         const SizedBox(height: AppSpacing.md),
 
-        // 4. Interactive Cash Budget Slider Ruler (UX differentiator: Dynamic sliding filter)
+        // 4. Immersive Escrow & savings Calculator Console (UX differentiator)
         FadeInEntrance(
           index: 3,
-          child: _InteractiveBudgetSlider(
-            currentValue: maxCashFilter,
-            onChanged: (val) {
-              setState(() {
-                maxCashFilter = val;
-              });
-            },
+          child: _EscrowCalculatorConsole(
+            contractPrice: contractPrice,
+            premiumPaid: premiumPaid,
+            calculatedCash: calculatedCash,
+            estimatedSavings: estimatedSavings,
+            onContractChanged: (val) => setState(() => contractPrice = val),
+            onPremiumChanged: (val) => setState(() => premiumPaid = val),
             isAr: isAr,
           ),
         ),
         const SizedBox(height: AppSpacing.md),
 
-        // 5. "عايز تبيع؟" Wizard Selling CTA Banner
+        // 5. Want to Sell CTA card
         FadeInEntrance(
           index: 4,
-          child: _SellWizardBanner(isAr: isAr),
+          child: _SellWizardCTA(isAr: isAr),
         ),
         const SizedBox(height: AppSpacing.md),
 
-        // 6. Featured Resale Opportunities Catalog (Filtered dynamically with entrance transitions)
+        // 6. Featured Resale opportunities
         FadeInEntrance(
           index: 5,
           child: BrokerSectionHeader(
-            title: isAr
-                ? 'فرص التنازل المتاحة حالياً (${filteredUnits.length}) 💎'
-                : 'Available Resale Opportunities (${filteredUnits.length}) 💎',
+            title: isAr ? 'فرص التنازل العقاري الحالية' : 'Current Resale Portfolio',
           ),
         ),
-        if (filteredUnits.isEmpty)
-          FadeInEntrance(
-            index: 6,
-            child: _EmptyState(isAr: isAr),
-          )
-        else
-          _ResaleCatalogGrid(resaleUnits: filteredUnits, isAr: isAr),
+        _ResaleCatalogGrid(resaleUnits: resaleUnits, isAr: isAr, settingsController: settingsController),
         const SizedBox(height: AppSpacing.md),
 
-        // 7. Interactive Traditional vs Safqa Comparison Section
+        // 7. Technical Comparison Rows (No emojis)
         FadeInEntrance(
-          index: 7,
+          index: 6,
           child: BrokerSectionHeader(
             title: isAr ? 'لماذا منصة صفقة؟' : 'Why Safqa Resale?',
           ),
         ),
         FadeInEntrance(
-          index: 8,
+          index: 7,
           child: _ComparisonPanel(isAr: isAr),
         ),
         const SizedBox(height: AppSpacing.md),
 
-        // 8. Broker Workspace Quick Overview
+        // 8. Broker Workspace Overview Panel
         FadeInEntrance(
-          index: 9,
+          index: 8,
           child: BrokerSectionHeader(
-            title: isAr ? 'لوحة أعمالي كبروكر معتمد 💼' : 'My Certified Workspace 💼',
+            title: isAr ? 'لوحة أعمالي كبروكر معتمد' : 'My Certified Workspace',
           ),
         ),
         FadeInEntrance(
-          index: 10,
+          index: 9,
           child: _WorkspaceOverviewCard(
             leadsCount: leads.length,
             dealsCount: deals.length,
             balance: wallet.availableBalance,
             isAr: isAr,
+            settingsController: settingsController,
           ),
         ),
         const SizedBox(height: 30),
@@ -203,87 +193,125 @@ class _LandingNavbar extends StatelessWidget {
   }
 }
 
-class _HeroBlueprintLandingSection extends StatelessWidget {
-  const _HeroBlueprintLandingSection({required this.isAr});
+class _CommandHubHero extends StatelessWidget {
+  const _CommandHubHero({required this.isAr});
 
   final bool isAr;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: AppColors.paper,
         borderRadius: BorderRadius.circular(28),
         border: Border.all(color: AppColors.border),
       ),
-      child: CustomPaint(
-        painter: _BlueprintPainter(),
-        child: Padding(
-          padding: const EdgeInsets.all(28.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const StatusPill(label: 'عقود تنازل موثقة 🛡️', color: AppColors.emerald),
-              const SizedBox(height: 16),
-              Text(
-                isAr
-                    ? 'بيع وتنازل عن وحدتك العقارية بأسرع وقت وأمان كامل'
-                    : 'Sell & Transfer Your Property Scans Safely & Instantly',
-                style: const TextStyle(
-                  color: AppColors.ink,
-                  fontSize: 22,
-                  fontWeight: FontWeight.w900,
-                  height: 1.35,
+      child: Row(
+        children: [
+          Expanded(
+            flex: 3,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                StatusPill(
+                  label: isAr ? 'توثيق رسمي' : 'Verified Escrow',
+                  color: AppColors.emerald,
                 ),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                isAr
-                    ? 'نطابق البائع بالمشتري فوراً، ونتحقق من كافة المستندات والوصولات قانونياً، وننهي إجراءات المطور في 9 أيام فقط.'
-                    : 'We match buyers and sellers, verify documents legally, and close developer approvals in 9 days.',
-                style: const TextStyle(color: AppColors.muted, fontSize: 12, height: 1.55),
-              ),
-            ],
+                const SizedBox(height: 12),
+                Text(
+                  isAr
+                      ? 'بوابة التنازل والتسجيل العقاري الآمنة'
+                      : 'Secure Resale & Title Escrow Gate',
+                  style: const TextStyle(
+                    color: AppColors.ink,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w900,
+                    height: 1.35,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  isAr
+                      ? 'مطابقة المشترين والتحقق من المستندات قانونياً وإغلاق الإجراءات في 9 أيام فقط.'
+                      : 'Matching buyers, legal contract verification, and developer closing in 9 days.',
+                  style: const TextStyle(color: AppColors.muted, fontSize: 11, height: 1.5),
+                ),
+              ],
+            ),
           ),
-        ),
+          const SizedBox(width: 16),
+          // Circular gauge painter representing Trust score
+          Expanded(
+            flex: 2,
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 84,
+                  width: 84,
+                  child: CustomPaint(
+                    painter: _GaugePainter(),
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                            '98%',
+                            style: TextStyle(
+                              color: AppColors.gold,
+                              fontWeight: FontWeight.w900,
+                              fontSize: 18,
+                            ),
+                          ),
+                          Text(
+                            isAr ? 'تقييم الأمان' : 'Trust Score',
+                            style: const TextStyle(color: AppColors.muted, fontSize: 8),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
 }
 
-// Beautiful Custom Painter to draw technical architectural gridlines + corner crosshairs
-class _BlueprintPainter extends CustomPainter {
+class _GaugePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = AppColors.gold.withValues(alpha: 0.04)
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = size.width / 2;
+
+    // Background track circle
+    final trackPaint = Paint()
+      ..color = AppColors.border
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 0.8;
+      ..strokeWidth = 5.0;
 
-    // Draw vertical architectural lines
-    const int linesCount = 8;
-    final double stepX = size.width / linesCount;
-    for (int i = 1; i < linesCount; i++) {
-      canvas.drawLine(Offset(i * stepX, 0), Offset(i * stepX, size.height), paint);
-    }
+    canvas.drawCircle(center, radius - 4, trackPaint);
 
-    // Draw corner technical crosshairs "+"
-    final crossPaint = Paint()
-      ..color = AppColors.gold.withValues(alpha: 0.15)
-      ..strokeWidth = 1.2;
+    // Active arc represent 98%
+    final activePaint = Paint()
+      ..color = AppColors.gold
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = 6.0;
 
-    const double crossSize = 12.0;
+    const startAngle = -math.pi / 2;
+    const sweepAngle = 2 * math.pi * 0.98;
 
-    void drawCross(Offset offset) {
-      canvas.drawLine(Offset(offset.dx - crossSize, offset.dy), Offset(offset.dx + crossSize, offset.dy), crossPaint);
-      canvas.drawLine(Offset(offset.dx, offset.dy - crossSize), Offset(offset.dx, offset.dy + crossSize), crossPaint);
-    }
-
-    drawCross(const Offset(16, 16));
-    drawCross(Offset(size.width - 16, 16));
-    drawCross(Offset(16, size.height - 16));
-    drawCross(Offset(size.width - 16, size.height - 16));
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius - 4),
+      startAngle,
+      sweepAngle,
+      false,
+      activePaint,
+    );
   }
 
   @override
@@ -304,7 +332,7 @@ class _PlatformStatsStrip extends StatelessWidget {
             valueWidget: AnimatedTicker(
               targetValue: 9,
               suffix: isAr ? ' أيام' : ' Days',
-              style: const TextStyle(color: AppColors.gold, fontWeight: FontWeight.w900, fontSize: 14),
+              style: const TextStyle(color: AppColors.gold, fontWeight: FontWeight.w900, fontSize: 13),
             ),
             label: isAr ? 'متوسط الإغلاق' : 'Avg Close',
           ),
@@ -315,9 +343,9 @@ class _PlatformStatsStrip extends StatelessWidget {
             valueWidget: const AnimatedTicker(
               targetValue: 100,
               suffix: '%',
-              style: TextStyle(color: AppColors.gold, fontWeight: FontWeight.w900, fontSize: 14),
+              style: TextStyle(color: AppColors.gold, fontWeight: FontWeight.w900, fontSize: 13),
             ),
-            label: isAr ? 'أوراق موثقة' : 'Verified Docs',
+            label: isAr ? 'توثيق قانوني' : 'Legal Audited',
           ),
         ),
         const SizedBox(width: 8),
@@ -326,7 +354,7 @@ class _PlatformStatsStrip extends StatelessWidget {
             valueWidget: const AnimatedTicker(
               targetValue: 0,
               suffix: '%',
-              style: TextStyle(color: AppColors.gold, fontWeight: FontWeight.w900, fontSize: 14),
+              style: TextStyle(color: AppColors.gold, fontWeight: FontWeight.w900, fontSize: 13),
             ),
             label: isAr ? 'عمولة مشتري' : 'Buyer Fees',
           ),
@@ -366,61 +394,103 @@ class _StatPillCard extends StatelessWidget {
   }
 }
 
-class _InteractiveBudgetSlider extends StatelessWidget {
-  const _InteractiveBudgetSlider({
-    required this.currentValue,
-    required this.onChanged,
+class _EscrowCalculatorConsole extends StatelessWidget {
+  const _EscrowCalculatorConsole({
+    required this.contractPrice,
+    required this.premiumPaid,
+    required this.calculatedCash,
+    required this.estimatedSavings,
+    required this.onContractChanged,
+    required this.onPremiumChanged,
     required this.isAr,
   });
 
-  final double currentValue;
-  final ValueChanged<double> onChanged;
+  final double contractPrice;
+  final double premiumPaid;
+  final double calculatedCash;
+  final double estimatedSavings;
+  final ValueChanged<double> onContractChanged;
+  final ValueChanged<double> onPremiumChanged;
   final bool isAr;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(18),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: AppColors.paper,
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(26),
         border: Border.all(color: AppColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              const Icon(Icons.calculate_rounded, color: AppColors.gold, size: 20),
+              const SizedBox(width: 8),
               Text(
-                isAr ? 'تصفية الميزانية المطلوبة كاش' : 'Cash Required Budget Filter',
-                style: const TextStyle(color: AppColors.ink, fontWeight: FontWeight.bold, fontSize: 12),
-              ),
-              Text(
-                isAr
-                    ? 'حد أقصى: ${currentValue.toStringAsFixed(1)} مليون ج.م'
-                    : 'Max: ${currentValue.toStringAsFixed(1)}M EGP',
-                style: const TextStyle(color: AppColors.gold, fontWeight: FontWeight.w900, fontSize: 11),
-              ),
+                isAr ? 'حاسبة التنازل والوفر المالي المباشر' : 'Escrow Yield & Savings Calculator',
+                style: const TextStyle(color: AppColors.ink, fontWeight: FontWeight.w900, fontSize: 13),
+              )
             ],
           ),
-          const SizedBox(height: 6),
-          SliderTheme(
-            data: SliderTheme.of(context).copyWith(
-              activeTrackColor: AppColors.gold,
-              inactiveTrackColor: AppColors.border,
-              thumbColor: AppColors.gold,
-              overlayColor: AppColors.gold.withValues(alpha: 0.1),
-              thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8),
-              trackHeight: 3,
-            ),
-            child: Slider(
-              min: 1.0,
-              max: 6.0,
-              divisions: 10,
-              value: currentValue,
-              onChanged: onChanged,
-            ),
+          const SizedBox(height: 16),
+
+          // Slider 1: Contract price
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(isAr ? 'سعر العقد الأصلي' : 'Contract Price', style: const TextStyle(color: AppColors.muted, fontSize: 11)),
+              Text('${contractPrice.toStringAsFixed(1)}M EGP', style: const TextStyle(color: AppColors.ink, fontWeight: FontWeight.bold, fontSize: 11)),
+            ],
+          ),
+          Slider(
+            min: 2.0,
+            max: 10.0,
+            divisions: 16,
+            activeColor: AppColors.gold,
+            value: contractPrice,
+            onChanged: onContractChanged,
+          ),
+
+          // Slider 2: Premium paid
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(isAr ? 'قيمة الأوفر المطلوب' : 'Premium Requested', style: const TextStyle(color: AppColors.muted, fontSize: 11)),
+              Text('${premiumPaid.toStringAsFixed(1)}M EGP', style: const TextStyle(color: AppColors.ink, fontWeight: FontWeight.bold, fontSize: 11)),
+            ],
+          ),
+          Slider(
+            min: 0.0,
+            max: 3.0,
+            divisions: 12,
+            activeColor: AppColors.gold,
+            value: premiumPaid,
+            onChanged: onPremiumChanged,
+          ),
+
+          const Divider(height: 20),
+
+          // Results Output Dashboard
+          Row(
+            children: [
+              Expanded(
+                child: _OutputCell(
+                  label: isAr ? 'الكاش المطلوبة' : 'Cash Required',
+                  value: '${calculatedCash.toStringAsFixed(2)}M EGP',
+                  isGold: true,
+                ),
+              ),
+              Expanded(
+                child: _OutputCell(
+                  label: isAr ? 'الوفر للمشتري' : 'Buyer Savings',
+                  value: '${estimatedSavings.toStringAsFixed(2)}M EGP',
+                  isGold: false,
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -428,8 +498,38 @@ class _InteractiveBudgetSlider extends StatelessWidget {
   }
 }
 
-class _SellWizardBanner extends StatelessWidget {
-  const _SellWizardBanner({required this.isAr});
+class _OutputCell extends StatelessWidget {
+  const _OutputCell({required this.label, required this.value, required this.isGold});
+
+  final String label;
+  final String value;
+  final bool isGold;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          value,
+          style: TextStyle(
+            color: isGold ? AppColors.gold : AppColors.emerald,
+            fontWeight: FontWeight.w900,
+            fontSize: 16,
+          ),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          label,
+          style: const TextStyle(color: AppColors.muted, fontSize: 10, fontWeight: FontWeight.bold),
+        )
+      ],
+    );
+  }
+}
+
+class _SellWizardCTA extends StatelessWidget {
+  const _SellWizardCTA({required this.isAr});
 
   final bool isAr;
 
@@ -438,13 +538,8 @@ class _SellWizardBanner extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [AppColors.ink, Color(0xFF1E293B)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: AppColors.ink,
         borderRadius: BorderRadius.circular(26),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.08), width: 1.5),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -457,38 +552,45 @@ class _SellWizardBanner extends StatelessWidget {
                   color: AppColors.gold.withValues(alpha: 0.15),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.sell_rounded, color: AppColors.gold, size: 20),
+                child: const Icon(Icons.add_home_work_rounded, color: AppColors.gold, size: 20),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  isAr ? 'عايز تبيع وتتنازل عن وحدتك؟' : 'Want to Sell Your Unit?',
-                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14),
+                  isAr ? 'أدرج وحدة للتنازل والبيع العقاري' : 'List Resale Property Escrow',
+                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 13),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
           Text(
             isAr
-                ? 'أدرج تفاصيل عقارك والمبالغ المدفوعة، وارفع صورة العقد للتوثيق القانوني فوراً لعرضها على المشترين المستعدين بالكاش.'
-                : 'List your property specs, remaining installments, and upload contract scan for instant buyer matching.',
+                ? 'أدخل بيانات عقارك وتواريخ الأقساط، وارفع نسخة من العقد للتحقق والتوثيق القانوني وعرضها للمشترين.'
+                : 'Input compound details, remaining developer dues, and upload contract scans for title escrow verification.',
             style: const TextStyle(color: Colors.white70, fontSize: 11, height: 1.5),
           ),
           const SizedBox(height: 16),
           AnimatedTap(
             onTap: () => Get.to(() => const CreateResalePage()),
             child: Container(
-              height: 46,
+              height: 44,
               width: double.infinity,
               decoration: BoxDecoration(
                 color: AppColors.gold,
                 borderRadius: BorderRadius.circular(12),
               ),
               alignment: Alignment.center,
-              child: Text(
-                isAr ? 'ابدأ إدراج وحدتك الآن 🚀' : 'Start Resale Listing 🚀',
-                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.rocket_launch_rounded, color: Colors.white, size: 14),
+                  const SizedBox(width: 6),
+                  Text(
+                    isAr ? 'ابدأ إدراج وحدتك الآن' : 'Start Resale wizard',
+                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12),
+                  ),
+                ],
               ),
             ),
           )
@@ -499,122 +601,139 @@ class _SellWizardBanner extends StatelessWidget {
 }
 
 class _ResaleCatalogGrid extends StatelessWidget {
-  const _ResaleCatalogGrid({required this.resaleUnits, required this.isAr});
+  const _ResaleCatalogGrid({
+    required this.resaleUnits,
+    required this.isAr,
+    required this.settingsController,
+  });
 
   final List<ResaleUnit> resaleUnits;
   final bool isAr;
+  final SettingsController settingsController;
 
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 10,
-        mainAxisSpacing: 10,
-        childAspectRatio: 0.76,
-      ),
-      itemCount: resaleUnits.length,
-      itemBuilder: (context, index) {
-        final unit = resaleUnits[index];
-        return FadeInEntrance(
-          index: index,
-          child: AnimatedTap(
-            onTap: () => Get.to(() => ResaleDetailsPage(unit: unit)),
-            child: Container(
-              decoration: BoxDecoration(
-                color: AppColors.paper,
-                borderRadius: BorderRadius.circular(22),
-                border: Border.all(color: AppColors.border),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    flex: 4,
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        gradient: LinearGradient(colors: [AppColors.ink, Color(0xFF1E293B)]),
-                        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
-                      ),
-                      padding: const EdgeInsets.all(10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              StatusPill(label: unit.unitCode, color: AppColors.gold),
-                              const Icon(Icons.verified_user_rounded, color: AppColors.emerald, size: 14),
-                            ],
-                          ),
-                          Text(
-                            unit.projectName,
-                            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
+    return Obx(
+      () => GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+          childAspectRatio: 0.74,
+        ),
+        itemCount: resaleUnits.length,
+        itemBuilder: (context, index) {
+          final unit = resaleUnits[index];
+          final hidePayout = settingsController.clientMode.value;
+
+          return FadeInEntrance(
+            index: index,
+            child: AnimatedTap(
+              onTap: () => Get.to(() => ResaleDetailsPage(unit: unit)),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: AppColors.paper,
+                  borderRadius: BorderRadius.circular(22),
+                  border: Border.all(color: AppColors.border),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      flex: 4,
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(colors: [AppColors.ink, Color(0xFF1E293B)]),
+                          borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
+                        ),
+                        padding: const EdgeInsets.all(10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                StatusPill(label: unit.unitCode, color: AppColors.gold),
+                                const Icon(Icons.verified_user_rounded, color: AppColors.emerald, size: 14),
+                              ],
+                            ),
+                            Text(
+                              unit.projectName,
+                              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  Expanded(
-                    flex: 5,
-                    child: Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            unit.title,
-                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: AppColors.ink),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          Row(
-                            children: [
-                              const Icon(Icons.hotel_rounded, color: AppColors.gold, size: 11),
-                              const SizedBox(width: 3),
-                              Text('${unit.bedrooms}', style: const TextStyle(fontSize: 9, color: AppColors.muted)),
-                              const SizedBox(width: 6),
-                              const Icon(Icons.square_foot_rounded, color: AppColors.gold, size: 11),
-                              const SizedBox(width: 3),
-                              Text('${unit.area.toInt()}m²', style: const TextStyle(fontSize: 9, color: AppColors.muted)),
-                            ],
-                          ),
-                          const Divider(height: 6),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(isAr ? 'المطلوب كاش' : 'Cash Required', style: const TextStyle(color: AppColors.muted, fontSize: 7)),
-                                  Text(unit.cashRequired.split(' ').first, style: const TextStyle(color: AppColors.gold, fontWeight: FontWeight.bold, fontSize: 10)),
-                                ],
+                    Expanded(
+                      flex: 5,
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              unit.title,
+                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: AppColors.ink),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            Row(
+                              children: [
+                                const Icon(Icons.hotel_rounded, color: AppColors.gold, size: 11),
+                                const SizedBox(width: 3),
+                                Text('${unit.bedrooms}', style: const TextStyle(fontSize: 9, color: AppColors.muted)),
+                                const SizedBox(width: 6),
+                                const Icon(Icons.square_foot_rounded, color: AppColors.gold, size: 11),
+                                const SizedBox(width: 3),
+                                Text('${unit.area.toInt()}m²', style: const TextStyle(fontSize: 9, color: AppColors.muted)),
+                              ],
+                            ),
+
+                            // Payout Badge (hidden dynamically)
+                            if (!hidePayout)
+                              Text(
+                                unit.commission,
+                                style: const TextStyle(color: AppColors.emerald, fontWeight: FontWeight.bold, fontSize: 10),
                               ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Text(isAr ? 'الوفر' : 'Savings', style: const TextStyle(color: AppColors.muted, fontSize: 7)),
-                                  Text(unit.marketSavings.split(' ').first, style: const TextStyle(color: AppColors.emerald, fontWeight: FontWeight.bold, fontSize: 10)),
-                                ],
-                              )
-                            ],
-                          )
-                        ],
+
+                            const Divider(height: 4),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(isAr ? 'الكاش' : 'Cash Req', style: const TextStyle(color: AppColors.muted, fontSize: 7)),
+                                    Text(unit.cashRequired.split(' ').first, style: const TextStyle(color: AppColors.gold, fontWeight: FontWeight.bold, fontSize: 10)),
+                                  ],
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Text(isAr ? 'الوفر' : 'Savings', style: const TextStyle(color: AppColors.muted, fontSize: 7)),
+                                    Text(unit.marketSavings.split(' ').first, style: const TextStyle(color: AppColors.emerald, fontWeight: FontWeight.bold, fontSize: 10)),
+                                  ],
+                                )
+                              ],
+                            )
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }
@@ -634,19 +753,19 @@ class _ComparisonPanel extends StatelessWidget {
             _ComparisonRow(
               title: isAr ? 'أمان المستندات' : 'Doc Verification',
               trad: isAr ? 'مخاطرة عالية' : 'Risky / slow',
-              safqa: isAr ? 'مراجعة قانونية 🛡️' : 'Legally Audited 🛡️',
+              safqa: isAr ? 'توثيق معتمد' : 'Legal Audited',
             ),
             const Divider(height: 16),
             _ComparisonRow(
               title: isAr ? 'سرعة التنازل' : 'Escrow Speed',
               trad: isAr ? 'أشهر طويلة' : 'Months',
-              safqa: isAr ? '9 أيام فقط ⚡' : 'Only 9 Days ⚡',
+              safqa: isAr ? '9 أيام فقط' : 'Only 9 Days',
             ),
             const Divider(height: 16),
             _ComparisonRow(
               title: isAr ? 'العمولات' : 'Commission',
               trad: isAr ? 'مزدوجة ومخفية' : 'Hidden / high',
-              safqa: isAr ? 'منخفضة ومحددة 💸' : 'Low & clear 💸',
+              safqa: isAr ? 'منخفضة ومحددة' : 'Low & clear',
             ),
           ],
         ),
@@ -689,61 +808,65 @@ class _WorkspaceOverviewCard extends StatelessWidget {
     required this.dealsCount,
     required this.balance,
     required this.isAr,
+    required this.settingsController,
   });
 
   final int leadsCount;
   final int dealsCount;
   final String balance;
   final bool isAr;
+  final SettingsController settingsController;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: AppColors.paper,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppColors.border),
-      ),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _OverviewItem(
-                label: isAr ? 'العملاء النشطين' : 'Active Leads',
-                value: '$leadsCount',
-                onTap: () => Get.to(() => const LeadsPage()),
-              ),
-              Container(height: 30, width: 1, color: AppColors.border),
-              _OverviewItem(
-                label: isAr ? 'العقود والصفقات' : ' escrow Deals',
-                value: '$dealsCount',
-                onTap: () => Get.to(() => const DealsPage()),
-              ),
-              Container(height: 30, width: 1, color: AppColors.border),
-              _OverviewItem(
-                label: isAr ? 'المحفظة والأرباح' : 'Wallet Balance',
-                value: balance.split(' ').first,
-                onTap: () => Get.to(() => const WalletPage()),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          const Divider(height: 1),
-          const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.verified_user_rounded, color: AppColors.gold, size: 16),
-              const SizedBox(width: 6),
-              Text(
-                isAr ? 'أنت وسيط معتمد ومرخص لدى منصة صفقة 🛡️' : 'You are a certified Safqa escrow broker 🛡️',
-                style: const TextStyle(color: AppColors.gold, fontSize: 10, fontWeight: FontWeight.bold),
-              )
-            ],
-          )
-        ],
+    return Obx(
+      () => Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: AppColors.paper,
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(color: AppColors.border),
+        ),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _OverviewItem(
+                  label: isAr ? 'العملاء النشطين' : 'Active Leads',
+                  value: '$leadsCount',
+                  onTap: () => Get.to(() => const LeadsPage()),
+                ),
+                Container(height: 30, width: 1, color: AppColors.border),
+                _OverviewItem(
+                  label: isAr ? 'العقود والصفقات' : 'Escrow Deals',
+                  value: '$dealsCount',
+                  onTap: () => Get.to(() => const DealsPage()),
+                ),
+                Container(height: 30, width: 1, color: AppColors.border),
+                _OverviewItem(
+                  label: isAr ? 'المحفظة والأرباح' : 'Wallet Balance',
+                  value: settingsController.clientMode.value ? '***' : balance.split(' ').first,
+                  onTap: () => Get.to(() => const WalletPage()),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            const Divider(height: 1),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.verified_user_rounded, color: AppColors.gold, size: 16),
+                const SizedBox(width: 6),
+                Text(
+                  isAr ? 'أنت وسيط معتمد ومرخص لدى منصة صفقة' : 'You are a certified Safqa escrow broker',
+                  style: const TextStyle(color: AppColors.gold, fontSize: 10, fontWeight: FontWeight.bold),
+                )
+              ],
+            )
+          ],
+        ),
       ),
     );
   }
@@ -771,30 +894,6 @@ class _OverviewItem extends StatelessWidget {
             label,
             style: const TextStyle(color: AppColors.muted, fontSize: 9, fontWeight: FontWeight.bold),
           )
-        ],
-      ),
-    );
-  }
-}
-
-class _EmptyState extends StatelessWidget {
-  const _EmptyState({required this.isAr});
-
-  final bool isAr;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 24),
-      alignment: Alignment.center,
-      child: Column(
-        children: [
-          const Icon(Icons.money_off_rounded, size: 36, color: AppColors.muted),
-          const SizedBox(height: 8),
-          Text(
-            isAr ? 'لا توجد فرص في حدود هذه الميزانية' : 'No opportunities within this budget',
-            style: const TextStyle(color: AppColors.muted, fontSize: 11, fontWeight: FontWeight.bold),
-          ),
         ],
       ),
     );

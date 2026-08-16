@@ -65,7 +65,7 @@ class _ResaleDetailsPageState extends State<ResaleDetailsPage> {
             // Header Info
             Row(
               children: [
-                const StatusPill(label: 'متحقق بالمستندات 🛡️', color: AppColors.emerald),
+                const StatusPill(label: 'مستندات موثقة', color: AppColors.emerald),
                 const SizedBox(width: AppSpacing.sm),
                 StatusPill(label: widget.unit.unitCode, color: AppColors.gold),
               ],
@@ -321,7 +321,7 @@ class _BrokerCommissionCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
-              isAr ? 'محمي 🔒' : 'Locked 🔒',
+              isAr ? 'محمي' : 'Locked',
               style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
             ),
           )
@@ -580,7 +580,7 @@ class _InstallmentLedgerSection extends StatelessWidget {
           const Divider(height: 20),
           _LedgerRow(
             label: isAr ? 'وديعة الصيانة' : 'Maintenance Deposit',
-            value: isAr ? 'مدفوعة بالكامل ✅' : 'Paid in Full ✅',
+            value: isAr ? 'مدفوعة بالكامل' : 'Paid in Full',
             highlight: false,
           ),
         ],

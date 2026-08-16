@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/controllers/locale_controller.dart';
+import '../../../../core/controllers/settings_controller.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../shared/widgets/broker_page.dart';
@@ -15,14 +16,37 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final localeController = Get.find<LocaleController>();
+    final settingsController = Get.find<SettingsController>();
     final isAr = localeController.isArabic;
 
     return BrokerPage(
       children: [
-        // Luxury welcome card & Ticket Stub referral code
+        // Luxury welcome card
         _ProfileHeader(localeController: localeController, isAr: isAr),
         
         BrokerSectionHeader(title: 'profile.tools'.tr),
+
+        // Interactive Client Demo Mode Toggle (UX differentiator: Hides commissions globally)
+        Obx(
+          () => _ToggleSettingTile(
+            icon: Icons.visibility_off_rounded,
+            title: isAr ? 'وضع عرض العميل' : 'Client Demo Mode',
+            subtitle: isAr
+                ? 'إخفاء العمولات والأرباح تلقائياً لعرض الوحدات للعميل بأمان'
+                : 'Hide payouts globally for safe client presentations',
+            value: settingsController.clientMode.value,
+            onChanged: (val) {
+              settingsController.toggleClientMode();
+              Get.snackbar(
+                isAr ? 'وضع عرض العميل' : 'Client Demo Mode',
+                settingsController.clientMode.value
+                    ? (isAr ? 'تم إخفاء العمولات في كامل التطبيق' : 'All commissions are hidden globally')
+                    : (isAr ? 'تم إظهار العمولات مجدداً' : 'Commissions are visible again'),
+                snackPosition: SnackPosition.BOTTOM,
+              );
+            },
+          ),
+        ),
         
         _PremiumToolTile(
           icon: Icons.bar_chart_rounded,
@@ -101,13 +125,6 @@ class _ProfileHeader extends StatelessWidget {
         color: AppColors.paper,
         borderRadius: BorderRadius.circular(28),
         border: Border.all(color: AppColors.border),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.01),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          )
-        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -164,7 +181,7 @@ class _ProfileHeader extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 20),
-          // Referral Ticket Stub visual representation
+          // Referral Ticket Stub
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
@@ -238,13 +255,6 @@ class _PremiumToolTile extends StatelessWidget {
           color: AppColors.paper,
           borderRadius: BorderRadius.circular(22),
           border: Border.all(color: AppColors.border),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.005),
-              blurRadius: 8,
-              offset: const Offset(0, 4),
-            )
-          ],
         ),
         child: Row(
           children: [
@@ -280,6 +290,73 @@ class _PremiumToolTile extends StatelessWidget {
             const Icon(Icons.arrow_forward_ios_rounded, color: AppColors.muted, size: 14),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _ToggleSettingTile extends StatelessWidget {
+  const _ToggleSettingTile({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.value,
+    required this.onChanged,
+  });
+
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final bool value;
+  final ValueChanged<bool> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.paper,
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(color: AppColors.border),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: AppColors.gold.withValues(alpha: 0.08),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: AppColors.gold, size: 20),
+          ),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    color: AppColors.gold,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  subtitle,
+                  style: const TextStyle(color: AppColors.muted, fontSize: 10),
+                ),
+              ],
+            ),
+          ),
+          Switch(
+            value: value,
+            onChanged: onChanged,
+            activeTrackColor: AppColors.gold.withValues(alpha: 0.5),
+            activeThumbColor: AppColors.gold,
+          ),
+        ],
       ),
     );
   }

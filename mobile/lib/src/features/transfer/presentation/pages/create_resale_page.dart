@@ -54,7 +54,7 @@ class _CreateResalePageState extends State<CreateResalePage> {
                 ),
                 const SizedBox(height: AppSpacing.lg),
                 Text(
-                  isAr ? 'تم تسجيل الوحدة بنجاح 🎉' : 'Unit Registered Successfully 🎉',
+                  isAr ? 'تم تسجيل الوحدة بنجاح' : 'Unit Registered Successfully',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),
@@ -428,7 +428,7 @@ class _CreateResalePageState extends State<CreateResalePage> {
               ),
               alignment: Alignment.center,
               child: Text(
-                currentStep == 3 ? (isAr ? 'إرسال ومراجعة 🚀' : 'Submit & Review 🚀') : (isAr ? 'التالي' : 'Next'),
+                currentStep == 3 ? (isAr ? 'إرسال ومراجعة' : 'Submit & Review') : (isAr ? 'التالي' : 'Next'),
                 style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
               ),
             ),
