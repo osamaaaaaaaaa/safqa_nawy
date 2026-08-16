@@ -370,71 +370,60 @@ function App() {
         </div>
 
         <div className="catalog-filters-container section-frame">
-          <div className="filter-group">
-            <label className="filter-label">{isArabic ? 'المنطقة / الموقع' : 'Location'}</label>
-            <div className="filter-pills">
-              <button 
-                type="button" 
-                className={`filter-pill-btn ${filterLocation === 'all' ? 'active' : ''}`}
-                onClick={() => setFilterLocation('all')}
-              >
-                {isArabic ? 'كل المناطق' : 'All Regions'}
-              </button>
-              {locations.map(loc => (
-                <button 
-                  type="button" 
-                  key={loc}
-                  className={`filter-pill-btn ${filterLocation === loc ? 'active' : ''}`}
-                  onClick={() => setFilterLocation(loc)}
-                >
-                  {loc}
-                </button>
-              ))}
-            </div>
-          </div>
-
           <div className="filter-row-dropdowns">
+            
+            <div className="dropdown-filter-item">
+              <label className="filter-label">{isArabic ? 'المنطقة / الموقع' : 'Location'}</label>
+              <CustomSelect 
+                value={filterLocation}
+                onChange={setFilterLocation}
+                options={[
+                  { value: 'all', label: isArabic ? 'كل المناطق' : 'All Regions' },
+                  ...locations.map(loc => ({ value: loc, label: loc }))
+                ]}
+              />
+            </div>
+
             <div className="dropdown-filter-item">
               <label className="filter-label">{isArabic ? 'نوع العقار' : 'Property Type'}</label>
-              <select 
-                value={filterType} 
-                onChange={(e) => setFilterType(e.target.value)}
-                className="catalog-select-input"
-              >
-                <option value="all">{isArabic ? 'كل الأنواع' : 'All Types'}</option>
-                {uniqueTypes.map(t => (
-                  <option key={t.val} value={t.val}>{t.label}</option>
-                ))}
-              </select>
+              <CustomSelect 
+                value={filterType}
+                onChange={setFilterType}
+                options={[
+                  { value: 'all', label: isArabic ? 'كل الأنواع' : 'All Types' },
+                  ...uniqueTypes.map(t => ({ value: t.val, label: t.label }))
+                ]}
+              />
             </div>
 
             <div className="dropdown-filter-item">
               <label className="filter-label">{isArabic ? 'نطاق السعر' : 'Price Range'}</label>
-              <select 
-                value={filterPrice} 
-                onChange={(e) => setFilterPrice(e.target.value)}
-                className="catalog-select-input"
-              >
-                <option value="all">{isArabic ? 'كل الأسعار' : 'All Prices'}</option>
-                <option value="low">{isArabic ? 'أقل من 4 مليون ج.م' : 'Under 4M EGP'}</option>
-                <option value="mid">{isArabic ? 'من 4 إلى 8 مليون ج.م' : '4M to 8M EGP'}</option>
-                <option value="high">{isArabic ? 'أكثر من 8 مليون ج.م' : 'Above 8M EGP'}</option>
-              </select>
+              <CustomSelect 
+                value={filterPrice}
+                onChange={setFilterPrice}
+                options={[
+                  { value: 'all', label: isArabic ? 'كل الأسعار' : 'All Prices' },
+                  { value: 'low', label: isArabic ? 'أقل من 4 مليون ج.م' : 'Under 4M EGP' },
+                  { value: 'mid', label: isArabic ? 'من 4 إلى 8 مليون ج.م' : '4M to 8M EGP' },
+                  { value: 'high', label: isArabic ? 'أكثر من 8 مليون ج.م' : 'Above 8M EGP' }
+                ]}
+              />
             </div>
 
             <div className="dropdown-filter-item">
               <label className="filter-label">{isArabic ? 'ترتيب حسب' : 'Sort By'}</label>
-              <select 
-                value={sortOrder} 
-                onChange={(e) => setSortOrder(e.target.value)}
-                className="catalog-select-input"
-              >
-                <option value="default">{isArabic ? 'الافتراضي' : 'Default'}</option>
-                <option value="price-asc">{isArabic ? 'السعر: من الأقل للأعلى' : 'Price: Low to High'}</option>
-                <option value="price-desc">{isArabic ? 'السعر: من الأعلى للأقل' : 'Price: High to Low'}</option>
-                <option value="savings-desc">{isArabic ? 'الأعلى توفيراً' : 'Highest Savings'}</option>
-              </select>
+              <CustomSelect 
+                value={sortOrder}
+                onChange={setSortOrder}
+                options={[
+                  { value: 'default', label: isArabic ? 'الافتراضي' : 'Default' },
+                  { value: 'price-asc', label: isArabic ? 'السعر: من الأقل للأعلى' : 'Price: Low to High' },
+                  { value: 'price-desc', label: isArabic ? 'السعر: من الأعلى للأقل' : 'Price: High to Low' },
+                  { value: 'savings-desc', label: isArabic ? 'الأعلى توفيراً' : 'Highest Savings' }
+                ]}
+              />
             </div>
+
           </div>
         </div>
 
