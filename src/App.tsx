@@ -19,7 +19,7 @@ import {
   Check,
   ChevronDown,
   LogOut,
-  Share2,
+  Sparkles,
 } from 'lucide-react'
 import './App.css'
 
@@ -185,10 +185,6 @@ function App() {
   const [locale, setLocale] = useState<Locale>('ar')
   const [view, setView] = useState<'landing' | 'sell' | 'opportunities' | 'property-details'>('landing')
   const [activePropertyId, setActivePropertyId] = useState<string | null>(null)
-  const [bookingName, setBookingName] = useState('')
-  const [bookingPhone, setBookingPhone] = useState('')
-  const [bookingCountryCode, setBookingCountryCode] = useState('+20')
-  const [bookingSuccess, setBookingSuccess] = useState(false)
   const [step, setStep] = useState(1)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [showErrors, setShowErrors] = useState(false)
@@ -290,9 +286,6 @@ function App() {
         const id = window.location.hash.replace('#/property/', '')
         setActivePropertyId(id)
         setView('property-details')
-        setBookingSuccess(false)
-        setBookingName('')
-        setBookingPhone('')
         window.scrollTo(0, 0)
       } else {
         setView('landing')
@@ -348,314 +341,126 @@ function App() {
     }
 
     const priceVal = parseFloat(property.price.replace(/,/g, ''))
-    const remainingVal = parseFloat(property.remainingPrice.replace(/,/g, ''))
-    const marketVal = parseFloat(property.marketPrice.replace(/,/g, ''))
-    
-    // Commission is 1.25% of the price
-    const commissionVal = Math.round(priceVal * 0.0125)
-    const totalRequiredVal = priceVal + commissionVal
-    
-    // Profit = Market Price - Total Price (Price + Remaining)
-    const totalPurchaseCost = priceVal + remainingVal
-    const profitVal = marketVal - totalPurchaseCost
+    const oldPriceVal = parseFloat(property.oldPrice.replace(/,/g, ''))
+    const savedVal = oldPriceVal - priceVal
+    const formattedSaved = isArabic 
+      ? `وفر ${savedVal.toLocaleString('ar-EG')} ج.م` 
+      : `Save ${savedVal.toLocaleString('en-US')} EGP`
 
-    const formattedCommission = commissionVal.toLocaleString(isArabic ? 'ar-EG' : 'en-US')
-    const formattedTotalRequired = totalRequiredVal.toLocaleString(isArabic ? 'ar-EG' : 'en-US')
-    const formattedProfit = profitVal.toLocaleString(isArabic ? 'ar-EG' : 'en-US')
-
-    const whatsappBookingMessage = isArabic
-      ? encodeURIComponent(`مرحباً صفقة، قمت بطلب حجز الوحدة "${property.title}" (كود: ${property.unitCode}) باسمي: ${bookingName} وهاتفي: ${bookingCountryCode}${bookingPhone}. يرجى تأكيد الحجز ومراجعة التفاصيل الكاش والأقساط.`)
-      : encodeURIComponent(`Hello Safqa, I requested booking for unit "${property.title}" (Code: ${property.unitCode}) Name: ${bookingName}, Phone: ${bookingCountryCode}${bookingPhone}. Please confirm and review layout.`)
-
-    const handleCopyLink = () => {
-      navigator.clipboard.writeText(window.location.href)
-      alert(isArabic ? 'تم نسخ رابط الوحدة بنجاح!' : 'Unit link copied successfully!')
-    }
-
-    const handleBookingSubmit = (e: React.FormEvent) => {
-      e.preventDefault()
-      if (!bookingName || !bookingPhone) {
-        alert(isArabic ? 'يرجى إدخال الاسم ورقم الواتساب بالكامل.' : 'Please enter your full name and WhatsApp number.')
-        return
-      }
-      setBookingSuccess(true)
-    }
+    const whatsappMessage = isArabic
+      ? encodeURIComponent(`مرحباً صفقة، أنا مهتم بالفرصة: "${property.title}" (ID: ${property.id}) في ${property.location} بسعر ${property.price} ج.م. أريد طلب فحص المستندات والتعاقد.`)
+      : encodeURIComponent(`Hello Safqa, I am interested in the opportunity: "${property.title}" (ID: ${property.id}) in ${property.location} for ${property.price} EGP. I would like to request a document and contract inspection.`)
 
     return (
       <section className="property-details-page section-frame">
-        {/* Navigation Breadcrumb */}
-        <button 
-          type="button" 
-          className="back-to-catalog-btn mb-4"
-          onClick={(e) => {
-            e.preventDefault()
-            window.location.hash = '#/opportunities'
-            setView('opportunities')
-            window.scrollTo(0, 0)
-          }}
-        >
-          {isArabic ? <ArrowRight size={16} /> : <ArrowLeft size={16} />}
-          <span>{isArabic ? 'رجوع للفرص' : 'Back to Opportunities'}</span>
-        </button>
+        <div className="property-details-nav">
+          <a 
+            href="#/opportunities" 
+            className="back-to-catalog-btn"
+            onClick={(e) => {
+              e.preventDefault()
+              window.location.hash = '#/opportunities'
+              setView('opportunities')
+              window.scrollTo(0, 0)
+            }}
+          >
+            {isArabic ? <ArrowRight size={16} /> : <ArrowLeft size={16} />}
+            <span>{isArabic ? 'العودة للكتالوج' : 'Back to Catalog'}</span>
+          </a>
+        </div>
 
-        {/* Header Section */}
         <div className="property-details-header">
-          <div className="header-meta-row">
-            <div>
-              <h1 className="text-xl font-bold text-ink">{property.project}</h1>
-              <p className="mt-1 text-[14px] text-ink-2">
-                {property.developer} · {property.location} · {property.meta.split('/')[1]?.trim()}
-              </p>
-              <div className="mt-2">
-                <button 
-                  type="button" 
-                  onClick={() => {
-                    navigator.clipboard.writeText(property.unitCode)
-                    alert(isArabic ? 'تم نسخ كود الوحدة!' : 'Unit code copied!')
-                  }}
-                  className="group inline-flex items-center gap-1.5 rounded-lg border border-line bg-surface-2 px-2.5 py-1 text-[12px] font-semibold text-ink-2 transition-colors hover:border-primary/40 hover:text-ink"
+          <div className="header-badges">
+            <span className="opp-card-badge">{property.badge}</span>
+            <span className="opp-card-location">
+              <MapPin size={14} style={{ marginInlineEnd: '4px' }} />
+              {property.location}
+            </span>
+          </div>
+          <h1 className="luxury-serif">{property.title}</h1>
+        </div>
+
+        <div className="property-gallery">
+          <div className="gallery-main">
+            <img src={safqaAssets[property.gallery[0]]} alt={property.title} />
+          </div>
+          <div className="gallery-thumbnails">
+            {property.gallery.slice(1).map((imgKey, idx) => (
+              <div key={idx} className="gallery-thumb">
+                <img src={safqaAssets[imgKey]} alt={property.title} />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="property-details-body">
+          <div className="property-info-column">
+            <div className="property-key-stats">
+              <div className="stat-box">
+                <span className="stat-label">{isArabic ? 'المساحة' : 'Area'}</span>
+                <span className="stat-value">{property.meta.split('/')[0].trim()}</span>
+              </div>
+              <div className="stat-box">
+                <span className="stat-label">{isArabic ? 'النوع' : 'Type'}</span>
+                <span className="stat-value">{property.meta.split('/')[1]?.trim()}</span>
+              </div>
+              <div className="stat-box">
+                <span className="stat-label">{isArabic ? 'غرف نوم' : 'Bedrooms'}</span>
+                <span className="stat-value">{property.bedrooms}</span>
+              </div>
+              <div className="stat-box">
+                <span className="stat-label">{isArabic ? 'حمامات' : 'Bathrooms'}</span>
+                <span className="stat-value">{property.bathrooms}</span>
+              </div>
+            </div>
+
+            <div className="property-description">
+              <h3>{isArabic ? 'عن الوحدة' : 'About the Property'}</h3>
+              <p>{property.description}</p>
+            </div>
+
+            <div className="property-amenities">
+              <h3>{isArabic ? 'المميزات والمرافق' : 'Amenities & Features'}</h3>
+              <ul className="amenities-list">
+                {property.amenities.map((amenity, idx) => (
+                  <li key={idx}><Check size={16} className="amenity-icon" /> {amenity}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <div className="property-financial-column">
+            <div className="financial-card">
+              <div className="fin-row old-price-row">
+                <span>{isArabic ? 'سعر المطور الأساسي' : 'Original Developer Price'}</span>
+                <del>{property.oldPrice} {isArabic ? 'ج.م' : 'EGP'}</del>
+              </div>
+              <div className="fin-row new-price-row">
+                <span>{isArabic ? 'سعر صفقة الحصري' : 'Safqa Exclusive Price'}</span>
+                <strong>{property.price} {isArabic ? 'ج.م' : 'EGP'}</strong>
+              </div>
+              <div className="fin-savings-tag">
+                <Sparkles size={14} className="save-icon" />
+                <span>{formattedSaved}</span>
+              </div>
+
+              <div className="fin-card-actions">
+                <a 
+                  href={`https://wa.me/201018595959?text=${whatsappMessage}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="fin-whatsapp-btn"
                 >
-                  <span className="tnum" dir="ltr">{property.unitCode}</span>
-                  <span aria-hidden="true" className="text-[11px] text-ink-2/60 group-hover:text-primary">⧉</span>
-                </button>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2 mt-3 sm:mt-0">
-              <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[13px] font-semibold leading-none bg-info-bg text-info">
-                {isArabic ? 'متحقق بالمستندات' : 'Verified Documents'}
-              </span>
-              <span className="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1 text-[13px] font-extrabold text-primary shadow-[0_2px_8px_rgba(0,0,0,0.15)] ring-1 ring-black/5">
-                ⭐ {isArabic ? 'مميزة' : 'Featured'}
-              </span>
-              <button 
-                type="button"
-                onClick={handleCopyLink}
-                className="flex h-10 cursor-pointer items-center justify-center rounded-xl border border-line px-3.5 text-sm font-semibold text-ink-2 hover:bg-surface-2 hover:text-ink transition-colors"
-                title={isArabic ? 'مشاركة الوحدة' : 'Share Property'}
-              >
-                <Share2 size={16} style={{ marginInlineEnd: '6px' }} />
-                {isArabic ? 'شارك' : 'Share'}
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Image Showcase */}
-        <div className="property-gallery-horizontal mt-5">
-          <div className="gallery-scroll-container">
-            {property.gallery.map((imgKey, idx) => (
-              <div key={idx} className="gallery-slide-card">
-                <img src={safqaAssets[imgKey]} alt={`${property.title} - ${idx+1}`} />
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Detailed Specs Grid */}
-        <div className="mt-5 grid grid-cols-2 gap-3 rounded-xl border border-line bg-surface p-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-          <div>
-            <p className="text-[12px] text-ink-2">{isArabic ? 'النوع' : 'Type'}</p>
-            <p className="mt-0.5 font-bold text-ink">{property.meta.split('/')[1]?.trim()}</p>
-          </div>
-          <div>
-            <p className="text-[12px] text-ink-2">{isArabic ? 'المساحة' : 'Area'}</p>
-            <p className="mt-0.5 font-bold text-ink">{property.meta.split('/')[0]?.trim()}</p>
-          </div>
-          <div>
-            <p className="text-[12px] text-ink-2">{isArabic ? 'الدور' : 'Floor'}</p>
-            <p className="mt-0.5 font-bold text-ink">{property.floor}</p>
-          </div>
-          <div>
-            <p className="text-[12px] text-ink-2">{isArabic ? 'غرف' : 'Bedrooms'}</p>
-            <p className="mt-0.5 font-bold text-ink">{property.bedrooms}</p>
-          </div>
-          <div>
-            <p className="text-[12px] text-ink-2">{isArabic ? 'حمامات' : 'Bathrooms'}</p>
-            <p className="mt-0.5 font-bold text-ink">{property.bathrooms}</p>
-          </div>
-          <div>
-            <p className="text-[12px] text-ink-2">{isArabic ? 'التشطيب' : 'Finishing'}</p>
-            <p className="mt-0.5 font-bold text-ink">{isArabic ? 'كامل سوبر لوكس' : 'Fully Finished'}</p>
-          </div>
-          <div>
-            <p className="text-[12px] text-ink-2">{isArabic ? 'حالة الاستلام' : 'Delivery Status'}</p>
-            <p className="mt-0.5 font-bold text-ink">{isArabic ? 'تحت الإنشاء' : 'Under Construction'}</p>
-          </div>
-          <div>
-            <p className="text-[12px] text-ink-2">{isArabic ? 'سنة التعاقد' : 'Contract Year'}</p>
-            <p className="mt-0.5 font-bold text-ink">{property.contractYear}</p>
-          </div>
-          <div>
-            <p className="text-[12px] text-ink-2">{isArabic ? 'سعر المتر بالتعاقد' : 'Meter Price'}</p>
-            <p className="mt-0.5 font-bold text-ink">{property.meterPrice} {isArabic ? 'ج.م' : 'EGP'}</p>
-          </div>
-        </div>
-
-        {/* Amenities & Description */}
-        <div className="mt-5 rounded-xl border border-line bg-surface p-5">
-          <div className="flex flex-wrap gap-2 mb-3">
-            {property.amenities.map((amenity, idx) => (
-              <span key={idx} className="rounded-full bg-surface-2 px-3 py-1 text-[13px] text-ink">
-                ✓ {amenity}
-              </span>
-            ))}
-          </div>
-          <p className="text-[15px] leading-relaxed text-ink-2">{property.description}</p>
-        </div>
-
-        {/* Pricing & Booking Breakdown */}
-        <div className="property-details-layout-split mt-6">
-          
-          <div className="property-financial-details-col">
-            {/* Cash Highlight Card */}
-            <div className="cash-highlight-card">
-              <p className="text-[13px] text-ink-2">{isArabic ? 'المطلوب كاش دلوقتي' : 'Cash Required Now'}</p>
-              <p className="tnum mt-1 text-[32px] font-bold leading-tight text-ink">
-                {property.price} {isArabic ? 'ج.م' : 'EGP'}
-              </p>
-              <p className="mt-1 text-[13px] font-semibold text-primary">
-                {isArabic ? 'ده نفس المبلغ اللي دفعه صاحب الوحدة — بدون أي أوفر' : 'Exactly what the owner paid - 0% overprice'}
-              </p>
-              <div className="mt-3 w-fit rounded-md bg-success-bg px-3 py-2">
-                <p className="tnum text-[15px] font-bold text-success">
-                  {isArabic ? 'مكسبك عن سعر السوق الحالي' : 'Profit over market value'}: +{formattedProfit} {isArabic ? 'ج.م' : 'EGP'}
-                </p>
-                <p className="mt-0.5 text-[12px] text-success/80">
-                  {isArabic ? 'سعر السوق اليوم' : 'Market Price Today'}: {property.marketPrice} {isArabic ? 'ج.م' : 'EGP'} · {isArabic ? 'بعد خصم عمولة صفقة' : 'After Safqa commission'}
+                  {isArabic ? 'طلب فحص المستندات والتعاقد' : 'Request Inspection & Contract'}
+                  {arrowIcon}
+                </a>
+                <p className="fin-guarantee-note">
+                  <ShieldCheck size={14} />
+                  {isArabic ? 'كافة المستندات موثقة ومراجعة قانونياً' : 'All documents are legally verified'}
                 </p>
               </div>
             </div>
-
-            {/* Financial Details Table */}
-            <dl className="mt-5 flex flex-col gap-0 rounded-xl border border-line bg-surface">
-              <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-b border-line px-5 py-3.5">
-                <dt className="text-[14px] text-ink-2">{isArabic ? 'المتبقي للمطور (هتكمّله أقساط)' : 'Remaining to Developer'}</dt>
-                <dd className="tnum font-bold text-ink">{property.remainingPrice} {isArabic ? 'ج.م' : 'EGP'}</dd>
-              </div>
-              <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-b border-line px-5 py-3.5">
-                <dt className="text-[14px] text-ink-2">{isArabic ? 'القسط' : 'Installment'}</dt>
-                <dd className="tnum font-bold text-ink">{property.installment} {isArabic ? 'ج.م' : 'EGP'} · {property.frequency}</dd>
-              </div>
-              <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-b border-line px-5 py-3.5">
-                <dt className="text-[14px] text-ink-2">{isArabic ? 'الاستلام' : 'Delivery'}</dt>
-                <dd className="tnum font-bold text-ink">{property.deliveryYear}</dd>
-              </div>
-              <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-b border-line px-5 py-3.5">
-                <dt className="text-[14px] text-ink-2">{isArabic ? 'عمولة صفقة على المشتري (1.25%)' : 'Safqa Buyer Commission (1.25%)'}</dt>
-                <dd className="tnum font-bold text-ink">{formattedCommission} {isArabic ? 'ج.م' : 'EGP'}</dd>
-                <p className="w-full text-[12px] leading-relaxed text-ink-3">
-                  {isArabic 
-                    ? 'العمولة دي على المشتري بس — البايع مش بيدفع أي عمولة، وبتستحق عند إتمام التنازل بنجاح.' 
-                    : 'This commission is buyer-only - free for seller. Due only upon successful completion.'}
-                </p>
-              </div>
-              <div className="flex items-center justify-between gap-4 bg-surface-2 px-5 py-4">
-                <dt className="text-[14px] font-bold text-ink">{isArabic ? 'إجمالي المطلوب منك دلوقتي' : 'Total Layout Required Now'}</dt>
-                <dd className="tnum text-lg font-bold text-primary">{formattedTotalRequired} {isArabic ? 'ج.م' : 'EGP'}</dd>
-              </div>
-            </dl>
           </div>
-
-          <div className="property-booking-form-col">
-            {/* Booking Form Card */}
-            <div className="booking-card-form border-2 border-primary/30 bg-surface">
-              {!bookingSuccess ? (
-                <form onSubmit={handleBookingSubmit} noValidate>
-                  <h2 className="text-lg font-bold text-ink">{isArabic ? 'عايز تلحق تحجز الفرصة ديه؟' : 'Want to book this opportunity?'}</h2>
-                  <p className="mt-1 text-[13px] leading-relaxed text-ink-2">
-                    {isArabic 
-                      ? 'سيب اسمك ورقم الواتساب، وفريقنا هيكلّمك يراجع معاك المطلوب كاش والأقساط اللي بعده — بنكلّم اللي جاهز يتحرّك على الوحدة دي بالتحديد.'
-                      : 'Leave your name and WhatsApp number, and our team will contact you to review the required cash and installments.'}
-                  </p>
-                  
-                  <div className="mt-4 flex flex-col gap-4">
-                    <div className="flex flex-col gap-1.5">
-                      <label htmlFor="enq-name" className="text-sm font-semibold text-ink text-start">
-                        {isArabic ? 'الاسم بالكامل' : 'Full Name'}
-                      </label>
-                      <input 
-                        id="enq-name" 
-                        type="text" 
-                        placeholder={isArabic ? 'اسمك بالكامل' : 'Your Full Name'}
-                        className="booking-input-field"
-                        value={bookingName}
-                        onChange={(e) => setBookingName(e.target.value)}
-                        required
-                      />
-                    </div>
-                    
-                    <div className="flex flex-col gap-1.5">
-                      <label htmlFor="enq-phone" className="text-sm font-semibold text-ink text-start">
-                        {isArabic ? 'رقم الواتساب' : 'WhatsApp Number'}
-                      </label>
-                      <div dir="ltr" className="flex gap-2">
-                        <select 
-                          aria-label="Country Code" 
-                          className="booking-country-select"
-                          value={bookingCountryCode}
-                          onChange={(e) => setBookingCountryCode(e.target.value)}
-                        >
-                          <option value="+20">🇪🇬 +20</option>
-                          <option value="+966">🇸🇦 +966</option>
-                          <option value="+971">🇦🇪 +971</option>
-                          <option value="+965">🇰🇼 +965</option>
-                          <option value="+974">🇶🇦 +974</option>
-                          <option value="+973">🇧🇭 +973</option>
-                          <option value="+968">🇴🇲 +968</option>
-                        </select>
-                        <input 
-                          id="enq-phone" 
-                          type="tel" 
-                          placeholder="1012345678"
-                          className="booking-input-field flex-1"
-                          value={bookingPhone}
-                          onChange={(e) => setBookingPhone(e.target.value)}
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    <button type="submit" className="booking-submit-btn mt-2">
-                      {isArabic ? 'احجز هذه الوحدة' : 'Book This Unit'}
-                      {arrowIcon}
-                    </button>
-                  </div>
-                </form>
-              ) : (
-                <div className="booking-success-message">
-                  <div className="success-icon-box">🎉</div>
-                  <h2 className="text-lg font-bold text-ink">{isArabic ? 'تم إرسال طلب الحجز بنجاح!' : 'Booking Request Sent!'}</h2>
-                  <p className="mt-2 text-[14px] leading-relaxed text-ink-2">
-                    {isArabic 
-                      ? `شكراً ${bookingName}! تم تسجيل اهتمامك بالوحدة (${property.unitCode}). سيقوم مستشار صفقة بالتواصل معك خلال دقائق لتأكيد الحجز.`
-                      : `Thank you ${bookingName}! Your interest in unit (${property.unitCode}) has been registered. A Safqa consultant will contact you shortly.`}
-                  </p>
-                  
-                  <div className="mt-4 flex flex-col gap-3">
-                    <a 
-                      href={`https://wa.me/201018595959?text=${whatsappBookingMessage}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="booking-whatsapp-confirm-btn"
-                    >
-                      {isArabic ? 'تأكيد وحجز فوري عبر واتساب' : 'Confirm Instantly via WhatsApp'}
-                      <ArrowLeft size={16} style={{ transform: isArabic ? 'none' : 'rotate(180deg)' }} />
-                    </a>
-                    
-                    <button 
-                      type="button" 
-                      className="booking-reset-btn"
-                      onClick={() => setBookingSuccess(false)}
-                    >
-                      {isArabic ? 'تعديل البيانات' : 'Edit Details'}
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
         </div>
       </section>
     )
@@ -823,7 +628,7 @@ function App() {
                       </div>
 
                       <div className="opp-save-tag">
-                        <span className="save-icon">💎</span>
+                        <Sparkles size={14} className="save-icon" />
                         <span>{formattedSaved}</span>
                       </div>
 
@@ -2410,7 +2215,7 @@ function App() {
                     </div>
 
                     <div className="opp-save-tag">
-                      <span className="save-icon">💎</span>
+                      <Sparkles size={14} className="save-icon" />
                       <span>{formattedSaved}</span>
                     </div>
 
