@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
+import 'animated_orbs_background.dart';
 
 class BrokerPage extends StatelessWidget {
   const BrokerPage({
@@ -21,8 +22,7 @@ class BrokerPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: DecoratedBox(
-        decoration: const BoxDecoration(color: AppColors.surface),
+      child: AnimatedOrbsBackground(
         child: CustomScrollView(
           slivers: [
             SliverPadding(
