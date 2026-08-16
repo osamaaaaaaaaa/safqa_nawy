@@ -11,7 +11,6 @@ import '../../../../shared/widgets/broker_section_header.dart';
 import '../../../../shared/widgets/status_pill.dart';
 import '../../../deals/data/repositories/deals_repository.dart';
 import '../../../deals/presentation/pages/deals_page.dart';
-import '../../../explore/data/repositories/projects_repository.dart';
 import '../../../explore/data/repositories/resale_repository.dart';
 import '../../../explore/domain/entities/resale_unit.dart';
 import '../../../explore/presentation/pages/resale_details_page.dart';

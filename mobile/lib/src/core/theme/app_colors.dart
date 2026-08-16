@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 class AppColors {
   const AppColors._();
 
-  static const ink = Color(0xFFF8FAFC); // Off-white for high-readability text
-  static const muted = Color(0xFF94A3B8); // Light steel gray for secondary descriptions
-  static const surface = Color(0xFF090D16); // Ultra deep luxury black/blue for background
-  static const paper = Color(0xFF111726); // Rich deep slate for glassmorphic cards
-  static const border = Color(0xFF1E293B); // Slate border
-  static const gold = Color(0xFFF59E0B); // Radiant golden amber
-  static const emerald = Color(0xFF10B981); // Emerald green
-  static const clay = Color(0xFFEF4444); // Radiant red
-  static const navy = Color(0xFF1E293B); // Deep navy accent
+  static const ink = Color(0xFF0F172A); // Luxury Slate Dark Navy text
+  static const muted = Color(0xFF64748B); // Cool Muted Slate
+  static const surface = Color(0xFFF8FAFC); // Soft Off-white Canvas background
+  static const paper = Color(0xFFFFFFFF); // Pure White cards
+  static const border = Color(0xFFE2E8F0); // Soft light slate borders
+  static const gold = Color(0xFFD97706); // Golden Amber Accent
+  static const emerald = Color(0xFF10B981); // Emerald success accent
+  static const clay = Color(0xFFEF4444); // Clay red accent
+  static const navy = Color(0xFF334155); // Secondary navy slate
 }
