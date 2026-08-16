@@ -172,6 +172,17 @@ export type SafqaLandingCopy = {
       amenities: string[]
       bedrooms: string
       bathrooms: string
+      remainingPrice: string
+      installment: string
+      frequency: string
+      deliveryYear: string
+      unitCode: string
+      developer: string
+      project: string
+      floor: string
+      contractYear: string
+      marketPrice: string
+      meterPrice: string
     }>
   }
   process: {
