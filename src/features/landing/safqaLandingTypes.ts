@@ -165,6 +165,7 @@ export type SafqaLandingCopy = {
       oldPrice: string
       meta: string
       badge: string
+      type: string
     }>
   }
   process: {

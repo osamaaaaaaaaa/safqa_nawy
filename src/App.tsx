@@ -182,7 +182,7 @@ const countryCodes = [
 
 function App() {
   const [locale, setLocale] = useState<Locale>('ar')
-  const [view, setView] = useState<'landing' | 'sell'>('landing')
+  const [view, setView] = useState<'landing' | 'sell' | 'opportunities'>('landing')
   const [step, setStep] = useState(1)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [showErrors, setShowErrors] = useState(false)
@@ -240,6 +240,10 @@ function App() {
   const [authCountryCode, setAuthCountryCode] = useState('+20')
   const [userMenuOpen, setUserMenuOpen] = useState(false)
   const userMenuRef = useRef<HTMLDivElement>(null)
+  const [filterLocation, setFilterLocation] = useState('all')
+  const [filterType, setFilterType] = useState('all')
+  const [filterPrice, setFilterPrice] = useState('all')
+  const [sortOrder, setSortOrder] = useState('default')
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -272,6 +276,8 @@ function App() {
         setStep(1)
         setIsSubmitted(false)
         setShowErrors(false)
+      } else if (window.location.hash === '#/opportunities') {
+        setView('opportunities')
       } else {
         setView('landing')
       }
@@ -296,6 +302,227 @@ function App() {
   }
 
 
+
+  const renderOpportunitiesCatalogView = () => {
+    const rawItems = copy.opportunities.items
+
+    let filtered = rawItems.filter(item => {
+      if (filterLocation !== 'all' && item.location !== filterLocation) {
+        return false
+      }
+      if (filterType !== 'all' && item.type !== filterType) {
+        return false
+      }
+      const priceVal = parseFloat(item.price.replace(/,/g, ''))
+      if (filterPrice === 'low' && priceVal >= 4000000) {
+        return false
+      }
+      if (filterPrice === 'mid' && (priceVal < 4000000 || priceVal > 8000000)) {
+        return false
+      }
+      if (filterPrice === 'high' && priceVal <= 8000000) {
+        return false
+      }
+      return true
+    })
+
+    if (sortOrder === 'price-asc') {
+      filtered.sort((a, b) => parseFloat(a.price.replace(/,/g, '')) - parseFloat(b.price.replace(/,/g, '')))
+    } else if (sortOrder === 'price-desc') {
+      filtered.sort((a, b) => parseFloat(b.price.replace(/,/g, '')) - parseFloat(a.price.replace(/,/g, '')))
+    } else if (sortOrder === 'savings-desc') {
+      filtered.sort((a, b) => {
+        const savingsA = parseFloat(a.oldPrice.replace(/,/g, '')) - parseFloat(a.price.replace(/,/g, ''))
+        const savingsB = parseFloat(b.oldPrice.replace(/,/g, '')) - parseFloat(b.price.replace(/,/g, ''))
+        return savingsB - savingsA
+      })
+    }
+
+    const locations = Array.from(new Set(rawItems.map(item => item.location)))
+    const types = Array.from(new Set(rawItems.map(item => ({ val: item.type, label: item.meta.split('/').pop()?.trim() || item.type }))))
+    const uniqueTypes = types.filter((t, index, self) => self.findIndex(s => s.val === t.val) === index)
+
+    return (
+      <section className="catalog-page-section">
+        <div className="catalog-dashboard-header section-frame">
+          <div className="catalog-header-content">
+            <span className="eyebrow">{copy.opportunities.eyebrow}</span>
+            <h1 className="luxury-serif">
+              {isArabic ? 'كتالوج فرص التنازل العقاري' : 'Property Transfer Catalog'}
+            </h1>
+            <p className="catalog-dashboard-sub">
+              {isArabic 
+                ? 'تصفح وقارن بين الوحدات السكنية والساحلية المعروضة للتنازل مباشرة بسعر التعاقد وبدون أي أوفر'
+                : 'Browse and compare residential and coastal units offered for transfer directly at contract price without overprice'}
+            </p>
+          </div>
+        </div>
+
+        <div className="catalog-filters-container section-frame">
+          <div className="filter-group">
+            <label className="filter-label">{isArabic ? 'المنطقة / الموقع' : 'Location'}</label>
+            <div className="filter-pills">
+              <button 
+                type="button" 
+                className={`filter-pill-btn ${filterLocation === 'all' ? 'active' : ''}`}
+                onClick={() => setFilterLocation('all')}
+              >
+                {isArabic ? 'كل المناطق' : 'All Regions'}
+              </button>
+              {locations.map(loc => (
+                <button 
+                  type="button" 
+                  key={loc}
+                  className={`filter-pill-btn ${filterLocation === loc ? 'active' : ''}`}
+                  onClick={() => setFilterLocation(loc)}
+                >
+                  {loc}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="filter-row-dropdowns">
+            <div className="dropdown-filter-item">
+              <label className="filter-label">{isArabic ? 'نوع العقار' : 'Property Type'}</label>
+              <select 
+                value={filterType} 
+                onChange={(e) => setFilterType(e.target.value)}
+                className="catalog-select-input"
+              >
+                <option value="all">{isArabic ? 'كل الأنواع' : 'All Types'}</option>
+                {uniqueTypes.map(t => (
+                  <option key={t.val} value={t.val}>{t.label}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="dropdown-filter-item">
+              <label className="filter-label">{isArabic ? 'نطاق السعر' : 'Price Range'}</label>
+              <select 
+                value={filterPrice} 
+                onChange={(e) => setFilterPrice(e.target.value)}
+                className="catalog-select-input"
+              >
+                <option value="all">{isArabic ? 'كل الأسعار' : 'All Prices'}</option>
+                <option value="low">{isArabic ? 'أقل من 4 مليون ج.م' : 'Under 4M EGP'}</option>
+                <option value="mid">{isArabic ? 'من 4 إلى 8 مليون ج.م' : '4M to 8M EGP'}</option>
+                <option value="high">{isArabic ? 'أكثر من 8 مليون ج.م' : 'Above 8M EGP'}</option>
+              </select>
+            </div>
+
+            <div className="dropdown-filter-item">
+              <label className="filter-label">{isArabic ? 'ترتيب حسب' : 'Sort By'}</label>
+              <select 
+                value={sortOrder} 
+                onChange={(e) => setSortOrder(e.target.value)}
+                className="catalog-select-input"
+              >
+                <option value="default">{isArabic ? 'الافتراضي' : 'Default'}</option>
+                <option value="price-asc">{isArabic ? 'السعر: من الأقل للأعلى' : 'Price: Low to High'}</option>
+                <option value="price-desc">{isArabic ? 'السعر: من الأعلى للأقل' : 'Price: High to Low'}</option>
+                <option value="savings-desc">{isArabic ? 'الأعلى توفيراً' : 'Highest Savings'}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div className="catalog-results-grid section-frame">
+          {filtered.length > 0 ? (
+            <div className="opportunities-modern-grid">
+              {filtered.map((item) => {
+                const priceVal = parseFloat(item.price.replace(/,/g, ''))
+                const oldPriceVal = parseFloat(item.oldPrice.replace(/,/g, ''))
+                const savedVal = oldPriceVal - priceVal
+                const formattedSaved = isArabic 
+                  ? `وفر ${savedVal.toLocaleString('ar-EG')} ج.م` 
+                  : `Save ${savedVal.toLocaleString('en-US')} EGP`
+
+                const whatsappMessage = isArabic
+                  ? encodeURIComponent(`مرحباً صفقة، أنا مهتم بالفرصة المعروضة في الكتالوج: "${item.title}" في ${item.location} بسعر ${item.price} ج.م. أريد طلب فحص المستندات والتعاقد.`)
+                  : encodeURIComponent(`Hello Safqa, I am interested in the catalog opportunity: "${item.title}" in ${item.location} for ${item.price} EGP. I would like to request a document and contract inspection.`)
+
+                return (
+                  <div className="opp-card-modern" key={item.title}>
+                    <div className="opp-card-img-wrapper">
+                      <img 
+                        src={safqaAssets[item.imageKey]} 
+                        alt={item.title} 
+                        className="opp-card-img"
+                      />
+                      <span className="opp-card-badge">{item.badge}</span>
+                      <span className="opp-card-location">
+                        <MapPin size={12} style={{ marginInlineEnd: '4px' }} />
+                        {item.location}
+                      </span>
+                    </div>
+
+                    <div className="opp-card-content">
+                      <h3 className="opp-card-title luxury-serif">{item.title}</h3>
+                      
+                      <div className="opp-card-specs">
+                        {item.meta.split('/').map((spec, sIdx) => (
+                          <span className="opp-spec-badge" key={sIdx}>
+                            {spec.trim()}
+                          </span>
+                        ))}
+                      </div>
+
+                      <div className="opp-card-pricing-box">
+                        <div className="opp-pricing-item">
+                          <span className="opp-price-label">{isArabic ? 'السعر القديم للمطور' : 'Developer Price'}</span>
+                          <span className="opp-old-price">{item.oldPrice} {isArabic ? 'ج.م' : 'EGP'}</span>
+                        </div>
+                        <div className="opp-pricing-item">
+                          <span className="opp-price-label highlight-gold">{isArabic ? 'سعر صفقة (بدون أوفر)' : 'Safqa Price'}</span>
+                          <strong className="opp-new-price">{item.price} {isArabic ? 'ج.م' : 'EGP'}</strong>
+                        </div>
+                      </div>
+
+                      <div className="opp-save-tag">
+                        <span className="save-icon">💎</span>
+                        <span>{formattedSaved}</span>
+                      </div>
+
+                      <a 
+                        href={`https://wa.me/201018595959?text=${whatsappMessage}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="opp-card-cta-btn"
+                      >
+                        {isArabic ? 'طلب فحص المستندات' : 'Request File Inspection'}
+                        {arrowIcon}
+                      </a>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          ) : (
+            <div className="catalog-no-results">
+              <div className="no-results-icon-box">🔍</div>
+              <h3 className="luxury-serif">{isArabic ? 'لم نجد وحدات تطابق اختياراتك' : 'No properties match your filter'}</h3>
+              <p>
+                {isArabic 
+                  ? 'ولكن لا تقلق، يمكنك إخبارنا بميزانيتك والمنطقة المفضلة، وسنقوم بالبحث عنها فوراً من عقود التنازل المعروضة لدينا.'
+                  : 'Do not worry, tell us your budget and preferred location, and we will find matching units from our offline inventory.'}
+              </p>
+              <a 
+                href={`https://wa.me/201018595959?text=${isArabic ? encodeURIComponent('أبحث عن وحدة تنازل بمواصفات خاصة') : encodeURIComponent('I am looking for a custom property transfer opportunity')}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="opp-card-cta-btn"
+                style={{ maxWidth: '280px', margin: '20px auto 0' }}
+              >
+                {isArabic ? 'تواصل معنا على واتساب' : 'Contact Us on WhatsApp'}
+                {arrowIcon}
+              </a>
+            </div>
+          )}
+        </div>
+      </section>
+    )
+  }
 
   const renderSellView = () => {
     const sCopy = copy.sellersPage
@@ -1320,7 +1547,7 @@ function App() {
           <a href="#home">{copy.nav.home}</a>
           <a href="#decision">{copy.nav.decision}</a>
           <a href="#paths">{copy.nav.paths}</a>
-          <a href="#opportunities">{copy.nav.opportunities}</a>
+          <a href="#/opportunities">{copy.nav.opportunities}</a>
           <a href="#how-it-works">{copy.nav.howItWorks}</a>
           <a href="#process">{copy.nav.process}</a>
           <a href="#brokers">{copy.nav.brokers}</a>
@@ -1789,7 +2016,7 @@ function App() {
           <SectionHeading eyebrow={copy.opportunities.eyebrow} title={copy.opportunities.title} />
           
           <div className="opportunities-modern-grid">
-            {copy.opportunities.items.map((item) => {
+            {copy.opportunities.items.slice(0, 3).map((item) => {
               const priceVal = parseFloat(item.price.replace(/,/g, ''))
               const oldPriceVal = parseFloat(item.oldPrice.replace(/,/g, ''))
               const savedVal = oldPriceVal - priceVal
@@ -1857,6 +2084,17 @@ function App() {
               )
             })}
           </div>
+          
+          <div className="opp-view-all-container">
+            <a 
+              href="#/opportunities" 
+              className="opp-view-all-btn"
+            >
+              <span>{isArabic ? 'مشاهدة كل الفرص المتاحة (8 فرص)' : 'View All Available Opportunities (8 units)'}</span>
+              {arrowIcon}
+            </a>
+          </div>
+
           <div className="market-strip" aria-hidden="true">
             {copy.stats.map((stat) => (
               <span key={stat.label}>{stat.value} / {stat.label}</span>
@@ -1950,6 +2188,8 @@ function App() {
           </div>
         </section>
           </>
+        ) : view === 'opportunities' ? (
+          renderOpportunitiesCatalogView()
         ) : (
           renderSellView()
         )}
