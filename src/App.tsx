@@ -19,7 +19,6 @@ import {
   Check,
   ChevronDown,
   LogOut,
-  Sparkles,
 } from 'lucide-react'
 import './App.css'
 
@@ -440,7 +439,7 @@ function App() {
                 <strong>{property.price} {isArabic ? 'ج.م' : 'EGP'}</strong>
               </div>
               <div className="fin-savings-tag">
-                <Sparkles size={14} className="save-icon" />
+                <span className="save-icon">💎</span>
                 <span>{formattedSaved}</span>
               </div>
 
@@ -628,7 +627,7 @@ function App() {
                       </div>
 
                       <div className="opp-save-tag">
-                        <Sparkles size={14} className="save-icon" />
+                        <span className="save-icon">💎</span>
                         <span>{formattedSaved}</span>
                       </div>
 
@@ -2215,7 +2214,7 @@ function App() {
                     </div>
 
                     <div className="opp-save-tag">
-                      <Sparkles size={14} className="save-icon" />
+                      <span className="save-icon">💎</span>
                       <span>{formattedSaved}</span>
                     </div>
 

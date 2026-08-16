@@ -5106,7 +5106,10 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Property Details Page */
 .property-details-page {
-  padding: 40px 20px;
+  padding-top: 130px;
+  padding-bottom: 80px;
+  padding-left: 20px;
+  padding-right: 20px;
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -5134,233 +5137,205 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: 24px;
 }
 
-.header-badges {
+.header-meta-row {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+@media (min-width: 640px) {
+  .header-meta-row {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+/* Horizontal Scroll Gallery */
+.property-gallery-horizontal {
+  width: 100%;
+  margin-bottom: 30px;
+}
+
+.gallery-scroll-container {
+  display: flex;
   gap: 12px;
-  margin-bottom: 12px;
-  flex-wrap: wrap;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 10px;
+  scrollbar-width: thin;
 }
 
-.property-details-header h1 {
-  font-size: clamp(1.8rem, 4vw, 2.8rem);
-  color: var(--ink);
-  line-height: 1.2;
+.gallery-scroll-container::-webkit-scrollbar {
+  height: 6px;
 }
 
-.property-gallery {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 16px;
-  margin-bottom: 40px;
+.gallery-scroll-container::-webkit-scrollbar-thumb {
+  background: rgba(15, 23, 42, 0.1);
+  border-radius: 99px;
 }
 
-@media (min-width: 768px) {
-  .property-gallery {
-    grid-template-columns: 2fr 1fr;
+.gallery-slide-card {
+  flex: 0 0 85%;
+  height: 260px;
+  scroll-snap-align: center;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+@media (min-width: 640px) {
+  .gallery-slide-card {
+    flex: 0 0 60%;
+    height: 340px;
   }
 }
 
-.gallery-main {
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  height: 400px;
-}
-
-.gallery-main img {
+.gallery-slide-card img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.gallery-thumbnails {
-  display: grid;
-  grid-template-rows: repeat(2, 1fr);
-  gap: 16px;
-}
-
-@media (max-width: 767px) {
-  .gallery-thumbnails {
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: auto;
-    height: 150px;
-  }
-}
-
-.gallery-thumb {
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  height: 100%;
-}
-
-.gallery-thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.property-details-body {
+/* Property Split Details Grid */
+.property-details-layout-split {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 40px;
+  gap: 30px;
+  align-items: start;
 }
 
 @media (min-width: 1024px) {
-  .property-details-body {
-    grid-template-columns: 2fr 1fr;
+  .property-details-layout-split {
+    grid-template-columns: 1.7fr 1.3fr;
   }
 }
 
-.property-key-stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 16px;
-  margin-bottom: 40px;
-}
-
-.stat-box {
-  background: var(--wash);
-  padding: 20px;
-  border-radius: var(--radius-sm);
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.stat-label {
-  font-size: 0.8rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  color: var(--muted);
-  letter-spacing: 0.05em;
-}
-
-.stat-value {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--ink);
-}
-
-.property-description {
-  margin-bottom: 40px;
-}
-
-.property-description h3,
-.property-amenities h3 {
-  font-size: 1.4rem;
-  color: var(--ink);
-  margin-bottom: 20px;
-  font-family: var(--font-serif);
-}
-
-.property-description p {
-  font-size: 1.05rem;
-  color: var(--muted);
-  line-height: 1.8;
-}
-
-.amenities-list {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  list-style: none;
-  padding: 0;
-}
-
-.amenities-list li {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 1.05rem;
-  color: var(--ink);
-}
-
-.amenity-icon {
-  color: var(--primary);
-}
-
-.financial-card {
+/* Financial Highlights */
+.cash-highlight-card {
   background: #FFFFFF;
-  border: 1px solid rgba(15, 23, 42, 0.08);
+  border: 2px solid rgba(217, 119, 6, 0.2);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.03);
+}
+
+/* Booking Card Form */
+.booking-card-form {
   border-radius: var(--radius-md);
   padding: 30px;
-  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.06);
+  box-shadow: 0 15px 35px rgba(15, 23, 42, 0.05);
   position: sticky;
   top: 100px;
 }
 
-.fin-row {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 20px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
-}
-
-.fin-row span {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--muted);
-}
-
-.old-price-row del {
-  font-size: 1.2rem;
-  color: var(--muted);
-}
-
-.new-price-row strong {
-  font-size: 2rem;
-  color: var(--ink);
-  font-weight: 900;
-}
-
-.fin-savings-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(34, 197, 94, 0.1);
-  color: var(--success);
-  padding: 8px 16px;
-  border-radius: 99px;
-  font-weight: 700;
+.booking-input-field {
+  height: 50px;
+  width: 100%;
+  border-radius: var(--radius-xs);
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  background: #FFFFFF;
+  padding: 0 16px;
+  font-family: inherit;
   font-size: 0.95rem;
-  margin-bottom: 30px;
-}
-
-.fin-card-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.fin-whatsapp-btn {
-  background: var(--primary);
-  color: #FFFFFF;
-  padding: 16px;
-  border-radius: var(--radius-sm);
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  font-weight: 700;
-  font-size: 1.05rem;
+  color: var(--ink);
+  outline: none;
   transition: all 200ms ease;
 }
 
-.fin-whatsapp-btn:hover {
-  background: var(--primary-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(59, 130, 246, 0.2);
+.booking-input-field:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15);
 }
 
-.fin-guarantee-note {
-  display: flex;
+.booking-country-select {
+  height: 50px;
+  border-radius: var(--radius-xs);
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  background: #FFFFFF;
+  padding: 0 12px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: var(--ink);
+  outline: none;
+  cursor: pointer;
+}
+
+.booking-country-select:focus {
+  border-color: var(--primary);
+}
+
+.booking-submit-btn {
+  background: var(--primary);
+  color: #FFFFFF;
+  border: none;
+  height: 52px;
+  border-radius: var(--radius-xs);
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 1.05rem;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  font-size: 0.85rem;
-  color: var(--muted);
+  cursor: pointer;
+  transition: all 200ms ease;
+  width: 100%;
+}
+
+.booking-submit-btn:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 16px rgba(217, 119, 6, 0.25);
+}
+
+/* Success Card Styling */
+.booking-success-message {
   text-align: center;
+  padding: 10px 0;
+}
+
+.success-icon-box {
+  font-size: 3rem;
+  margin-bottom: 16px;
+}
+
+.booking-whatsapp-confirm-btn {
+  background: #25D366;
+  color: #FFFFFF;
+  height: 52px;
+  border-radius: var(--radius-xs);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 1.05rem;
+  width: 100%;
+  transition: all 200ms ease;
+}
+
+.booking-whatsapp-confirm-btn:hover {
+  background: #128C7E;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 16px rgba(37, 211, 102, 0.25);
+}
+
+.booking-reset-btn {
+  background: transparent;
+  color: var(--muted);
+  border: none;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  transition: color 150ms ease;
+  margin-top: 10px;
+}
+
+.booking-reset-btn:hover {
+  color: var(--ink);
 }
