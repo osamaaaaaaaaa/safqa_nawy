@@ -183,6 +183,7 @@ export type SafqaLandingCopy = {
       contractYear: string
       marketPrice: string
       meterPrice: string
+      finishing?: string
     }>
   }
   process: {
