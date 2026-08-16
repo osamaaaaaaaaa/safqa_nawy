@@ -2013,7 +2013,7 @@ function App() {
           <div className="dual-cta-card">
             <h3>{copy.dualCta.seller.title}</h3>
             <p>{copy.dualCta.seller.body}</p>
-            <a className="primary-action" href="#/sell" onClick={() => { setStep(1); setIsSubmitted(false); }}>{copy.dualCta.seller.cta}{arrowIcon}</a>
+            <a className="primary-action" href="#/sell" onClick={(e) => { e.preventDefault(); window.location.hash = '#/sell'; setView('sell'); window.scrollTo(0, 0); setStep(1); setIsSubmitted(false); }}>{copy.dualCta.seller.cta}{arrowIcon}</a>
           </div>
           <div className="dual-cta-card">
             <h3>{copy.dualCta.buyer.title}</h3>
@@ -2100,6 +2100,12 @@ function App() {
             <a 
               href="#/opportunities" 
               className="opp-view-all-btn"
+              onClick={(e) => {
+                e.preventDefault();
+                window.location.hash = '#/opportunities';
+                setView('opportunities');
+                window.scrollTo(0, 0);
+              }}
             >
               <span>{isArabic ? 'مشاهدة كل الفرص المتاحة (8 فرص)' : 'View All Available Opportunities (8 units)'}</span>
               {arrowIcon}
