@@ -182,7 +182,8 @@ const countryCodes = [
 
 function App() {
   const [locale, setLocale] = useState<Locale>('ar')
-  const [view, setView] = useState<'landing' | 'sell' | 'opportunities'>('landing')
+  const [view, setView] = useState<'landing' | 'sell' | 'opportunities' | 'property-details'>('landing')
+  const [activePropertyId, setActivePropertyId] = useState<string | null>(null)
   const [step, setStep] = useState(1)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [showErrors, setShowErrors] = useState(false)
@@ -280,6 +281,11 @@ function App() {
       } else if (window.location.hash === '#/opportunities') {
         setView('opportunities')
         window.scrollTo(0, 0)
+      } else if (window.location.hash.startsWith('#/property/')) {
+        const id = window.location.hash.replace('#/property/', '')
+        setActivePropertyId(id)
+        setView('property-details')
+        window.scrollTo(0, 0)
       } else {
         setView('landing')
         const hash = window.location.hash
@@ -313,6 +319,151 @@ function App() {
   }
 
 
+
+  const renderPropertyDetailsView = () => {
+    const rawItems = copy.opportunities.items
+    const property = rawItems.find(p => p.id === activePropertyId)
+    
+    if (!property) {
+      return (
+        <section className="catalog-page-section">
+          <div className="section-frame">
+            <div className="catalog-no-results">
+              <h3 className="luxury-serif">{isArabic ? 'لم يتم العثور على الوحدة' : 'Property Not Found'}</h3>
+              <a href="#/opportunities" onClick={(e) => { e.preventDefault(); window.location.hash = '#/opportunities'; setView('opportunities'); }} className="opp-card-cta-btn" style={{ maxWidth: '280px', margin: '20px auto 0' }}>
+                {isArabic ? 'العودة للكتالوج' : 'Back to Catalog'}
+              </a>
+            </div>
+          </div>
+        </section>
+      )
+    }
+
+    const priceVal = parseFloat(property.price.replace(/,/g, ''))
+    const oldPriceVal = parseFloat(property.oldPrice.replace(/,/g, ''))
+    const savedVal = oldPriceVal - priceVal
+    const formattedSaved = isArabic 
+      ? `وفر ${savedVal.toLocaleString('ar-EG')} ج.م` 
+      : `Save ${savedVal.toLocaleString('en-US')} EGP`
+
+    const whatsappMessage = isArabic
+      ? encodeURIComponent(`مرحباً صفقة، أنا مهتم بالفرصة: "${property.title}" (ID: ${property.id}) في ${property.location} بسعر ${property.price} ج.م. أريد طلب فحص المستندات والتعاقد.`)
+      : encodeURIComponent(`Hello Safqa, I am interested in the opportunity: "${property.title}" (ID: ${property.id}) in ${property.location} for ${property.price} EGP. I would like to request a document and contract inspection.`)
+
+    return (
+      <section className="property-details-page section-frame">
+        <div className="property-details-nav">
+          <a 
+            href="#/opportunities" 
+            className="back-to-catalog-btn"
+            onClick={(e) => {
+              e.preventDefault()
+              window.location.hash = '#/opportunities'
+              setView('opportunities')
+              window.scrollTo(0, 0)
+            }}
+          >
+            {isArabic ? <ArrowRight size={16} /> : <ArrowLeft size={16} />}
+            <span>{isArabic ? 'العودة للكتالوج' : 'Back to Catalog'}</span>
+          </a>
+        </div>
+
+        <div className="property-details-header">
+          <div className="header-badges">
+            <span className="opp-card-badge">{property.badge}</span>
+            <span className="opp-card-location">
+              <MapPin size={14} style={{ marginInlineEnd: '4px' }} />
+              {property.location}
+            </span>
+          </div>
+          <h1 className="luxury-serif">{property.title}</h1>
+        </div>
+
+        <div className="property-gallery">
+          <div className="gallery-main">
+            <img src={safqaAssets[property.gallery[0]]} alt={property.title} />
+          </div>
+          <div className="gallery-thumbnails">
+            {property.gallery.slice(1).map((imgKey, idx) => (
+              <div key={idx} className="gallery-thumb">
+                <img src={safqaAssets[imgKey]} alt={property.title} />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="property-details-body">
+          <div className="property-info-column">
+            <div className="property-key-stats">
+              <div className="stat-box">
+                <span className="stat-label">{isArabic ? 'المساحة' : 'Area'}</span>
+                <span className="stat-value">{property.meta.split('/')[0].trim()}</span>
+              </div>
+              <div className="stat-box">
+                <span className="stat-label">{isArabic ? 'النوع' : 'Type'}</span>
+                <span className="stat-value">{property.meta.split('/')[1]?.trim()}</span>
+              </div>
+              <div className="stat-box">
+                <span className="stat-label">{isArabic ? 'غرف نوم' : 'Bedrooms'}</span>
+                <span className="stat-value">{property.bedrooms}</span>
+              </div>
+              <div className="stat-box">
+                <span className="stat-label">{isArabic ? 'حمامات' : 'Bathrooms'}</span>
+                <span className="stat-value">{property.bathrooms}</span>
+              </div>
+            </div>
+
+            <div className="property-description">
+              <h3>{isArabic ? 'عن الوحدة' : 'About the Property'}</h3>
+              <p>{property.description}</p>
+            </div>
+
+            <div className="property-amenities">
+              <h3>{isArabic ? 'المميزات والمرافق' : 'Amenities & Features'}</h3>
+              <ul className="amenities-list">
+                {property.amenities.map((amenity, idx) => (
+                  <li key={idx}><Check size={16} className="amenity-icon" /> {amenity}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <div className="property-financial-column">
+            <div className="financial-card">
+              <div className="fin-row old-price-row">
+                <span>{isArabic ? 'سعر المطور الأساسي' : 'Original Developer Price'}</span>
+                <del>{property.oldPrice} {isArabic ? 'ج.م' : 'EGP'}</del>
+              </div>
+              <div className="fin-row new-price-row">
+                <span>{isArabic ? 'سعر صفقة الحصري' : 'Safqa Exclusive Price'}</span>
+                <strong>{property.price} {isArabic ? 'ج.م' : 'EGP'}</strong>
+              </div>
+              <div className="fin-savings-tag">
+                <span className="save-icon">💎</span>
+                <span>{formattedSaved}</span>
+              </div>
+
+              <div className="fin-card-actions">
+                <a 
+                  href={`https://wa.me/201018595959?text=${whatsappMessage}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="fin-whatsapp-btn"
+                >
+                  {isArabic ? 'طلب فحص المستندات والتعاقد' : 'Request Inspection & Contract'}
+                  {arrowIcon}
+                </a>
+                <p className="fin-guarantee-note">
+                  <ShieldCheck size={14} />
+                  {isArabic ? 'كافة المستندات موثقة ومراجعة قانونياً' : 'All documents are legally verified'}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    )
+  }
 
   const renderOpportunitiesCatalogView = () => {
     const rawItems = copy.opportunities.items
@@ -485,12 +636,17 @@ function App() {
                       </div>
 
                       <a 
-                        href={`https://wa.me/201018595959?text=${whatsappMessage}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                        href={`#/property/${item.id}`}
                         className="opp-card-cta-btn"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          window.location.hash = `#/property/${item.id}`;
+                          setActivePropertyId(item.id);
+                          setView('property-details');
+                          window.scrollTo(0, 0);
+                        }}
                       >
-                        {isArabic ? 'طلب فحص المستندات' : 'Request File Inspection'}
+                        {isArabic ? 'مشاهدة التفاصيل' : 'View Details'}
                         {arrowIcon}
                       </a>
                     </div>
@@ -2071,12 +2227,17 @@ function App() {
                     </div>
 
                     <a 
-                      href={`https://wa.me/201018595959?text=${whatsappMessage}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                      href={`#/property/${item.id}`}
                       className="opp-card-cta-btn"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        window.location.hash = `#/property/${item.id}`;
+                        setActivePropertyId(item.id);
+                        setView('property-details');
+                        window.scrollTo(0, 0);
+                      }}
                     >
-                      {isArabic ? 'طلب فحص المستندات' : 'Request File Inspection'}
+                      {isArabic ? 'مشاهدة التفاصيل' : 'View Details'}
                       {arrowIcon}
                     </a>
                   </div>
@@ -2196,6 +2357,8 @@ function App() {
           </>
         ) : view === 'opportunities' ? (
           renderOpportunitiesCatalogView()
+        ) : view === 'property-details' ? (
+          renderPropertyDetailsView()
         ) : (
           renderSellView()
         )}

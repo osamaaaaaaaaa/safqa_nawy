@@ -158,7 +158,9 @@ export type SafqaLandingCopy = {
     eyebrow: string
     title: string
     items: Array<{
+      id: string
       imageKey: SafqaAssetKey
+      gallery: SafqaAssetKey[]
       title: string
       location: string
       price: string
@@ -166,6 +168,10 @@ export type SafqaLandingCopy = {
       meta: string
       badge: string
       type: string
+      description: string
+      amenities: string[]
+      bedrooms: string
+      bathrooms: string
     }>
   }
   process: {
