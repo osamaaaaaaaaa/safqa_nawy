@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_spacing.dart';
 import '../../../../shared/widgets/animated_tap.dart';
 import '../../../../shared/widgets/broker_page.dart';
-import '../../../../shared/widgets/broker_section_header.dart';
 import '../../../../shared/widgets/status_pill.dart';
 import '../../data/repositories/projects_repository.dart';
 import '../../data/repositories/resale_repository.dart';
@@ -21,7 +19,7 @@ class ExplorePage extends StatefulWidget {
 }
 
 class _ExplorePageState extends State<ExplorePage> {
-  int activeTab = 0; // 0 for Resale Units, 1 for Developer Projects
+  int activeTab = 0; // 0 for Resale, 1 for Projects
   String searchQuery = '';
 
   @override
@@ -30,104 +28,95 @@ class _ExplorePageState extends State<ExplorePage> {
     final projects = const ProjectsRepository().featuredProjects();
     final resaleUnits = const ResaleRepository().featuredResaleUnits();
 
-    // Filter logic
     final filteredResale = resaleUnits.where((unit) {
       if (searchQuery.isEmpty) return true;
       final q = searchQuery.toLowerCase();
       return unit.title.toLowerCase().contains(q) ||
           unit.projectName.toLowerCase().contains(q) ||
-          unit.location.toLowerCase().contains(q) ||
           unit.developer.toLowerCase().contains(q);
     }).toList();
 
-    final filteredProjects = projects.where((project) {
+    final filteredProjects = projects.where((p) {
       if (searchQuery.isEmpty) return true;
       final q = searchQuery.toLowerCase();
-      return project.name.toLowerCase().contains(q) ||
-          project.location.toLowerCase().contains(q) ||
-          project.developer.toLowerCase().contains(q);
+      return p.name.toLowerCase().contains(q) || p.developer.toLowerCase().contains(q);
     }).toList();
 
     return BrokerPage(
       children: [
-        _PageTitle(
-          title: isAr ? 'استكشف السوق' : 'Marketplace Explore',
-          subtitle: isAr
-              ? 'تصفح الفرص الحصرية وعمولات إغلاق الصفقات'
-              : 'Browse exclusive opportunities & closing payouts',
-        ),
+        _HeaderSection(isAr: isAr),
 
-        // Search bar
+        // Custom Search Bar
         TextField(
-          onChanged: (val) {
-            setState(() {
-              searchQuery = val;
-            });
-          },
+          onChanged: (val) => setState(() => searchQuery = val),
           decoration: InputDecoration(
             prefixIcon: const Icon(Icons.search_rounded, color: AppColors.gold),
-            hintText: activeTab == 0
-                ? (isAr ? 'ابحث بالكمبوند، المنطقة أو المطور...' : 'Search compound, area, developer...')
-                : (isAr ? 'ابحث عن مشاريع مطورين...' : 'Search developer projects...'),
+            hintText: isAr ? 'ابحث بالمنطقة، الكمبوند أو المطور...' : 'Search area, compound, developer...',
           ),
         ),
 
-        // Tabs Selector Row
+        // Tabs Selector Row (Luxury Capsule)
         Container(
           padding: const EdgeInsets.all(6),
           decoration: BoxDecoration(
             color: AppColors.ink.withValues(alpha: 0.04),
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(20),
           ),
           child: Row(
             children: [
               Expanded(
-                child: _TabButton(
-                  label: isAr ? 'فرص التنازل العقاري 💎' : 'Resale Transfers 💎',
+                child: _TabCapsule(
+                  label: isAr ? 'فرص التنازل' : 'Resale Opportunities',
                   isActive: activeTab == 0,
                   onTap: () => setState(() => activeTab = 0),
                 ),
               ),
               const SizedBox(width: 4),
               Expanded(
-                child: _TabButton(
-                  label: isAr ? 'مشاريع المطورين 🏢' : 'Developer Launches 🏢',
+                child: _TabCapsule(
+                  label: isAr ? 'إطلاقات المطورين' : 'Developer Launches',
                   isActive: activeTab == 1,
-                  onTap: () => setState(() => activeTab = 1),
+                  onTap: () => setState(() => setState(() => activeTab = 1)),
                 ),
               ),
             ],
           ),
         ),
 
-        BrokerSectionHeader(
-          title: activeTab == 0
-              ? (isAr ? 'الفرص المتاحة للتسويق (${filteredResale.length})' : 'Available Resales (${filteredResale.length})')
-              : (isAr ? 'إطلاقات المطورين (${filteredProjects.length})' : 'Developer Projects (${filteredProjects.length})'),
-        ),
-
-        // Tab Content Display
+        // Grid Content (UX change: Dual-column grid for resale or clean product layout)
         if (activeTab == 0) ...[
           if (filteredResale.isEmpty)
             _EmptyState(isAr: isAr)
           else
-            ...filteredResale.map((unit) => _ResaleOpportunityCard(unit: unit, isAr: isAr)),
+            GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
+                childAspectRatio: 0.76,
+              ),
+              itemCount: filteredResale.length,
+              itemBuilder: (context, index) {
+                return _ResaleGridCard(unit: filteredResale[index], isAr: isAr);
+              },
+            ),
         ] else ...[
           if (filteredProjects.isEmpty)
             _EmptyState(isAr: isAr)
           else
-            ...filteredProjects.map((project) => _ProjectCard(project: project)),
+            ...filteredProjects.map((p) => _ProjectRowCard(project: p, isAr: isAr)),
         ],
       ],
     );
   }
 }
 
-class _PageTitle extends StatelessWidget {
-  const _PageTitle({required this.title, required this.subtitle});
+class _HeaderSection extends StatelessWidget {
+  const _HeaderSection({required this.isAr});
 
-  final String title;
-  final String subtitle;
+  final bool isAr;
 
   @override
   Widget build(BuildContext context) {
@@ -135,25 +124,24 @@ class _PageTitle extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          title,
+          isAr ? 'كتالوج العقود والفرص' : 'Opportunities Directory',
           style: Theme.of(context).textTheme.displaySmall?.copyWith(
                 fontWeight: FontWeight.w900,
                 letterSpacing: -1,
               ),
         ),
-        const SizedBox(height: AppSpacing.xs),
-        Text(subtitle, style: Theme.of(context).textTheme.bodyMedium),
+        const SizedBox(height: 4),
+        Text(
+          isAr ? 'تصفح وقارن صفقات التنازل العقاري الحصرية للعملاء' : 'Browse and match exclusive property resale transfers',
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
       ],
     );
   }
 }
 
-class _TabButton extends StatelessWidget {
-  const _TabButton({
-    required this.label,
-    required this.isActive,
-    required this.onTap,
-  });
+class _TabCapsule extends StatelessWidget {
+  const _TabCapsule({required this.label, required this.isActive, required this.onTap});
 
   final String label;
   final bool isActive;
@@ -167,34 +155,24 @@ class _TabButton extends StatelessWidget {
         height: 44,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: isActive ? AppColors.paper : Colors.transparent,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: isActive
-              ? [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  )
-                ]
-              : null,
+          color: isActive ? AppColors.gold : Colors.transparent,
+          borderRadius: BorderRadius.circular(16),
         ),
         child: Text(
           label,
           style: TextStyle(
-            color: isActive ? AppColors.gold : AppColors.muted,
+            color: isActive ? Colors.white : AppColors.muted,
             fontWeight: FontWeight.bold,
             fontSize: 12,
           ),
-          textAlign: TextAlign.center,
         ),
       ),
     );
   }
 }
 
-class _ResaleOpportunityCard extends StatelessWidget {
-  const _ResaleOpportunityCard({required this.unit, required this.isAr});
+class _ResaleGridCard extends StatelessWidget {
+  const _ResaleGridCard({required this.unit, required this.isAr});
 
   final ResaleUnit unit;
   final bool isAr;
@@ -202,75 +180,122 @@ class _ResaleOpportunityCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedTap(
-      onTap: () {
-        Get.to(() => ResaleDetailsPage(unit: unit));
-      },
+      onTap: () => Get.to(() => ResaleDetailsPage(unit: unit)),
       child: Container(
-        padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           color: AppColors.paper,
           borderRadius: BorderRadius.circular(24),
           border: Border.all(color: AppColors.border),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.02),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            )
-          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const StatusPill(label: 'مراجعة موثقة 🔒', color: AppColors.emerald),
-                      const SizedBox(height: AppSpacing.sm),
-                      Text(
-                        unit.title,
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      Text(
-                        '${unit.projectName} • ${unit.developer}',
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                    ],
+            // Header Image/Color Box placeholder with details overlaid
+            Expanded(
+              flex: 4,
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [AppColors.ink, Color(0xFF1E293B)],
                   ),
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
                 ),
-                const Icon(Icons.arrow_forward_ios_rounded, color: AppColors.gold, size: 16),
-              ],
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        StatusPill(label: unit.unitCode, color: AppColors.gold),
+                        const Icon(Icons.verified_rounded, color: AppColors.emerald, size: 16),
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          unit.projectName,
+                          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        Text(
+                          unit.developer,
+                          style: const TextStyle(color: Colors.white70, fontSize: 10),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
             ),
-            const SizedBox(height: AppSpacing.md),
-            // Financial specifications
-            Row(
-              children: [
-                Expanded(
-                  child: _Fact(
-                    label: isAr ? 'المطلوب كاش' : 'Cash Req',
-                    value: unit.cashRequired,
-                    isGold: true,
-                  ),
+
+            // Content Area
+            Expanded(
+              flex: 5,
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      unit.title,
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: AppColors.ink),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+
+                    // Inline specifications
+                    Row(
+                      children: [
+                        const Icon(Icons.hotel_rounded, color: AppColors.gold, size: 12),
+                        const SizedBox(width: 3),
+                        Text('${unit.bedrooms}', style: const TextStyle(fontSize: 10, color: AppColors.muted)),
+                        const SizedBox(width: 8),
+                        const Icon(Icons.bathtub_rounded, color: AppColors.gold, size: 12),
+                        const SizedBox(width: 3),
+                        Text('${unit.bathrooms}', style: const TextStyle(fontSize: 10, color: AppColors.muted)),
+                        const SizedBox(width: 8),
+                        const Icon(Icons.square_foot_rounded, color: AppColors.gold, size: 12),
+                        const SizedBox(width: 3),
+                        Text('${unit.area.toInt()}m²', style: const TextStyle(fontSize: 10, color: AppColors.muted)),
+                      ],
+                    ),
+
+                    const Divider(height: 8),
+
+                    // Financial metrics
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(isAr ? 'الكاش المطلوبة' : 'Cash Required', style: const TextStyle(color: AppColors.muted, fontSize: 8)),
+                            Text(
+                              unit.cashRequired.split(' ').first,
+                              style: const TextStyle(color: AppColors.gold, fontWeight: FontWeight.bold, fontSize: 11),
+                            )
+                          ],
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(isAr ? 'الوفر الفوري' : 'Savings', style: const TextStyle(color: AppColors.muted, fontSize: 8)),
+                            Text(
+                              unit.marketSavings.split(' ').first,
+                              style: const TextStyle(color: AppColors.emerald, fontWeight: FontWeight.bold, fontSize: 11),
+                            )
+                          ],
+                        )
+                      ],
+                    )
+                  ],
                 ),
-                Expanded(
-                  child: _Fact(
-                    label: isAr ? 'مكسب المشتري' : 'Savings',
-                    value: unit.marketSavings,
-                    isGold: false,
-                  ),
-                ),
-                Expanded(
-                  child: _Fact(
-                    label: isAr ? 'عمولة البروكر' : 'Your Payout',
-                    value: unit.commission.split(' ').first, // Show numeric value
-                    isGold: false,
-                    isEmerald: true,
-                  ),
-                ),
-              ],
+              ),
             ),
           ],
         ),
@@ -279,111 +304,65 @@ class _ResaleOpportunityCard extends StatelessWidget {
   }
 }
 
-class _ProjectCard extends StatelessWidget {
-  const _ProjectCard({required this.project});
+class _ProjectRowCard extends StatelessWidget {
+  const _ProjectRowCard({required this.project, required this.isAr});
 
   final Project project;
+  final bool isAr;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.paper,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(color: AppColors.border),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    StatusPill(label: project.badge, color: AppColors.gold),
-                    const SizedBox(height: AppSpacing.sm),
-                    Text(
-                      project.name,
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    Text(
-                      '${project.developer} • ${project.location}',
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                  ],
-                ),
-              ),
-              const Icon(Icons.arrow_forward_ios_rounded, color: AppColors.muted, size: 16),
-            ],
+          Container(
+            height: 52,
+            width: 52,
+            decoration: BoxDecoration(
+              color: AppColors.gold.withValues(alpha: 0.08),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: const Icon(Icons.apartment_rounded, color: AppColors.gold, size: 24),
           ),
-          const SizedBox(height: AppSpacing.md),
-          Row(
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                StatusPill(label: project.badge, color: AppColors.gold),
+                const SizedBox(height: 4),
+                Text(
+                  project.name,
+                  style: const TextStyle(color: AppColors.ink, fontWeight: FontWeight.bold, fontSize: 13),
+                ),
+                Text(
+                  '${project.developer} • ${project.location}',
+                  style: const TextStyle(color: AppColors.muted, fontSize: 11),
+                ),
+              ],
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Expanded(
-                child: _Fact(
-                  label: 'explore.price'.tr,
-                  value: project.startingPrice,
-                ),
+              Text(
+                project.commission,
+                style: const TextStyle(color: AppColors.emerald, fontWeight: FontWeight.bold, fontSize: 14),
               ),
-              Expanded(
-                child: _Fact(
-                  label: 'explore.down_payment'.tr,
-                  value: project.downPayment,
-                ),
-              ),
-              Expanded(
-                child: _Fact(
-                  label: 'explore.commission'.tr,
-                  value: project.commission,
-                  isEmerald: true,
-                ),
+              Text(
+                isAr ? 'عمولة التوزيع' : 'Commission',
+                style: const TextStyle(color: AppColors.muted, fontSize: 9),
               ),
             ],
-          ),
+          )
         ],
       ),
-    );
-  }
-}
-
-class _Fact extends StatelessWidget {
-  const _Fact({
-    required this.label,
-    required this.value,
-    this.isGold = false,
-    this.isEmerald = false,
-  });
-
-  final String label;
-  final String value;
-  final bool isGold;
-  final bool isEmerald;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          value,
-          style: TextStyle(
-            color: isGold
-                ? AppColors.gold
-                : isEmerald
-                    ? AppColors.emerald
-                    : AppColors.ink,
-            fontWeight: FontWeight.w900,
-            fontSize: 13,
-          ),
-        ),
-        const SizedBox(height: 3),
-        Text(
-          label,
-          style: const TextStyle(color: AppColors.muted, fontSize: 11),
-        ),
-      ],
     );
   }
 }
@@ -396,15 +375,15 @@ class _EmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.symmetric(vertical: 40),
       alignment: Alignment.center,
       child: Column(
         children: [
-          const Icon(Icons.search_off_rounded, size: 48, color: AppColors.muted),
+          const Icon(Icons.search_off_rounded, size: 40, color: AppColors.muted),
           const SizedBox(height: 8),
           Text(
-            isAr ? 'لا توجد نتائج مطابقة لبحثك' : 'No matching results found',
-            style: const TextStyle(color: AppColors.muted, fontWeight: FontWeight.bold),
+            isAr ? 'لا توجد فرص مطابقة لبحثك' : 'No matching opportunities found',
+            style: const TextStyle(color: AppColors.muted, fontWeight: FontWeight.bold, fontSize: 12),
           ),
         ],
       ),

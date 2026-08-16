@@ -4,11 +4,8 @@ import 'package:get/get.dart';
 import '../../../../core/controllers/navigation_controller.dart';
 import '../../../../shared/widgets/safqa_bottom_navigation.dart';
 import '../../../dashboard/presentation/pages/broker_home_page.dart';
-import '../../../deals/presentation/pages/deals_page.dart';
 import '../../../explore/presentation/pages/explore_page.dart';
-import '../../../leads/presentation/pages/leads_page.dart';
 import '../../../profile/presentation/pages/profile_page.dart';
-import '../../../wallet/presentation/pages/wallet_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -20,9 +17,6 @@ class HomePage extends StatelessWidget {
     const pages = <Widget>[
       BrokerHomePage(),
       ExplorePage(),
-      LeadsPage(),
-      DealsPage(),
-      WalletPage(),
       ProfilePage(),
     ];
 
