@@ -322,8 +322,6 @@ function App() {
     setFormData(prev => ({ ...prev, [field]: value }))
   }
 
-
-
   const renderPropertyDetailsView = () => {
     const rawItems = copy.opportunities.items
     const property = rawItems.find(p => p.id === activePropertyId)
@@ -424,17 +422,12 @@ function App() {
             </div>
           </div>
 
-          <div className="property-gallery-grid">
-            <div className="gallery-main-container">
-              <img src={safqaAssets[property.gallery[0]]} alt={property.title} className="gallery-main-img" />
-            </div>
-            <div className="gallery-thumbs-container">
-              {property.gallery.slice(1).map((imgKey, idx) => (
-                <div key={idx} className="gallery-thumb-item">
-                  <img src={safqaAssets[imgKey]} alt={property.title} />
-                </div>
-              ))}
-            </div>
+          <div className="property-gallery-slider">
+            {property.gallery.map((imgKey, idx) => (
+              <div key={idx} className="gallery-slide-item">
+                <img src={safqaAssets[imgKey]} alt={property.title} />
+              </div>
+            ))}
           </div>
 
           <div className="property-details-layout">
@@ -552,7 +545,7 @@ function App() {
               </div>
 
               {/* Booking Lead Form */}
-              <div className="booking-lead-form-card">
+              <div className="booking-lead-form-card" id="booking-form-section">
                 <h3>{isArabic ? 'عايز تلحق حجز الفرصة ديه؟' : 'Interested in this Opportunity?'}</h3>
                 <p>
                   {isArabic 
@@ -612,6 +605,24 @@ function App() {
 
             </div>
 
+          </div>
+
+          {/* Mobile Floating Sticky CTA */}
+          <div className="mobile-sticky-action-bar">
+            <div className="sticky-action-price">
+              <span>{isArabic ? 'المطلوب كاش' : 'Cash Required'}</span>
+              <strong>{property.price} {isArabic ? 'ج.م' : 'EGP'}</strong>
+            </div>
+            <button 
+              type="button" 
+              className="sticky-action-btn"
+              onClick={() => {
+                const el = document.getElementById('booking-form-section')
+                if (el) el.scrollIntoView({ behavior: 'smooth' })
+              }}
+            >
+              {isArabic ? 'احجز الآن' : 'Book Now'}
+            </button>
           </div>
 
         </div>
