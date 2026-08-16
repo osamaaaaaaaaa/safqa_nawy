@@ -19,6 +19,8 @@ import {
   Check,
   ChevronDown,
   LogOut,
+  Menu,
+  X,
 } from 'lucide-react'
 import './App.css'
 
@@ -244,6 +246,7 @@ function App() {
   const [authError, setAuthError] = useState('')
   const [authCountryCode, setAuthCountryCode] = useState('+20')
   const [userMenuOpen, setUserMenuOpen] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const userMenuRef = useRef<HTMLDivElement>(null)
   const [filterLocation, setFilterLocation] = useState('all')
   const [filterType, setFilterType] = useState('all')
@@ -1908,8 +1911,56 @@ function App() {
           <button className="language-button" type="button" onClick={() => setLocale(isArabic ? 'en' : 'ar')}>
             <Globe2 size={16} /><span>{copy.switchLanguage}</span>
           </button>
+          <button 
+            className="mobile-menu-toggle" 
+            type="button" 
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle mobile menu"
+          >
+            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
         </div>
       </header>
+
+      {mobileMenuOpen && (
+        <div className="mobile-menu-overlay">
+          <nav className="mobile-nav-links">
+            <a href="#home" onClick={() => setMobileMenuOpen(false)}>{copy.nav.home}</a>
+            <a href="#decision" onClick={() => setMobileMenuOpen(false)}>{copy.nav.decision}</a>
+            <a href="#paths" onClick={() => setMobileMenuOpen(false)}>{copy.nav.paths}</a>
+            <a href="#opportunities" onClick={() => setMobileMenuOpen(false)}>{copy.nav.opportunities}</a>
+            <a href="#how-it-works" onClick={() => setMobileMenuOpen(false)}>{copy.nav.howItWorks}</a>
+            <a href="#process" onClick={() => setMobileMenuOpen(false)}>{copy.nav.process}</a>
+            <a href="#brokers" onClick={() => setMobileMenuOpen(false)}>{copy.nav.brokers}</a>
+            
+            {isLoggedIn && userProfile ? (
+              <div className="mobile-menu-user-section">
+                <div className="dropdown-user-info" style={{ padding: '0 12px 12px' }}>
+                  <span className="dropdown-username" style={{ display: 'block', fontWeight: 'bold' }}>{userProfile.name}</span>
+                  <span className="dropdown-email" style={{ display: 'block', fontSize: '0.8rem', color: 'var(--muted)' }}>
+                    {userProfile.email || (isArabic ? 'حساب موثق' : 'Verified Account')}
+                  </span>
+                </div>
+                <button 
+                  type="button" 
+                  className="dropdown-logout-btn" 
+                  style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 12px' }}
+                  onClick={() => {
+                    localStorage.removeItem('safqa_user_logged')
+                    localStorage.removeItem('safqa_user_profile')
+                    setIsLoggedIn(false)
+                    setUserProfile(null)
+                    setMobileMenuOpen(false)
+                  }}
+                >
+                  <LogOut size={14} />
+                  <span>{isArabic ? 'تسجيل الخروج' : 'Logout'}</span>
+                </button>
+              </div>
+            ) : null}
+          </nav>
+        </div>
+      )}
 
       <main>
         {view === 'landing' ? (
