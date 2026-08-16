@@ -8,9 +8,9 @@ class AppTheme {
   static ThemeData light() {
     return ThemeData(
       useMaterial3: true,
-      brightness: Brightness.light,
+      brightness: Brightness.dark,
       scaffoldBackgroundColor: AppColors.surface,
-      colorScheme: const ColorScheme.light(
+      colorScheme: const ColorScheme.dark(
         primary: AppColors.gold,
         secondary: AppColors.emerald,
         surface: AppColors.surface,
