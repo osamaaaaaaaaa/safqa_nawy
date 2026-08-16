@@ -273,13 +273,24 @@ function App() {
     const handleHash = () => {
       if (window.location.hash === '#/sell') {
         setView('sell')
+        window.scrollTo(0, 0)
         setStep(1)
         setIsSubmitted(false)
         setShowErrors(false)
       } else if (window.location.hash === '#/opportunities') {
         setView('opportunities')
+        window.scrollTo(0, 0)
       } else {
         setView('landing')
+        const hash = window.location.hash
+        if (hash && hash.startsWith('#') && !hash.startsWith('#/')) {
+          const el = document.getElementById(hash.substring(1))
+          if (el) {
+            setTimeout(() => {
+              el.scrollIntoView({ behavior: 'smooth' })
+            }, 100)
+          }
+        }
       }
     }
     handleHash()
@@ -2013,7 +2024,19 @@ function App() {
 
         {/* ─── OPPORTUNITIES SHOWCASE ─── */}
         <section className="section-frame" id="opportunities">
-          <SectionHeading eyebrow={copy.opportunities.eyebrow} title={copy.opportunities.title} />
+          <div className="opp-header-row">
+            <div className="section-heading">
+              <span className="eyebrow">{copy.opportunities.eyebrow}</span>
+              <h2 className="luxury-serif">{copy.opportunities.title}</h2>
+            </div>
+            <a 
+              href="#/opportunities" 
+              className="opp-explore-all-link"
+            >
+              <span>{isArabic ? 'مشاهدة كافة الفرص (8)' : 'Explore All Units (8)'}</span>
+              {arrowIcon}
+            </a>
+          </div>
           
           <div className="opportunities-modern-grid">
             {copy.opportunities.items.slice(0, 3).map((item) => {
@@ -2083,16 +2106,6 @@ function App() {
                 </div>
               )
             })}
-          </div>
-          
-          <div className="opp-view-all-container">
-            <a 
-              href="#/opportunities" 
-              className="opp-view-all-btn"
-            >
-              <span>{isArabic ? 'مشاهدة كل الفرص المتاحة (8 فرص)' : 'View All Available Opportunities (8 units)'}</span>
-              {arrowIcon}
-            </a>
           </div>
 
           <div className="market-strip" aria-hidden="true">

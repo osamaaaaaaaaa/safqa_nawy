@@ -806,7 +806,62 @@ h1, h2, h3, h4, h5, h6 {
   transform: translateX(-4px);
 }
 
-/* Split-Viewport Luxury Gallery Showcase */
+/* Opportunities Section Header Row */
+.opp-header-row {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 32px;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.05);
+  padding-bottom: 20px;
+}
+
+@media (min-width: 768px) {
+  .opp-header-row {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+}
+
+.opp-header-row .section-heading {
+  margin-bottom: 0;
+  text-align: right;
+}
+
+[dir='ltr'] .opp-header-row .section-heading {
+  text-align: left;
+}
+
+.opp-explore-all-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--primary-deep) !important;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-decoration: none !important;
+  transition: transform 200ms ease, opacity 200ms ease;
+  padding: 8px 0;
+  align-self: flex-start;
+}
+
+.opp-explore-all-link:hover {
+  opacity: 0.85;
+}
+
+.opp-explore-all-link svg {
+  transition: transform 200ms ease;
+}
+
+.opp-explore-all-link:hover svg {
+  transform: translateX(-4px); /* For RTL */
+}
+
+[dir='ltr'] .opp-explore-all-link:hover svg {
+  transform: translateX(4px); /* For LTR */
+}
+
 /* Modern 3-Column Opportunities Grid */
 .opportunities-modern-grid {
   display: grid;
