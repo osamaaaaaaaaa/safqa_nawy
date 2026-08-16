@@ -19,18 +19,23 @@ class ProfilePage extends StatelessWidget {
 
     return BrokerPage(
       children: [
-        _ProfileHeader(localeController: localeController),
+        // Luxury welcome card & Ticket Stub referral code
+        _ProfileHeader(localeController: localeController, isAr: isAr),
+        
         BrokerSectionHeader(title: 'profile.tools'.tr),
-        _ToolTile(
+        
+        _PremiumToolTile(
           icon: Icons.bar_chart_rounded,
           title: isAr ? 'دليل صفقة vs ريسيل تقليدي' : 'Safqa vs Traditional Resale',
           subtitle: isAr ? 'مقارنة شاملة لعمولات وسرعة إغلاق الصفقات' : 'Detailed speed and commission comparison',
+          color: AppColors.gold,
           onTap: () => Get.to(() => const SafqaComparisonPage()),
         ),
-        _ToolTile(
+        _PremiumToolTile(
           icon: Icons.campaign_rounded,
           title: 'profile.marketing'.tr,
           subtitle: 'profile.marketing_copy'.tr,
+          color: AppColors.gold,
           onTap: () {
             Get.snackbar(
               isAr ? 'مركز التسويق' : 'Marketing Center',
@@ -38,10 +43,11 @@ class ProfilePage extends StatelessWidget {
             );
           },
         ),
-        _ToolTile(
+        _PremiumToolTile(
           icon: Icons.auto_awesome_rounded,
           title: 'profile.ai'.tr,
           subtitle: 'profile.ai_copy'.tr,
+          color: AppColors.emerald,
           onTap: () {
             Get.snackbar(
               isAr ? 'مساعد صفقة الذكي' : 'Safqa AI Assistant',
@@ -49,10 +55,11 @@ class ProfilePage extends StatelessWidget {
             );
           },
         ),
-        _ToolTile(
+        _PremiumToolTile(
           icon: Icons.support_agent_rounded,
           title: 'profile.support'.tr,
           subtitle: 'profile.support_copy'.tr,
+          color: AppColors.clay,
           onTap: () {
             Get.snackbar(
               isAr ? 'الدعم الفني والنزاعات' : 'Support Desk',
@@ -60,11 +67,14 @@ class ProfilePage extends StatelessWidget {
             );
           },
         ),
+        
         BrokerSectionHeader(title: 'profile.account'.tr),
-        _ToolTile(
+        
+        _PremiumToolTile(
           icon: Icons.verified_user_rounded,
           title: 'profile.kyc'.tr,
           subtitle: 'profile.kyc_copy'.tr,
+          color: AppColors.emerald,
           onTap: () {
             Get.snackbar(
               isAr ? 'حالة التحقق والمستندات' : 'Verification Status',
@@ -78,28 +88,45 @@ class ProfilePage extends StatelessWidget {
 }
 
 class _ProfileHeader extends StatelessWidget {
-  const _ProfileHeader({required this.localeController});
+  const _ProfileHeader({required this.localeController, required this.isAr});
 
   final LocaleController localeController;
+  final bool isAr;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: AppColors.paper,
         borderRadius: BorderRadius.circular(28),
         border: Border.all(color: AppColors.border),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.01),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          )
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              const CircleAvatar(
-                radius: 28,
-                backgroundColor: AppColors.ink,
-                child: Icon(Icons.person_rounded, color: AppColors.gold),
+              Container(
+                height: 56,
+                width: 56,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [AppColors.ink, Color(0xFF1E293B)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  shape: BoxShape.circle,
+                  border: Border.all(color: AppColors.gold, width: 1.5),
+                ),
+                child: const Icon(Icons.person_rounded, color: AppColors.gold, size: 28),
               ),
               const SizedBox(width: AppSpacing.md),
               Expanded(
@@ -108,7 +135,11 @@ class _ProfileHeader extends StatelessWidget {
                   children: [
                     Text(
                       'home.broker_name'.tr,
-                      style: Theme.of(context).textTheme.titleMedium,
+                      style: const TextStyle(
+                        color: AppColors.ink,
+                        fontWeight: FontWeight.w900,
+                        fontSize: 15,
+                      ),
                     ),
                     const SizedBox(height: 4),
                     StatusPill(
@@ -119,23 +150,62 @@ class _ProfileHeader extends StatelessWidget {
                 ),
               ),
               IconButton.filledTonal(
+                style: IconButton.styleFrom(
+                  backgroundColor: AppColors.gold.withValues(alpha: 0.1),
+                  foregroundColor: AppColors.gold,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
                 onPressed: localeController.toggleLocale,
                 icon: Text(
                   localeController.isArabic ? 'EN' : 'ع',
-                  style: const TextStyle(fontWeight: FontWeight.w900),
+                  style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 12),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: AppSpacing.lg),
-          Text(
-            'profile.referral'.tr,
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-          const SizedBox(height: AppSpacing.xs),
-          Text(
-            'SAFQA-OSAMA-24',
-            style: Theme.of(context).textTheme.headlineSmall,
+          const SizedBox(height: 20),
+          // Referral Ticket Stub visual representation
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: AppColors.ink.withValues(alpha: 0.03),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: AppColors.border),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'profile.referral'.tr,
+                      style: const TextStyle(color: AppColors.muted, fontSize: 10, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 4),
+                    const Text(
+                      'SAFQA-OSAMA-24',
+                      style: TextStyle(
+                        color: AppColors.ink,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 1.0,
+                      ),
+                    ),
+                  ],
+                ),
+                IconButton(
+                  icon: const Icon(Icons.copy_rounded, color: AppColors.gold),
+                  onPressed: () {
+                    Get.snackbar(
+                      isAr ? 'تم النسخ' : 'Copied',
+                      isAr ? 'تم نسخ كود الإحالة لمشاركته مع وسطاء آخرين.' : 'Referral code copied successfully.',
+                      snackPosition: SnackPosition.BOTTOM,
+                    );
+                  },
+                )
+              ],
+            ),
           ),
         ],
       ),
@@ -143,17 +213,19 @@ class _ProfileHeader extends StatelessWidget {
   }
 }
 
-class _ToolTile extends StatelessWidget {
-  const _ToolTile({
+class _PremiumToolTile extends StatelessWidget {
+  const _PremiumToolTile({
     required this.icon,
     required this.title,
     required this.subtitle,
+    required this.color,
     this.onTap,
   });
 
   final IconData icon;
   final String title;
   final String subtitle;
+  final Color color;
   final VoidCallback? onTap;
 
   @override
@@ -161,26 +233,51 @@ class _ToolTile extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: AppColors.paper,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(22),
           border: Border.all(color: AppColors.border),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.005),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            )
+          ],
         ),
         child: Row(
           children: [
-            Icon(icon, color: AppColors.gold),
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.08),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(icon, color: color, size: 20),
+            ),
             const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: Theme.of(context).textTheme.titleMedium),
-                  Text(subtitle, style: Theme.of(context).textTheme.bodyMedium),
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      color: AppColors.ink,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    subtitle,
+                    style: const TextStyle(color: AppColors.muted, fontSize: 11),
+                  ),
                 ],
               ),
             ),
-            const Icon(Icons.chevron_right_rounded, color: AppColors.muted),
+            const Icon(Icons.arrow_forward_ios_rounded, color: AppColors.muted, size: 14),
           ],
         ),
       ),
