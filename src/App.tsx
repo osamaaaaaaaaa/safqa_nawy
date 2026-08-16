@@ -2024,19 +2024,7 @@ function App() {
 
         {/* ─── OPPORTUNITIES SHOWCASE ─── */}
         <section className="section-frame" id="opportunities">
-          <div className="opp-header-row">
-            <div className="section-heading">
-              <span className="eyebrow">{copy.opportunities.eyebrow}</span>
-              <h2 className="luxury-serif">{copy.opportunities.title}</h2>
-            </div>
-            <a 
-              href="#/opportunities" 
-              className="opp-explore-all-link"
-            >
-              <span>{isArabic ? 'مشاهدة كافة الفرص (8)' : 'Explore All Units (8)'}</span>
-              {arrowIcon}
-            </a>
-          </div>
+          <SectionHeading eyebrow={copy.opportunities.eyebrow} title={copy.opportunities.title} />
           
           <div className="opportunities-modern-grid">
             {copy.opportunities.items.slice(0, 3).map((item) => {
@@ -2106,6 +2094,16 @@ function App() {
                 </div>
               )
             })}
+          </div>
+          
+          <div className="opp-view-all-container">
+            <a 
+              href="#/opportunities" 
+              className="opp-view-all-btn"
+            >
+              <span>{isArabic ? 'مشاهدة كل الفرص المتاحة (8 فرص)' : 'View All Available Opportunities (8 units)'}</span>
+              {arrowIcon}
+            </a>
           </div>
 
           <div className="market-strip" aria-hidden="true">
