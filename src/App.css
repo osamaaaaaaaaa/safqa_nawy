@@ -5867,11 +5867,108 @@ h1, h2, h3, h4, h5, h6 {
    MOBILE FIRST RESPONSIVE POLISH & REFINEMENTS
    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 
+/* Global responsive font sizing - scales down all rem elements project-wide */
+@media (max-width: 767px) {
+  html {
+    font-size: 14px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  html {
+    font-size: 13.5px !important;
+  }
+}
+
 @media (max-width: 767px) {
   /* Performance: Hide heavy blur orbs on mobile to guarantee smooth 60fps scrolling */
   .site::before,
   .site::after {
     display: none !important;
+  }
+
+  /* Full-bleed header on mobile to prevent content peeking over the floating pill */
+  .site-nav {
+    inset: 0 0 auto !important;
+    width: 100% !important;
+    border-radius: 0 !important;
+    border-top: none !important;
+    border-left: none !important;
+    border-right: none !important;
+    padding: 12px 20px !important;
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05) !important;
+  }
+
+  .mobile-menu-overlay {
+    top: 72px !important;
+    left: 0 !important;
+    right: 0 !important;
+    border-radius: 0 !important;
+    border-top: none !important;
+    border-left: none !important;
+    border-right: none !important;
+    border-bottom: 1px solid rgba(15, 23, 42, 0.08) !important;
+  }
+
+  /* Statistics Strip side-by-side mobile grid */
+  .stats-strip {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 8px !important;
+    padding: 24px 0 !important;
+    text-align: center !important;
+  }
+
+  .stat-strip-item {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    padding: 0 !important;
+  }
+
+  .stat-strip-item::after {
+    display: none !important;
+  }
+
+  .stat-val {
+    font-size: clamp(1.1rem, 4.5vw, 1.6rem) !important;
+  }
+
+  .stat-lbl {
+    font-size: 0.68rem !important;
+    line-height: 1.2 !important;
+  }
+
+  /* Broker metrics side-by-side mobile grid */
+  .broker-metrics-strip {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 8px !important;
+    padding: 16px 0 !important;
+    border-top: 1px solid var(--line) !important;
+    border-bottom: 1px solid var(--line) !important;
+    text-align: center !important;
+  }
+
+  .broker-metric-item {
+    border-bottom: none !important;
+    border-right: none !important;
+    border-left: none !important;
+    padding: 10px 4px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+  }
+
+  .broker-metric-item strong {
+    font-size: clamp(1.25rem, 5vw, 1.8rem) !important;
+  }
+
+  .broker-metric-item span {
+    font-size: 0.68rem !important;
+    line-height: 1.2 !important;
   }
 
   /* Final CTA Mobile Spacing */
@@ -5952,7 +6049,7 @@ h1, h2, h3, h4, h5, h6 {
   }
 
   .sell-spec-sheet {
-    outline: none !important; /* Hide double outline to prevent mobile clipping */
+    outline: none !important;
     padding: 24px 16px !important;
     border-radius: var(--radius-sm) !important;
   }
@@ -5968,9 +6065,19 @@ h1, h2, h3, h4, h5, h6 {
     padding: 8px 12px !important;
   }
   .brand-logo-text {
-    font-size: 1.2rem !important;
+    font-size: 1.15rem !important;
   }
   .language-button {
-    padding: 6px 10px !important;
+    padding: 6px 8px !important;
+  }
+  .mobile-sticky-action-bar {
+    padding: 10px 12px !important;
+  }
+  .sticky-action-price strong {
+    font-size: 1rem !important;
+  }
+  .sticky-action-btn {
+    padding: 10px 16px !important;
+    font-size: 0.82rem !important;
   }
 }
