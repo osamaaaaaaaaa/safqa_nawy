@@ -4022,6 +4022,11 @@ h1, h2, h3, h4, h5, h6 {
 .custom-select-container {
   position: relative;
   width: 100%;
+  z-index: 1;
+}
+
+.custom-select-container.is-open {
+  z-index: 60;
 }
 
 .custom-select-trigger {
@@ -5014,6 +5019,8 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  position: relative;
+  z-index: 40;
 }
 
 .filter-label {
