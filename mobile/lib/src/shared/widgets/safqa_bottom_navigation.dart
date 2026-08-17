@@ -11,44 +11,56 @@ class SafqaBottomNavigation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final navController = Get.find<NavigationController>();
+    final isAr = Get.locale?.languageCode == 'ar';
 
     return Obx(
-      () => Padding(
-        padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
-        child: Container(
-          height: 68,
-          decoration: BoxDecoration(
-            color: AppColors.paper.withValues(alpha: 0.92),
-            borderRadius: BorderRadius.circular(30),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.05), width: 1.5),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.25),
-                blurRadius: 20,
-                offset: const Offset(0, 10),
-              ),
-            ],
+      () => Container(
+        height: 70,
+        decoration: BoxDecoration(
+          color: AppColors.paper,
+          border: Border(
+            top: BorderSide(color: AppColors.border, width: 0.8),
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _NavBarItem(
-                icon: Icons.grid_view_rounded,
-                isActive: navController.selectedIndex.value == 0,
-                onTap: () => navController.changeIndex(0),
-              ),
-              _NavBarItem(
-                icon: Icons.explore_rounded,
-                isActive: navController.selectedIndex.value == 1,
-                onTap: () => navController.changeIndex(1),
-              ),
-              _NavBarItem(
-                icon: Icons.fingerprint_rounded,
-                isActive: navController.selectedIndex.value == 2,
-                onTap: () => navController.changeIndex(2),
-              ),
-            ],
-          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _NavBarItem(
+              icon: Icons.home_outlined,
+              activeIcon: Icons.home_rounded,
+              label: isAr ? 'الرئيسية' : 'Home',
+              isActive: navController.selectedIndex.value == 0,
+              onTap: () => navController.changeIndex(0),
+            ),
+            _NavBarItem(
+              icon: Icons.pie_chart_outline_rounded,
+              activeIcon: Icons.pie_chart_rounded,
+              label: isAr ? 'الأسهم' : 'Shares',
+              isActive: navController.selectedIndex.value == 1,
+              onTap: () => navController.changeIndex(1),
+            ),
+            _NavBarItem(
+              icon: Icons.apartment_outlined,
+              activeIcon: Icons.apartment_rounded,
+              label: isAr ? 'العقارات' : 'Properties',
+              isActive: navController.selectedIndex.value == 2,
+              onTap: () => navController.changeIndex(2),
+            ),
+            _NavBarItem(
+              icon: Icons.business_center_outlined,
+              activeIcon: Icons.business_center_rounded,
+              label: isAr ? 'المحفظة' : 'Portfolio',
+              isActive: navController.selectedIndex.value == 3,
+              onTap: () => navController.changeIndex(3),
+            ),
+            _NavBarItem(
+              icon: Icons.more_horiz_outlined,
+              activeIcon: Icons.more_horiz_rounded,
+              label: isAr ? 'المزيد' : 'More',
+              isActive: navController.selectedIndex.value == 4,
+              onTap: () => navController.changeIndex(4),
+            ),
+          ],
         ),
       ),
     );
@@ -58,45 +70,44 @@ class SafqaBottomNavigation extends StatelessWidget {
 class _NavBarItem extends StatelessWidget {
   const _NavBarItem({
     required this.icon,
+    required this.activeIcon,
+    required this.label,
     required this.isActive,
     required this.onTap,
   });
 
   final IconData icon;
+  final IconData activeIcon;
+  final String label;
   final bool isActive;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedTap(
-      onTap: onTap,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
-              color: isActive ? AppColors.gold.withValues(alpha: 0.1) : Colors.transparent,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Icon(
-              icon,
+    return Expanded(
+      child: AnimatedTap(
+        onTap: onTap,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              isActive ? activeIcon : icon,
               color: isActive ? AppColors.gold : AppColors.muted,
-              size: 24,
+              size: 22,
             ),
-          ),
-          const SizedBox(height: 4),
-          // Active dot indicator
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            height: 4,
-            width: isActive ? 12 : 0,
-            decoration: BoxDecoration(
-              color: AppColors.gold,
-              borderRadius: BorderRadius.circular(2),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              style: TextStyle(
+                color: isActive ? AppColors.gold : AppColors.muted,
+                fontSize: 9,
+                fontWeight: isActive ? FontWeight.w800 : FontWeight.w600,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
-          )
-        ],
+          ],
+        ),
       ),
     );
   }
