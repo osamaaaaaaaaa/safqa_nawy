@@ -2477,6 +2477,181 @@ function App() {
           </div>
         </section>
 
+        {/* ─── APP DOWNLOAD BANNER ─── */}
+        <section className="app-download-section" dir={isArabic ? 'rtl' : 'ltr'}>
+          <div className="app-download-card">
+            
+            {/* Background decorations */}
+            <div className="decor-circle decor-1"></div>
+            <div className="decor-circle decor-2"></div>
+            
+            {/* QR Code Container */}
+            <div className="qr-container">
+              <div className="qr-card">
+                <svg width="100" height="100" viewBox="0 0 100 100" className="qr-svg">
+                  <rect x="0" y="0" width="30" height="30" fill="none" stroke="var(--ink)" strokeWidth="6" />
+                  <rect x="6" y="6" width="18" height="18" fill="var(--ink)" />
+                  
+                  <rect x="70" y="0" width="30" height="30" fill="none" stroke="var(--ink)" strokeWidth="6" />
+                  <rect x="76" y="6" width="18" height="18" fill="var(--ink)" />
+                  
+                  <rect x="0" y="70" width="30" height="30" fill="none" stroke="var(--ink)" strokeWidth="6" />
+                  <rect x="6" y="76" width="18" height="18" fill="var(--ink)" />
+                  
+                  <rect x="40" y="0" width="10" height="10" fill="var(--ink)" />
+                  <rect x="40" y="20" width="10" height="10" fill="var(--ink)" />
+                  <rect x="50" y="10" width="10" height="10" fill="var(--ink)" />
+                  <rect x="50" y="30" width="10" height="10" fill="var(--ink)" />
+                  
+                  <rect x="0" y="40" width="10" height="10" fill="var(--ink)" />
+                  <rect x="20" y="40" width="10" height="10" fill="var(--ink)" />
+                  <rect x="30" y="50" width="10" height="10" fill="var(--ink)" />
+                  
+                  <rect x="70" y="40" width="20" height="10" fill="var(--ink)" />
+                  <rect x="90" y="50" width="10" height="10" fill="var(--ink)" />
+                  <rect x="80" y="60" width="10" height="10" fill="var(--ink)" />
+                  
+                  <rect x="40" y="70" width="10" height="20" fill="var(--ink)" />
+                  <rect x="50" y="90" width="20" height="10" fill="var(--ink)" />
+                  <rect x="80" y="80" width="20" height="20" fill="var(--ink)" />
+                  <rect x="60" y="60" width="10" height="10" fill="var(--ink)" />
+                  <rect x="30" y="80" width="10" height="10" fill="var(--ink)" />
+                </svg>
+                <p className="qr-label">
+                  {isArabic ? 'امسح الرمز لتحميل التطبيق' : 'Scan to download the app'}
+                </p>
+              </div>
+            </div>
+
+            {/* Device Mockup Container */}
+            <div className="mockup-container">
+              <div className="phone-frame">
+                <div className="phone-island"></div>
+                <div className="phone-screen">
+                  <div className="phone-header">
+                    <span className="phone-logo">SAFQA<span className="gold-dot">.</span></span>
+                    <div className="phone-header-icons" style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                      <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.8 }}>
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                      </svg>
+                      <span className="p-icon" style={{ fontSize: '0.45rem', fontWeight: 'bold', background: 'var(--surface)', padding: '1px 3px', borderRadius: 3, border: '1px solid var(--border)' }}>AR</span>
+                    </div>
+                  </div>
+                  
+                  <div className="phone-scroll-body">
+                    <p className="phone-welcome">{isArabic ? 'مرحباً بك، أسامة' : 'Welcome, Osama'}</p>
+                    
+                    <div className="phone-services-row">
+                      <div className="p-service-item">
+                        <div className="p-service-icon icon-blue">
+                          <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <rect x="2" y="2" width="20" height="20" rx="2"></rect>
+                            <path d="M9 22V12h6v10"></path>
+                            <path d="M8 6h2M14 6h2M8 10h2M14 10h2"></path>
+                          </svg>
+                        </div>
+                        <span className="p-service-label">{isArabic ? 'وحدات متاحة' : 'Units'}</span>
+                      </div>
+                      <div className="p-service-item">
+                        <div className="p-service-icon icon-green">
+                          <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                          </svg>
+                        </div>
+                        <span className="p-service-label">{isArabic ? 'بيع وحدتك' : 'Sell Unit'}</span>
+                      </div>
+                      <div className="p-service-item">
+                        <div className="p-service-icon icon-gold">
+                          <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="8.5" cy="7" r="4"></circle>
+                            <line x1="20" y1="8" x2="20" y2="14"></line>
+                            <line x1="23" y1="11" x2="17" y2="11"></line>
+                          </svg>
+                        </div>
+                        <span className="p-service-label">{isArabic ? 'بيع بالعمولة' : 'Commission'}</span>
+                      </div>
+                    </div>
+                    
+                    <div className="phone-card">
+                      <div className="phone-card-image"></div>
+                      <div className="phone-card-details">
+                        <div className="phone-card-row">
+                          <span className="p-card-tag">{isArabic ? 'كاش' : 'Cash'}</span>
+                          <span className="p-card-price">4.2M</span>
+                        </div>
+                        <div className="p-card-title">{isArabic ? 'شقة مستقلة - التجمع' : 'Apartment - New Cairo'}</div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="phone-bottom-bar">
+                    <div className="phone-bottom-capsule" style={{ display: 'flex', alignItems: 'center' }}>
+                      <span className="b-icon" style={{ display: 'inline-flex' }}>
+                        <svg viewBox="0 0 24 24" width="9" height="9" fill="none" stroke="currentColor" strokeWidth="2.5">
+                          <circle cx="12" cy="12" r="10"></circle>
+                          <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+                        </svg>
+                      </span>
+                      <span className="b-icon active" style={{ display: 'inline-flex' }}>
+                        <svg viewBox="0 0 24 24" width="9" height="9" fill="currentColor">
+                          <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                        </svg>
+                      </span>
+                      <span className="b-icon" style={{ display: 'inline-flex' }}>
+                        <svg viewBox="0 0 24 24" width="9" height="9" fill="none" stroke="currentColor" strokeWidth="2.5">
+                          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Marketing Copytexts */}
+            <div className="marketing-texts">
+              <h2 className="luxury-serif text-title">
+                {isArabic ? 'احصل على أفضل تجربة – حمل تطبيق ' : 'Get the best experience – Download '}
+                <span className="title-brand-highlight">
+                  {isArabic ? 'صفقة الآن!' : 'Safqa App Now!'}
+                  <svg className="gold-underline-svg" viewBox="0 0 100 10" preserveAspectRatio="none">
+                    <path d="M0,5 Q50,9 100,5" stroke="var(--primary)" strokeWidth="3" fill="none" strokeLinecap="round" />
+                  </svg>
+                </span>
+              </h2>
+              <p className="text-body">
+                {isArabic 
+                  ? 'اجعل تجربة العقارات أسهل وأسرع مع قوائم دقيقة، بحث ذكي، وميزات لإدارة الممتلكات. انطلق الآن ووفر الوقت والمجهود!'
+                  : 'Make your real estate experience easier and faster with accurate listings, smart search, and property management features. Get started now!'}
+              </p>
+              <div className="download-buttons-row">
+                <a href="#/download" className="store-badge">
+                  <svg viewBox="0 0 384 512" width="18" height="18" fill="currentColor" style={{ marginRight: isArabic ? 0 : 8, marginLeft: isArabic ? 8 : 0 }}>
+                    <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-48.7-22.9-76.9-22.4-36.6.5-70.3 21.6-89 53.9-38 65.9-9.6 159 27.2 212.1 18 25.9 39.8 54.9 67.9 54 27.8-1 38.3-17.9 69.8-17.9 31.4 0 41 17.9 69.9 17.2 29.2-.5 48.3-25.9 66.2-51.9 20.8-30.2 29.3-59.5 29.7-61-1-.5-56.8-21.8-57.1-85.1zm-48.4-162.7c15.2-18.4 25.1-43.9 22.3-69.3-21.8 1-48.5 14.6-64.1 32.8-13.9 16-26.1 41.9-22.9 67 24.1 1.9 49.3-12.1 64.7-30.5z" />
+                  </svg>
+                  <div className="store-text">
+                    <small style={{ textAlign: 'left' }}>{isArabic ? 'حمل من' : 'Download on the'}</small>
+                    <strong>App Store</strong>
+                  </div>
+                </a>
+                <a href="#/download" className="store-badge">
+                  <svg viewBox="0 0 512 512" width="18" height="18" fill="currentColor" style={{ marginRight: isArabic ? 0 : 8, marginLeft: isArabic ? 8 : 0 }}>
+                    <path d="M325.3 234.3L104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.2 225.6l-58-33.2-65.6 65.6 65.6 65.6 58-33.2c15-8.6 25.3-24.8 25.3-42.4s-10.3-33.8-25.3-42.4zM104.6 499l220.7-220.7 60.1 60.1L104.6 499z" />
+                  </svg>
+                  <div className="store-text">
+                    <small style={{ textAlign: 'left' }}>{isArabic ? 'نزله من' : 'GET IT ON'}</small>
+                    <strong>Google Play</strong>
+                  </div>
+                </a>
+              </div>
+            </div>
+            
+          </div>
+        </section>
+
         {/* ─── PROCESS SECTION — Clean Centered Steps Grid (No Image) ─── */}
         <section className="process-section" id="process">
           <div className="process-inner section-frame">

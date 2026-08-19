@@ -6,7 +6,6 @@ import '../../../../shared/widgets/safqa_bottom_navigation.dart';
 import '../../../dashboard/presentation/pages/broker_home_page.dart';
 import '../../../dashboard/presentation/pages/portfolio_page.dart';
 import '../../../explore/presentation/pages/explore_page.dart';
-import '../../../explore/presentation/pages/shares_page.dart';
 import '../../../profile/presentation/pages/profile_page.dart';
 
 class HomePage extends StatelessWidget {
@@ -17,9 +16,8 @@ class HomePage extends StatelessWidget {
     final navigationController = Get.find<NavigationController>();
 
     final pages = <Widget>[
-      const BrokerHomePage(),
-      const SharesPage(),
       const ExplorePage(),
+      const BrokerHomePage(),
       const PortfolioPage(),
       const ProfilePage(),
     ];

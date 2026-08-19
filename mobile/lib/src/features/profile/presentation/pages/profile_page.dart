@@ -9,6 +9,7 @@ import '../../../../shared/widgets/broker_page.dart';
 import '../../../../shared/widgets/broker_section_header.dart';
 import '../../../../shared/widgets/status_pill.dart';
 import 'safqa_comparison_page.dart';
+import '../../../dashboard/presentation/pages/portfolio_page.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -48,6 +49,13 @@ class ProfilePage extends StatelessWidget {
           ),
         ),
         
+        _PremiumToolTile(
+          icon: Icons.business_center_rounded,
+          title: isAr ? 'محفظتي العقارية والعمولات' : 'My Portfolio & Commission',
+          subtitle: isAr ? 'إدارة صفقاتك النشطة، أرباحك، ومستنداتك العقارية' : 'Manage your active deals, payouts, and property documents',
+          color: AppColors.gold,
+          onTap: () => Get.to(() => const PortfolioPage()),
+        ),
         _PremiumToolTile(
           icon: Icons.bar_chart_rounded,
           title: isAr ? 'دليل صفقة vs ريسيل تقليدي' : 'Safqa vs Traditional Resale',
